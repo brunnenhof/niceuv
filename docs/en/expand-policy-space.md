@@ -1,0 +1,9 @@
+# Expand policy space
+
+A strange title for a simple idea: If you have have more money, you can do more things. Go out more, buy more GigaBytes for your mobile phone, eat more ice-cream. At the level of government, one way to get more money is when the private investors who lend you money, and [every government borrows money](https://www.youtube.com/watch?v=npX2aZymRvg), *forgive* part of the debt you owe them. [Forgive?](https://www.experian.com/blogs/ask-experian/what-is-debt-forgiveness/?) Well they do not want it back. So you can do things for your people with the money you do not have to pay back. In SimFuture, as the Minister against Poverty, you can set this policy. In other words, you as minister, negotiate with your lenders and convince them to forgive you part or all of the debt you owe them. (In the game, there are no *lenders* physically present with whom you can negotiate, simply pulling the sliders **is** the negotiation :) Use your imagination to conjure up your counterparts and their arguments.)
+
+Remember two things: This policy only has an effect in the first two years of the policy. Say, your government owes 100 million Dollars and your lenders forgive you 50% of that, then in year one of the policy, you only owe only 50 million. If you do not borrow more, than in year two of the policy you owe 25%. (A further 50% of the 50 million you owe (= 25 million) is forgiven.
+
+And second, governments continously borrow, so most likely, in year two you will already have borrowed some more. You can set how much you will borrow with this policy: [Fraction of credit with private lenders NOT drawn down per year](fraction-of-credit-with-private-lenders-not-drawn-down-per-year.md)  
+
+Note: if you read this in a language other than English and you know of links similar to the ones above in your language, drop us a line at <simfuture@blue-way.net>.

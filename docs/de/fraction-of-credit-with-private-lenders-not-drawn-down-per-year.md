@@ -1,0 +1,9 @@
+# Anteil der bei privaten Kreditgebern aufgenommenen Kredite, der pro Jahr NICHT in Anspruch genommen wird
+
+Regierungen – und auch du – haben eine Kreditwürdigkeit ([Kreditwürdigkeit](https://www.experian.com/blogs/ask-experian/what-is-creditworthiness/)). Für dich schau dir den Link an; für Regierungen ist dies in der Regel ein Vielfaches der Wirtschaftsleistung ([BIP](gdp.md)). In der Realität spielt auch die bisherige Rückzahlungshistorie eine Rolle, und da unterscheiden sich die Länder voneinander (falls dich das interessiert: Ein großartiges Buch zu diesem Thema ist „[Dieses Mal ist es anders](https://press.princeton.edu/books/paperback/9780691152646/this-time-is-different)“). 
+
+Angesichts deiner Kreditwürdigkeit musst du entscheiden, wie viel von deinem Kreditrahmen du *in Anspruch nehmen* möchtest. Ein Beispiel: Wenn deine Kreditwürdigkeit bei 100 Millionen Dollar liegt, möchtest du vielleicht die Hälfte davon (= 50 Millionen Dollar) *in Anspruch nehmen*, also aufnehmen. Oder 30 % (= 30 Millionen Dollar). Oder gar nichts. 
+
+Warum solltest du nicht einfach alles leihen? Weil du, sobald du Geld geliehen hast, mit der Rückzahlung beginnen musst und Zinsen zahlen musst. Zweitens: Je höher deine Schulden sind, desto geringer ist später deine Kreditwürdigkeit. Meistens sind es die Zinszahlungen, die Regierungen dazu bringen, sich das Aufnehmen von Krediten zweimal zu überlegen. In den USA zum Beispiel ist der „[Zinszahlungen Posten (im Jahr 2026)](https://www.pgpf.org/programs-and-projects/fiscal-policy/monthly-interest-tracker-national-debt/)“ der drittgrößte Ausgabenposten im Haushalt, noch vor den Ausgaben für das Militär. 
+
+Je mehr du dir leihst, desto höher sind die Zinsen, desto weniger kannst du für andere Dinge ausgeben! Leg also deine Massnahme mit Bedacht fest.

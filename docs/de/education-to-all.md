@@ -1,0 +1,3 @@
+# Bildung für alle
+
+[Je höher das Bildungsniveau – insbesondere bei Frauen – in einer Gesellschaft ist, desto niedriger ist die Geburtenrate](https://www.demogr.mpg.de/en/news_events_6123/news_press_releases_4630/press/women_s_education_influences_fertility_rates_in_sub_saharan_africa_13644). Siehe auch [hier](https://ourworldindata.org/grapher/womens-educational-attainment-vs-fertility). Bildung für alle senkt also die Geburtenrate. Um wie viel? Mach eine fundierte Schätzung: 0 bedeutet keinen Effekt, 10 bedeutet eine Senkung um 10 % (das maximal Mögliche), 5 bedeutet eine Senkung um 5 % usw.

@@ -1,0 +1,37 @@
+# Secrets — never commit
+.env
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+lulu2_deepl.py
+lulu3_deepl.py
+test_arch.py
+toy_back.py
+translate_test.py
+trans_from_clean_luf.py
+game_plot_ug_back.py
+find_text_str.py
+model_wrapper.py
+model_wrap_budget.py
+plot_wrap.py
+state.py
+files/luf_clean.py
+files/luf_original.py
+corrections/
+
+# Virtual environments
+.venv
+
+# scratch files
+scratch
+putty
+
+# Runtime / generated
+.nicegui/
+
+sdg3_game.db

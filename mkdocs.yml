@@ -1,0 +1,178 @@
+site_name: SimFuture - Manual
+#site_url: https://blue-way.net/simfuture/
+site_url: https://brunnenhof.github.io/niceuv/
+docs_dir: docs
+theme:
+  name: material
+  features:
+#    - navigation.tabs
+#    - navigation.sections
+#    - navigation.indexes
+#    - navigation.expand
+#    - navigation.top
+    - navigation.footer
+  palette:
+    # Dark Mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Dark mode
+      primary: green
+      accent: deep purple
+
+    # Light Mode
+    - scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Light mode
+      primary: blue
+      accent: deep orange
+
+markdown_extensions:
+  - attr_list
+
+plugins:
+  - search
+
+extra_css:
+  - assets/css/custom.css
+
+extra_javascript:
+  - assets/js/external-links.js
+
+
+nav:
+  - English:
+    - 'The point of the game':
+        - 'The point of the game': en/the-point-of-the-game.md
+        - 'Two scenarios': en/two-scenarios.md
+        - 'Thanks': en/thanks.md
+    - 'Ways to play the game': 
+        - 'Ways to play the game': en/ways-to-play-the-game.md
+        - 'Let players learn about the UN Sustainable Development Goals': en/let-players-learn-about-the-un-sustainable-development-goals.md
+        - 'Engage players in conversation, discussion and negotiation': en/engage-players-in-conversation-discussion-and-negotiation.md
+        - 'Let players experience differences in power': en/let-players-experience-differences-in-power.md
+        - 'Lead players from one simple causal feedbackloop to a systems understanding':
+            - 'Lead players from one simple causal feedbackloop to a systems understanding': en/lead-players-from-one-simple-causal-feedbackloop-to-a-systems-understanding.md
+            - 'Inequality and social tension': en/inequality-and-social-tension.md
+            - 'Emissions and temperature': en/emissions-and-temperature.md
+            - 'Carbon tax vs. cap-and-trade example': en/carbon-tax-vs-cap-and-trade-example.md
+    - 'What you need to play':
+        - 'What you need to play': en/what-you-need-to-play.md
+        - 'People': en/people.md
+        - 'Place': en/place.md
+        - 'Technology': en/technology.md
+        - 'Privacy': en/privacy.md
+    - 'Gameplay':
+        - 'Gameplay': en/gameplay.md
+        - 'Rounds': en/rounds.md
+        - 'How do I read a graph': en/how-do-i-read-a-graph.md
+        - 'Policy Sliders': en/policy-sliders.md
+    - 'Policies, in depth':
+        - 'Policies, in depth': en/policies-in-depth.md
+        - 'Expand policy space': en/expand-policy-space.md
+        - 'Lending from public bodies (LPB)': en/lending-from-public-bodies-lpb.md
+        - 'LPB: Split the use of funds from public lenders': en/lpb-split-the-use-of-funds-from-public-lenders.md
+        - 'LPB: funds given as loans or grants': en/lpb-funds-given-as-loans-or-grants.md
+        - 'Fraction of credit with private lenders NOT drawn down per year': en/fraction-of-credit-with-private-lenders-not-drawn-down-per-year.md
+        - 'Taxing Owners Wealth': en/taxing-owners-wealth.md
+        - 'Cancel debt from public lenders': en/cancel-debt-from-public-lenders.md
+        - 'Leakage fraction reduction': en/leakage-fraction-reduction.md
+        - 'Stretch repayment': en/stretch-repayment.md
+        - 'Extra taxes paid by the super rich': en/extra-taxes-paid-by-the-super-rich.md
+        - 'Strengthen Unions': en/strengthen-unions.md
+        - 'Worker reaction': en/worker-reaction.md
+        - 'Introduce a Universal basic dividend': en/introduce-a-universal-basic-dividend.md
+        - 'Increase consumption tax rate': en/increase-consumption-tax-rate.md
+        - 'Increase owner income tax rate': en/increase-owner-income-tax-rate.md
+        - 'Increase worker income tax rate': en/increase-worker-income-tax-rate.md
+        - 'Introduce a Carbon tax': en/introduce-a-carbon-tax.md
+        - 'Shift govt spending to investment': en/shift-govt-spending-to-investment.md
+        - 'Education to all': en/education-to-all.md
+        - 'Female leadership': en/female-leadership.md
+        - 'Pensions to all': en/pensions-to-all.md
+        - 'Food waste reduction': en/food-waste-reduction.md
+        - 'Regenerative agriculture': en/regenerative-agriculture.md
+        - 'Change diets': en/change-diets.md
+        - 'Reduce food imports': en/reduce-food-imports.md
+        - 'Max forest cutting': en/max-forest-cutting.md
+        - 'Reforestation': en/reforestation.md
+        - 'Energy system efficiency': en/energy-system-efficiency.md
+        - 'Electrify everything': en/electrify-everything.md
+        - 'Invest in Renewables': en/invest-in-renewables.md
+        - 'CCS is Carbon capture and storage at source': en/ccs-is-carbon-capture-and-storage-at-source.md
+        - 'Direct air capture': en/direct-air-capture.md
+    - 'Glossary':
+        - 'Glossary': en/glossary.md
+        - 'GDP': en/gdp.md
+        - 'Off-balance sheet financing': en/off-balance-sheet-financing.md
+        - 'The Energy Cost of Feeding the World': en/the-energy-cost-of-feeding-the-world.md
+    - 'Licence': en/licence.md
+    - 'Impressum / Legal': en/impressum-legal.md
+  - Deutsch:
+    - 'Worum es bei dem Spiel geht':
+        - 'Worum es bei dem Spiel geht': de/the-point-of-the-game.md
+        - 'Zwei Szenarien': de/two-scenarios.md
+        - 'Danke': de/thanks.md
+    - 'Es gibt verschieden Möglichkeiten, das Spiel zu spielen':
+        - 'Es gibt verschieden Möglichkeiten, das Spiel zu spielen': de/ways-to-play-the-game.md
+        - 'Bringe den Spieler:innen die UN-Ziele für nachhaltige Entwicklung näher': de/let-players-learn-about-the-un-sustainable-development-goals.md
+        - 'Schaffe den Raum für Gespräche, Diskussionen und Verhandlungen': de/engage-players-in-conversation-discussion-and-negotiation.md
+        - 'Lass die Spieler:innen Machtunterschiede erleben': de/let-players-experience-differences-in-power.md
+        - 'Von einer einfachen kausalen Rückkopplungsschleife hin zu einem systemischen Verständnis':
+            - 'Von einer einfachen kausalen Rückkopplungsschleife hin zu einem systemischen Verständnis': de/lead-players-from-one-simple-causal-feedbackloop-to-a-systems-understanding.md
+            - 'Ungleichheit und soziale Spannungen': de/inequality-and-social-tension.md
+            - 'Emissionen und Temperatur': de/emissions-and-temperature.md
+            - 'CO₂-Steuer vs. Emissionshandel': de/carbon-tax-vs-cap-and-trade-example.md
+    - 'Was du zum Spielen brauchst':
+        - 'Was du zum Spielen brauchst': de/what-you-need-to-play.md
+        - 'Personen': de/people.md
+        - 'Ort': de/place.md
+        - 'Technologie': de/technology.md
+        - 'Datenschutz': de/privacy.md
+    - 'Spielablauf':
+        - 'Spielablauf': de/gameplay.md
+        - 'Runden': de/rounds.md
+        - 'Wie lese ich ein Diagramm?': de/how-do-i-read-a-graph.md
+        - 'Einstellungsregler': de/policy-sliders.md
+    - 'Massnahmen – im Detail':
+        - 'Massnahmen – im Detail': de/policies-in-depth.md
+        - 'Den politischen Handlungsspielraum erweitern': de/expand-policy-space.md
+        - 'Kredite von öffentlichen Einrichtungen (LPB)': de/lending-from-public-bodies-lpb.md
+        - 'LPB: Aufteilung der Mittel von öffentlichen Kreditgebern': de/lpb-split-the-use-of-funds-from-public-lenders.md
+        - 'LPB: Mittel, die als Darlehen oder Zuschüsse gewährt werden': de/lpb-funds-given-as-loans-or-grants.md
+        - 'Anteil der bei privaten Kreditgebern aufgenommenen Kredite, der pro Jahr NICHT in Anspruch genommen wird': de/fraction-of-credit-with-private-lenders-not-drawn-down-per-year.md
+        - 'Vermögenssteuer für Eigentümer': de/taxing-owners-wealth.md
+        - 'Schulden bei öffentlichen Kreditgebern erlassen': de/cancel-debt-from-public-lenders.md
+        - 'Reduzierung der undichten Stellen': de/leakage-fraction-reduction.md
+        - 'Verlängerte Rückzahlungsfrist': de/stretch-repayment.md
+        - 'Zusätzliche Steuern, die von den Superreichen gezahlt werden': de/extra-taxes-paid-by-the-super-rich.md
+        - 'Gewerkschaften stärken': de/strengthen-unions.md
+        - 'Reaktion der Arbeitnehmer': de/worker-reaction.md
+        - 'Führe eine universelle Grund-Dividende ein': de/introduce-a-universal-basic-dividend.md
+        - 'Den Mehrwertsteuersatz erhöhen': de/increase-consumption-tax-rate.md
+        - 'Den Einkommensteuersatz für Eigentümer erhöhen': de/increase-owner-income-tax-rate.md
+        - 'Den Einkommensteuersatz für Arbeitnehmer erhöhen': de/increase-worker-income-tax-rate.md
+        - 'Eine CO₂-Steuer einführen': de/introduce-a-carbon-tax.md
+        - 'Staatliche Ausgaben in Investitionen umlenken': de/shift-govt-spending-to-investment.md
+        - 'Bildung für alle': de/education-to-all.md
+        - 'Frauen in Führungspositionen': de/female-leadership.md
+        - 'Rente für alle': de/pensions-to-all.md
+        - 'Reduzierung von Lebensmittelabfällen': de/food-waste-reduction.md
+        - 'Regenerative Landwirtschaft': de/regenerative-agriculture.md
+        - 'Die Ernährung umstellen': de/change-diets.md
+        - 'Lebensmittelimporte reduzieren': de/reduce-food-imports.md
+        - 'Maximale Abholzung': de/max-forest-cutting.md
+        - 'Aufforstung': de/reforestation.md
+        - 'Effizienz des Energiesystems': de/energy-system-efficiency.md
+        - 'Alles elektrifizieren': de/electrify-everything.md
+        - 'Investiere in erneuerbare Energien': de/invest-in-renewables.md
+        - 'CCS steht für die Abscheidung und Speicherung von Kohlendioxid an der Quelle': de/ccs-is-carbon-capture-and-storage-at-source.md
+        - 'Direkte CO2 Abscheidung aus der Luft': de/direct-air-capture.md
+    - 'Glossar':
+        - 'Glossar': de/glossary.md
+        - 'BIP': de/gdp.md
+        - 'Außerbilanzielle Finanzierung': de/off-balance-sheet-financing.md
+        - 'Die Energiekosten der Welternährung': de/the-energy-cost-of-feeding-the-world.md
+    - 'Lizenz': de/licence.md
+    - 'Impressum / Rechtliche Hinweise': de/impressum-legal.md

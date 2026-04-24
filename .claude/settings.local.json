@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c ':*)",
+      "Bash(python manula_to_mkdocs.py --en scratch/manula_uk_de_260402.xml --de scratch/manula_uk_de_260402_reviewed.xml --out docs)",
+      "WebFetch(domain:squidfunk.github.io)"
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+# Change diets
+
+More than [two thirds of all agricultural land is used to feed livestock](https://ourworldindata.org/global-land-for-agriculture), cows, pigs, goats, chicken, turkey, etc. If we ate less meat, especially [red meat](https://www.mdanderson.org/cancerwise/is-red-meat-bad-for-you.h00-159696756.html), we would need much less agricultural land, or we could use the land we have much less intensively - the land could regenerate more naturally (even [Champion League players need time for regeneration!](https://www.sogility.net/2023/07/importance-of-recovery-and-regeneration-in-soccer)). 
+
+With this policy, you can change the diet, esp. a reduction in red meat consumption. 0 means red meat is consumed as before, 50 means 50% of meat consumption is reduced or replaced with [cell-base meat](https://www.eufic.org/en/food-production/article/lab-grown-meat-how-it-is-made-and-what-are-the-pros-and-cons), 100 means 100% of meat consumption is reduced or replaced with *cell-base meat*,  i.e. no more meat is *produced* by [intensive livestock farming](https://en.wikipedia.org/wiki/Intensive*animal*farming) aka factory farming.

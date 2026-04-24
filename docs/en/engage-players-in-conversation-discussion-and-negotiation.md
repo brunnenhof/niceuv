@@ -1,0 +1,3 @@
+# Engage players in conversation, discussion and negotiation
+
+Players are organized into ministerial teams who have to take investment decisions under budgetary constraints (= they don't have enough money to invest in everything). Each minister has seperate responsibilities and can take decisions relevant for his or her ministry. But the budget is a **regional** one. Thus, they **need to talk to each other** before they can submit their investment plans (for each round). It is this talking to each other, and **agreeing with each other**, that happens way too rarely in real life. Thus, in a game, they can learn about and practice speaking, listening, arguing and compromising. And in a game, *it doesn't matter*, because *it's only a game*.

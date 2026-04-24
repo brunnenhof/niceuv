@@ -1,0 +1,5 @@
+# Thanks
+
+We use the [earth4all ](https://earth4all.life/the-science/) regional model, which was developed by U Goluke and PE Stoknes. It is in turn based on the [global ](https://stockholmuniversity.app.box.com/s/uh7fjh52pvh7yx1mqfwqcyxdcvegrodf) model developed by J Randers. The game was prototyped with [anvil.works](https://anvil.works/) by U Goluke and countless alpha and beta testers. Production development was done with the help of [Claude Sonnet](https://claude.ai/login) for the user interface, the state management and the VPS deployment. Transfer of the model from [Vensim ](https://vensim.com/) to python and all the graphs were done with [PyCharm ](https://www.jetbrains.com/pycharm/) and [VSCode ](https://code.visualstudio.com/) by U Golüke. The game is copyrighted by U Goluke and is licensed under the GNU Affero General Public License v3.0, see [Licence](licence.md).
+
+**The biggest thanks go to our alpha testers, the students of the SW101 course at the [Realschule Baesweiler](https://www.realschule-baesweiler.de/start.html), which was taught by René Langohr in April 2024, and to all beta testers.**

@@ -1,0 +1,5 @@
+# Direct air capture
+
+[There is more and more CO2 in the atmosphere](https://ourworldindata.org/grapher/co2-long-term-concentration). And it will stay there for quite a while, all the time warming the earth. One way to reduce the CO2, and thus the warming, is to capture it from the air and storing it underground - [direct air capture](https://www.iea.org/energy-system/carbon-capture-utilisation-and-storage/direct-air-capture) - more details [here](https://www.fz-juelich.de/en/news/archive/press-release/2025/direct-air-capture-2013-a-lever-for-climate-action-but-not-cost-effective-everywhere).
+
+With this policy, you decide how much CO2 per year you want to capture. (For camparison, there are currently almost 1000 Giga-Tonnes of CO2 (giga = 10^9 = 1 000 000 000) in the atmosphere. In 2020 regional emissions were roughly: USA 5,  Africa  south of Sahara 1,  China 12,  all the other regions between 2 and 3 GtCO2 per year. Since capturing CO2 is [a huge engineering task](https://www.geoengineeringmonitor.org/wp-content/uploads/2021/04/direct-air-capture.pdf), you can capture in your region up to 1.5 GtCO2 per year.
