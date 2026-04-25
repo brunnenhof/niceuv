@@ -18,7 +18,7 @@ Good luck and enjoy.
 
 ### PS: I need your help
 
-The manual is originally written in English and then translated to other languages, mostly by [deepl.com](https://www.deepl.com/en). Deepl.com cannot change the links to websites in the target language. So, if you see this manual in a language different from English and know of links to sites in your language that cover the information that the English sites do, drop us a line in the comments with the link(s) in your language, so I can do the updates. Many thanks!
+The manual is originally written in English, German was done by [deepl.com](https://www.deepl.com/en) and checked by a native speaker. If you are a native speaker of a language **other** than English or German, and would like to to help bring this manual to your native language, then send a mail to <simfuture@blue-way.net>. We'd translate the text with Deepl.com, send you the tranlations for review (we're working on you being able to do that with a web-app) and you'd return the reviewed text back to us. There are also lots of links to external sites for deeper understanding. It would be teriffic if you could also find and insert links to sites in your language that cover the information that the English sites do. I know this is a lot of work, but it's for a good cause and your work will be duly noted!
 
 #### This manual can grow
 

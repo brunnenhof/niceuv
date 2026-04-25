@@ -18,7 +18,7 @@ Viel Glück und viel Spaß.
 
 ### PS: Ich brauche deine Hilfe
 
-Das Handbuch wurde ursprünglich auf Englisch verfasst und dann in andere Sprachen übersetzt, größtenteils von [deepl.com](https://www.deepl.com/de). Deepl.com kann die Links zu Websites in der Zielsprache nicht ändern. Wenn du dieses Handbuch also in einer anderen Sprache als Englisch siehst und Links zu Seiten in deiner Sprache kennst, die die gleichen Informationen enthalten wie die englischen Seiten, schreib uns bitte in den Kommentaren eine Nachricht mit den Links in deiner Sprache, damit ich die Aktualisierungen vornehmen kann. Vielen Dank!
+Das Handbuch wurde ursprünglich auf Englisch verfasst und dann in andere Sprachen übersetzt, größtenteils von [deepl.com](https://www.deepl.com/de). Deepl.com kann die Links zu Websites in der Zielsprache nicht ändern. Wenn du dieses Handbuch also in einer anderen Sprache als Englisch siehst und Links zu Seiten in deiner Sprache kennst, die die gleichen Informationen enthalten wie die englischen Seiten, schreib uns bitte eine mail an <simfuture@blue-way.net> mit den Links in deiner Sprache, damit ich die Aktualisierungen vornehmen kann. Vielen Dank!
 
 #### Dieses Handbuch kann wachsen
 

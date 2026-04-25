@@ -63,6 +63,42 @@ LANG_OPTIONS = {
 # Maps lang code → index used in luf.py translation lists
 LANG_TO_INDEX = {"en": 0, "de": 1, "de_inf": 2, "fr": 3, "no": 4}
 
+MANUAL_BASE = "https://brunnenhof.github.io/niceuv"
+POLICY_MANUAL_PAGE = {
+    "RMDR":     "change-diets",
+    "DAC":      "direct-air-capture",
+    "FEHC":     "education-to-all",
+    "NEP":      "electrify-everything",
+    "FTPEE":    "energy-system-efficiency",
+    "ExPS":     "expand-policy-space",
+    "XtaxFrac": "extra-taxes-paid-by-the-super-rich",
+    "XtaxRateEmp": "female-leadership",
+    "FWRP":     "food-waste-reduction",
+    "FMPLDD":   "fraction-of-credit-with-private-lenders-not-drawn-down-per-year",
+    "ICTR":     "increase-consumption-tax-rate",
+    "IOITR":    "increase-owner-income-tax-rate",
+    "IWITR":    "increase-worker-income-tax-rate",
+    "Ctax":     "introduce-a-carbon-tax",
+    "XtaxCom":  "introduce-a-universal-basic-dividend",
+    "ISPV":     "invest-in-renewables",
+    "Lfrac":    "leakage-fraction-reduction",
+    "LPB":      "lending-from-public-bodies-lpb",
+    "LPBgrant": "lpb-funds-given-as-loans-or-grants",
+    "LPBsplit": "lpb-split-the-use-of-funds-from-public-lenders",
+    "FC":       "max-forest-cutting",
+    "SGMP":     "pensions-to-all",
+    "RIPLGF":   "reduce-food-imports",
+    "REFOREST": "reforestation",
+    "FLWR":     "regenerative-agriculture",
+    "SGRPI":    "shift-govt-spending-to-investment",
+    "StrUP":    "strengthen-unions",
+    "SSGDR":    "stretch-repayment",
+    "TOW":      "taxing-owners-wealth",
+    "Wreaction": "worker-reaction",
+    "FPGDC":    "cancel-debt-from-public-lenders",
+    "CCS":      "ccs-is-carbon-capture-and-storage-at-source",
+}
+
 app.colors(primary="#014873", secondary="#0383A1", my_orange="#FF8A05")
 
 # ── DB ────────────────────────────────────────────────────────────────────────
@@ -310,12 +346,10 @@ def create_header(token: str | None = None):
         # Right: controls
         with ui.row().classes("items-center gap-2"):
             langx = LANG_TO_INDEX.get(lang, 0)
-            if langx == 0:
-                help_link = 'https://www.manula.com/manuals/blue-way/sdg-game/01/uk/topic/sinn-und-zweck'
-            elif langx == 1 or langx == 2:
-                help_link = 'https://www.manula.com/manuals/blue-way/sdg-game/01/de/topic/sinn-und-zweck'
+            if langx == 1 or langx == 2:
+                help_link = 'https://brunnenhof.github.io/niceuv/de/the-point-of-the-game/'
             else:
-                help_link = 'https://www.manula.com/manuals/blue-way/sdg-game/01/uk/topic/sinn-und-zweck'
+                help_link = 'https://brunnenhof.github.io/niceuv/en/the-point-of-the-game/'
 
             with ui.button(icon='blind',
                 on_click=lambda: ui.navigate.to(help_link, new_tab=True)
@@ -1574,6 +1608,13 @@ def _render_sliders(token: str, game_id: str, current_round: int,
                     with exp:
                         ui.label(pol_expls.get(pol_tag, policy["pol_name"])) \
                           .classes("text-base text-orange-600 font-bold")
+                        manual_page = POLICY_MANUAL_PAGE.get(pol_tag)
+                        if manual_page:
+                            lang_prefix = "de" if langx in (1, 2) else "en"
+                            manual_url = f"{MANUAL_BASE}/{lang_prefix}/{manual_page}/"
+                            print(manual_url)
+                            ui.link("For a deeper dive, open the manual", manual_url, new_tab=True) \
+                              .classes("text-sm text-blue-600 mt-1")
 
                     with ui.row().classes("w-full items-center gap-4"):
                         ui.label(f"{pol_min}").classes("text-base text-orange-700 w-12 text-right")
