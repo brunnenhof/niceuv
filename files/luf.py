@@ -128,11 +128,11 @@ runde = [
     "Runde",
 ]
 waiting_for_players_to_join =[
-    "– waiting for players to join",
-    "– darauf wartend, dass Spieler beitreten",
-    "– darauf wartend, dass Spieler beitreten",
-    "– en attente que des joueurs rejoignent la partie",
-    "– venter på at spillere skal bli med",
+    "... waiting for players to join",
+    "... wir warten, dass Spieler:innen beitreten",
+    "... wir warten, dass Spieler:innen beitreten",
+    "... nous attendons que des joueurs et joueuses nous rejoignent",
+    "... vi venter på at spillere skal bli med",
 ]
 game_complete = [
     "Game complete!",
@@ -2307,7 +2307,7 @@ monitoring = [
 indicator_for = [
     " indicators for ",
     " Indikatoren für ",
-    "Indikatoren für",
+    " Indikatoren für ",
     " indicateurs pour ",
     " indikatorer for ",
 ]
@@ -2337,13 +2337,13 @@ ui_gm_info_start = [
 
 Tell your players to log in **now**, using the Game ID shown above. Ask them to look at the state of their region for the last 35 years and to discuss the decisions they need to take to improve the lives of their people. 
 
-Check repeatedly if all your players have logged in by clicking the **Refresh** button. 
+Check repeatedly if all your players have logged in by clicking the **Refresh** further below button. 
 
 **Also**, click the *Refresh* button to see if you can advance the model for the next round.
 
 Once all logged in, you will see button to accept decisions for the next round. Before you accept decisions right away, think if you want to do a debrief / discussion first, or if you want to continue the game at a later time, i.e. after lunch, next week, during the next teaching period, etc.
 
-Clicking the button **Player IDs** gives you a list of all players and their Login IDs. This can be useful, when someone does not remember theirs.""",
+Clicking the button **Player IDs** above gives you a list of all players and their Login IDs. This can be useful, when someone does not remember theirs.""",
     """Alle Rollen sind nun eingerichtet. Notieren Sie sich Ihren oben angezeigten Benutzernamen – Sie benötigen ihn, wenn Sie das Spiel zu einem späteren Zeitpunkt fortsetzen möchten. 
 
 Bitten Sie Ihre Spieler:innen, sich **jetzt** mit der oben angegebenen Spiel-ID anzumelden. Weisen Sie sie an, sich die Lage ihrer Region in den letzten 35 Jahren anzusehen und miteinander die Entscheidungzu diskutiere, die sie treffen müssen, um das Leben ihrer Befölkerung zu verbessern. Danach sollen sie Massnahmen zur Verbesserung des Lebens ihrer Bevölkerung diskutieren. 
@@ -2359,13 +2359,13 @@ Wenn Sie auf die Schaltfläche **Spieler-IDs** klicken, erhalten Sie eine Liste 
 
 Bitte Deine Spieler:innen, sich **jetzt** mit der oben angegebenen Spiel-ID anzumelden. Weise sie an, sich die Lage ihrer Region in den letzten 35 Jahren anzusehen und miteinander zu diskutieren. Danach sollen sie Massnahmen zur Verbesserung des Lebens ihrer Bevölkerung diskutieren. 
 
-Überprüfe wiederholt, ob sich alle Deine Spieler angemeldet haben, indem Du auf die Schaltfläche **Aktualisieren** klickst. 
+Überprüfe wiederholt, ob sich alle Deine Spieler:innen angemeldet haben, indem Du auf die Schaltfläche **Aktualisieren** weiter unten klickst. 
 
 **Klicke außerdem** auf die Schaltfläche *Aktualisieren*, um zu sehen, ob Du das Modell für die nächste Runde fortschreiben kannst.
 
-Sobald alle eingeloggt sind, wird eine Schaltfläche angezeigt, mit dem Du die Entscheidungen der Spieler:innen für die nächste Runde akzeptieren kannst. Bevor Du Entscheidungen sofort akzeptieren, überlege, ob Du zuerst eine Nachbesprechung/Diskussion durchführen möchtest oder ob Du das Spiel zu einem späteren Zeitpunkt fortsetzen möchtest, z. B. nach dem Mittagessen, nächste Woche, während der nächsten Unterrichtsstunde usw.
+Sobald alle eingeloggt sind, wird eine Schaltfläche angezeigt, mit dem Du die Entscheidungen der Spieler:innen für die nächste Runde akzeptieren kannst. Bevor Du Entscheidungen sofort akzeptieren, überlege, ob Du zuerst eine Einführung/Nachbesprechung/Diskussion durchführen möchtest oder ob Du das Spiel zu einem späteren Zeitpunkt fortsetzen möchtest, z. B. nach dem Mittagessen, nächste Woche, während der nächsten Unterrichtsstunde usw.
 
-Wenn Du auf die Schaltfläche **Spieler-IDs** klickst, erhältst du eine Liste aller Spieler:innen und ihrer Login-IDs. Dies kann nützlich sein, wenn sich jemand nicht an seine ID erinnert.""",
+Wenn Du auf die Schaltfläche **Spieler:innen-IDs Anzeigen** oben klickst, erhältst du eine Liste aller Spieler:innen und ihrer Login-IDs. Dies kann nützlich sein, wenn sich jemand nicht an seine ID erinnert.""",
     """Tous les rôles ont été configurés. Notez votre nom d'utilisateur indiqué ci-dessus, vous en aurez besoin si vous souhaitez reprendre la partie ultérieurement. 
 
 Demandez à vos joueurs de se connecter **maintenant** à l'aide de l'identifiant de jeu indiqué ci-dessus. Demandez-leur d'examiner la situation de leur région au cours des 35 dernières années et de discuter de leurs décisions visant à améliorer la vie de leur population. 

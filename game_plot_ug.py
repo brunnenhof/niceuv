@@ -419,6 +419,7 @@ def get_title_from_lu(x, lang):
 
 def make_glob_overlay(game_data, lang):
     langx = lang2int(lang)
+    print(f'lang = {lang} langx = {langx}')
     df = game_data
     idx1 = game_vars.index('Global_population')
     idx2 = game_vars.index('Global_social_trust')
@@ -491,7 +492,8 @@ def lang2int(lang):
     languages = {
         'en': 0,
         'fr': 3,
-        'de': 2,
+        'de': 1,
+        'de_inf': 1,
         'no': 4
     }
     return languages.get(lang, 0)

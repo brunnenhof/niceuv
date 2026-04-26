@@ -1315,8 +1315,8 @@ def gm_board(token: str):
                 ui.label("[Card 7 – GM graphs]").classes("text-xs text-gray-400 italic")
                 ui.label(luf_head7).classes("text-2xl font-bold mb-1")
                 ui.label(
-                    f"{luf.monitoring[langx]}{len(plot_vars)}"
-                    f"{luf.indicator_for[langx]}{luf.game_master[langx]}"
+                    f"{luf.monitoring[langx]} {len(plot_vars)} "
+                    f"{luf.indicator_for[langx]} {luf.game_master[langx]}"
                 ).classes("text-orange-500 font-bold mb-4")
 
                 graphs = []
