@@ -505,6 +505,7 @@ def home():
                     err_label.set_text("No one has joined this game yet.")
                     return
                 sessions_ref[0] = sessions
+                look_up_btn.set_visibility(False)
                 opts = {s["token"]: s["desc"] for s in sessions}
 
                 with detail_col:
@@ -551,7 +552,7 @@ def home():
                       .props("color=primary").classes("w-full mt-3")
 
             gid_input.on("keydown.enter", look_up)
-            ui.button(luf.look_up_game[langx], on_click=look_up) \
+            look_up_btn = ui.button(luf.look_up_game[langx], on_click=look_up) \
               .props("color=secondary").classes("w-full mt-2")
             ui.button(luf.cancel_btn[langx], on_click=dlg.close).props("flat").classes("w-full mt-1")
         dlg.open()
@@ -1613,7 +1614,7 @@ def _render_sliders(token: str, game_id: str, current_round: int,
                             lang_prefix = "de" if langx in (1, 2) else "en"
                             manual_url = f"{MANUAL_BASE}/{lang_prefix}/{manual_page}/"
                             print(manual_url)
-                            ui.link("For a deeper dive, open the manual", manual_url, new_tab=True) \
+                            ui.link(luf.deep_dive[langx], manual_url, new_tab=True) \
                               .classes("text-sm text-blue-600 mt-1")
 
                     with ui.row().classes("w-full items-center gap-4"):

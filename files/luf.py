@@ -2333,7 +2333,7 @@ select_your_region_and_ministry = [
     "Velg din region og ditt departement fra listen over tilgjengelige alternativer nedenfor.", 
 ]
 ui_gm_info_start = [
-    """All roles have been set up now. Make a note of your username shown above - you need it if you want to resume the game at a later time.
+    """All roles have been set up now. Make a note of your username shown above - you need it if you want to resume the game at a later time. As the game master or mistress, you **must** make a note of the game ID. Without it, the game cannot be continued later**!**
 
 Tell your players to log in **now**, using the Game ID shown above. Ask them to look at the state of their region for the last 35 years and to discuss the decisions they need to take to improve the lives of their people. 
 
@@ -2344,7 +2344,7 @@ Check repeatedly if all your players have logged in by clicking the **Refresh** 
 Once all logged in, you will see button to accept decisions for the next round. Before you accept decisions right away, think if you want to do a debrief / discussion first, or if you want to continue the game at a later time, i.e. after lunch, next week, during the next teaching period, etc.
 
 Clicking the button **Player IDs** above gives you a list of all players and their Login IDs. This can be useful, when someone does not remember theirs.""",
-    """Alle Rollen sind nun eingerichtet. Notieren Sie sich Ihren oben angezeigten Benutzernamen – Sie benötigen ihn, wenn Sie das Spiel zu einem späteren Zeitpunkt fortsetzen möchten. 
+    """Alle Rollen sind nun eingerichtet. Notieren Sie sich Ihren oben angezeigten Benutzernamen – Sie benötigen ihn, wenn Sie das Spiel zu einem späteren Zeitpunkt fortsetzen möchten.  Als Spielleiter:in müssen Sie sich **unbedingt** auch die Spiel ID merken. Ohne die kann das Spiel nicht später fortgesetzt werden**!**
 
 Bitten Sie Ihre Spieler:innen, sich **jetzt** mit der oben angegebenen Spiel-ID anzumelden. Weisen Sie sie an, sich die Lage ihrer Region in den letzten 35 Jahren anzusehen und miteinander die Entscheidungzu diskutiere, die sie treffen müssen, um das Leben ihrer Befölkerung zu verbessern. Danach sollen sie Massnahmen zur Verbesserung des Lebens ihrer Bevölkerung diskutieren. 
 
@@ -2355,7 +2355,7 @@ Bitten Sie Ihre Spieler:innen, sich **jetzt** mit der oben angegebenen Spiel-ID 
 Sobald alle eingeloggt sind, wird eine Schaltfläche angezeigt, mit der Sie die Entscheidungen der Spieler für die nächste Runde akzeptieren können. Bevor Sie die Entscheidungen sofort akzeptieren, überlegen Sie, ob Sie zuerst eine Nachbesprechung/Diskussion durchführen möchten oder ob Sie das Spiel zu einem späteren Zeitpunkt fortsetzen möchten, z. B. nach dem Mittagessen, nächste Woche, während der nächsten Unterrichtsstunde usw.
 
 Wenn Sie auf die Schaltfläche **Spieler-IDs** klicken, erhalten Sie eine Liste aller Spieler und ihrer Login-IDs. Dies kann nützlich sein, wenn sich jemand nicht an seine ID erinnert.""",
-    """Alle Rollen sind nun eingerichtet. **Notiere Dir Deinen oben angezeigten Benutzernamen** – Du benötigst ihn, wenn Du das Spiel zu einem späteren Zeitpunkt fortsetzen möchtest. 
+    """Alle Rollen sind nun eingerichtet. **Notiere Dir Deinen oben angezeigten Benutzernamen** – Du benötigst ihn, wenn Du das Spiel zu einem späteren Zeitpunkt fortsetzen möchtest. Als Spielleiter:in musst Du dir **unbedingt** auch die Spiel ID merken. Ohne die kann das Spiel nicht später fortgesetzt werden**!**. 
 
 Bitte Deine Spieler:innen, sich **jetzt** mit der oben angegebenen Spiel-ID anzumelden. Weise sie an, sich die Lage ihrer Region in den letzten 35 Jahren anzusehen und miteinander zu diskutieren. Danach sollen sie Massnahmen zur Verbesserung des Lebens ihrer Bevölkerung diskutieren. 
 
@@ -2366,7 +2366,7 @@ Bitte Deine Spieler:innen, sich **jetzt** mit der oben angegebenen Spiel-ID anzu
 Sobald alle eingeloggt sind, wird eine Schaltfläche angezeigt, mit dem Du die Entscheidungen der Spieler:innen für die nächste Runde akzeptieren kannst. Bevor Du Entscheidungen sofort akzeptieren, überlege, ob Du zuerst eine Einführung/Nachbesprechung/Diskussion durchführen möchtest oder ob Du das Spiel zu einem späteren Zeitpunkt fortsetzen möchtest, z. B. nach dem Mittagessen, nächste Woche, während der nächsten Unterrichtsstunde usw.
 
 Wenn Du auf die Schaltfläche **Spieler:innen-IDs Anzeigen** oben klickst, erhältst du eine Liste aller Spieler:innen und ihrer Login-IDs. Dies kann nützlich sein, wenn sich jemand nicht an seine ID erinnert.""",
-    """Tous les rôles ont été configurés. Notez votre nom d'utilisateur indiqué ci-dessus, vous en aurez besoin si vous souhaitez reprendre la partie ultérieurement. 
+    """Tous les rôles ont été configurés. Notez votre nom d'utilisateur indiqué ci-dessus, vous en aurez besoin si vous souhaitez reprendre la partie ultérieurement. En tant que maître ou maîtresse de jeu, vous **devez** noter l'identifiant de la partie. Sans lui, il ne sera pas possible de reprendre la partie plus tard**!** 
 
 Demandez à vos joueurs de se connecter **maintenant** à l'aide de l'identifiant de jeu indiqué ci-dessus. Demandez-leur d'examiner la situation de leur région au cours des 35 dernières années et de discuter de leurs décisions visant à améliorer la vie de leur population. 
 
@@ -2377,7 +2377,7 @@ Vérifiez régulièrement que tous vos joueurs se sont connectés en cliquant su
 Une fois que tous les joueurs sont connectés, un bouton s'affiche pour accepter les décisions des joueurs pour le prochain tour. Avant accepter les décisions immédiatement, demandez-vous si vous souhaitez d'abord faire un débriefing/une discussion, ou si vous préférez poursuivre le jeu plus tard, par exemple après le déjeuner, la semaine prochaine, pendant la prochaine période d'enseignement, etc. 
 
 En cliquant sur le bouton **Identifiants des joueurs**, vous obtenez une liste de tous les joueurs et de leurs identifiants de connexion. Cela peut être utile lorsque quelqu'un ne se souvient plus du sien.""",
-    """Alle roller er nå opprettet. Noter deg brukernavnet ditt som vises ovenfor – du trenger det hvis du vil fortsette spillet senere. 
+    """Alle roller er nå opprettet. Noter deg brukernavnet ditt som vises ovenfor – du trenger det hvis du vil fortsette spillet senere. Som spillleder **må** du notere deg spill-ID-en. Uten den kan spillet ikke fortsette senere**!** 
 
 Be spillerne logge inn **nå** ved å bruke spill-ID-en som er vist ovenfor. Be dem se på tilstanden i regionen deres de siste 35 årene og diskutere beslutningene de har tatt for å forbedre livene til innbyggerne. 
 
@@ -2493,20 +2493,32 @@ weiter = [
   "Continuer",
   "Fortsett",
 ]
+deep_dive = [
+    "For a deeper dive, open the manual",
+    "Weiterführende Informationen gibt es im Benutzerhandbuch",
+    "Weiterführende Informationen gibt es im Benutzerhandbuch",
+    "Vous trouverez de plus amples informations dans le manuel d'utilisation",
+    "Du finner mer informasjon i brukerhåndboken",
+]
 pcgd_rd1_info_tx_str = [
-    """You are responsible to better the lives of your people. In the graphs below things are good if the line is in the **green** zone, if they are in the **red** zone, you need to worry - social unrest, and worse, is just around the corner!
+    """Make a note of the game ID and your username! You need both if you want to resume the game at a later stage.
+    You are responsible to better the lives of your people. In the graphs below things are good if the line is in the **green** zone, if they are in the **red** zone, you need to worry - social unrest, and worse, is just around the corner!
 Study all your indicators, see how they develop over the years, discuss with colleagues, first in your region, but also in the other regions.
 When you are ready, scroll down to the decisions you need to take as minister that hopefully improve the lives of your citizens in the next round. """,
-    """Sie sind dafür verantwortlich, das Leben Ihrer Bevölkerung zu verbessern. In den folgenden Diagrammen ist die Lage gut, wenn die Linie im **grünen** Bereich liegt. Wenn sie im **roten** Bereich liegt, müssen Sie sich Sorgen machen, soziale Unruhen oder Schlimmeres stehen unmittelbar bevor!
+    """Notieren Sie sich die Spiel-ID und Ihren Benutzernamen! Sie benötigen beides, wenn Sie das Spiel zu einem späteren Zeitpunkt fortsetzen möchten.
+    Sie sind dafür verantwortlich, das Leben Ihrer Bevölkerung zu verbessern. In den folgenden Diagrammen ist die Lage gut, wenn die Linie im **grünen** Bereich liegt. Wenn sie im **roten** Bereich liegt, müssen Sie sich Sorgen machen, soziale Unruhen oder Schlimmeres stehen unmittelbar bevor!
 Schauen Sie alle Ihre Indikatoren an, verfolgen Sie deren Entwicklung über die Jahre und tauschen Sie sich aus mit Kollegen:innen, zunächst in Ihrer Region, aber auch in den anderen Regionen.
 Wenn Sie bereit sind, scrollen Sie nach unten zu den Entscheidungen, die Sie als Minister:in treffen müssen, um das Leben Ihrer Bürger:innen in der nächsten Runde, hoffentlich, zu verbessern. """,
-    """Du bist dafür verantwortlich, das Leben Deiner Bevölkerung zu verbessern. In den folgenden Graphiken ist die Lage gut, wenn die Linie im **grünen** Bereich liegt. Wenn sie im **roten** Bereich liegt, musst Du dir Sorgen machen, denn soziale Unruhen oder Schlimmeres stehen unmittelbar bevor!
+    """Notiere Dir die Spiel-ID und Deinen Benutzernamen! Du benötigst beides, wenn Du das Spiel zu einem späteren Zeitpunkt fortsetzen möchten.
+    Du bist dafür verantwortlich, das Leben Deiner Bevölkerung zu verbessern. In den folgenden Graphiken ist die Lage gut, wenn die Linie im **grünen** Bereich liegt. Wenn sie im **roten** Bereich liegt, musst Du dir Sorgen machen, denn soziale Unruhen oder Schlimmeres stehen unmittelbar bevor!
 Schau Dir alle Deine Indikatoren an, verfolge deren Entwicklung über die Jahre und tausche Dich mit Kollegen:innen, zunächst in Deiner Region, aber auch in den anderen Regionen, aus.
 Wenn Du soweit bist, scrolle nach unten zu den Entscheidungen, die Du als Minister:in treffen musst, um das Leben Deiner Bürger:innen in der nächsten Runde, hoffentlich, zu verbessern. Viel Glück!""",
-    """Vous avez la responsabilité d'améliorer la vie de votre peuple. Dans les graphiques ci-dessous, la situation est bonne si la ligne est dans la zone **verte**, si elle est dans la zone **rouge**, vous devez vous inquiéter - l'agitation sociale, voire pire, est au coin de la rue!
+    """Notez bien l'identifiant de la partie et votre nom d'utilisateur ! Vous en aurez besoin pour reprendre la partie plus tard.
+    Vous avez la responsabilité d'améliorer la vie de votre peuple. Dans les graphiques ci-dessous, la situation est bonne si la ligne est dans la zone **verte**, si elle est dans la zone **rouge**, vous devez vous inquiéter - l'agitation sociale, voire pire, est au coin de la rue!
 Étudiez tous vos indicateurs, voyez comment ils évoluent au fil des ans, discutez-en avec vos collègues, d'abord dans votre région, mais aussi dans les autres régions.
 Quand vous êtes prêt, faites défiler vers le bas jusqu'aux décisions que vous devez prendre en tant que ministre pour, espérons-le, améliorer la vie de vos citoyens au cours du prochain cycle de négociations. """,
-    """Du er ansvarlig for å forbedre livene til ditt folk. I grafene nedenfor går det bra hvis linjen er i den **grønne** sonen, hvis den er i den **røde** sonen, må du bekymre deg - sosial uro, og det som verre er, er rett rundt hjørnet!
+    """Noter deg spill-ID-en og brukernavnet ditt! Du trenger begge deler hvis du vil fortsette spillet senere.
+    Du er ansvarlig for å forbedre livene til ditt folk. I grafene nedenfor går det bra hvis linjen er i den **grønne** sonen, hvis den er i den **røde** sonen, må du bekymre deg - sosial uro, og det som verre er, er rett rundt hjørnet!
 Studer alle indikatorene dine, se hvordan de utvikler seg over årene, diskuter med kolleger, først i din region, men også i de andre regionene.
 Når du er klar, blar du ned til beslutningene du må ta som minister, som forhåpentligvis vil forbedre livene til innbyggerne dine i neste runde. """,
 ]

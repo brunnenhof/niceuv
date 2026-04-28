@@ -4,6 +4,11 @@
 
 SimZukunft schafft einen Raum, in dem bis zu 60 Spieler:innen auf spielerische Weise einige der großen Herausforderungen unserer Zeit erkunden können – Ungleichheit, Armut, Klimawandel, gleiche Rechte für alle, Ernährung und Landwirtschaft sowie Energie. Das Spiel lädt dich ein, eine andere Zukunft zu gestalten als die, auf die wir derzeit zusteuern. Wir könnten tatsächlich eine Zukunft schaffen mit weniger Armut, weniger Ungleichheit, mehr sozialer Freiheit innerhalb der Grenzen unseres Planeten und mehr Wohlstand und Zufriedenheit für alle. Für uns, unsere Kinder und unsere Enkelkinder.
 
+### Spielen
+Das Spiel soll auch den Spieler:innen das Erlebnis des selbstbestimmten **Handels** vermitteln - ohne erhobenen Zeigefinger. Unser Leben ist leider mehr und mehr zum **Vollziehen** verkommen, ohne Handlungs**spiel**räume - siehe Hartmut Rosa's Buch [Situation und Konstellation](https://www.suhrkamp.de/buch/hartmut-rosa-situation-und-konstellation-t-9783518588338).
+
+In diesem Sinne versucht SimZukunft ein [unendliches Spiel](https://www.simonandschuster.com/books/Finite-and-Infinite-Games/James-Carse/9781476731711) zu sein.
+
 ### Hilfe
 
 Das alles ist nicht einfach, aber erstens gibt es kluge und engagierte Mitspieler:innen und zweitens unterstützt dich das Spiel bei jedem Schritt mit Hinweisen, Tipps, Vorschlägen und Fragen. Und ein – hoffentlich wachsendes – Glossar ist Teil dieses Handbuchs. 
