@@ -2,10 +2,12 @@
 
 ### Die großen Herausforderungen unserer Zeit
 
-SimZukunft schafft einen Raum, in dem bis zu 60 Spieler:innen auf spielerische Weise einige der großen Herausforderungen unserer Zeit erkunden können – Ungleichheit, Armut, Klimawandel, gleiche Rechte für alle, Ernährung und Landwirtschaft sowie Energie. Das Spiel lädt dich ein, eine andere Zukunft zu gestalten als die, auf die wir derzeit zusteuern. Wir könnten tatsächlich eine Zukunft schaffen mit weniger Armut, weniger Ungleichheit, mehr sozialer Freiheit innerhalb der Grenzen unseres Planeten und mehr Wohlstand und Zufriedenheit für alle. Für uns, unsere Kinder und unsere Enkelkinder.
+SimZukunft schafft einen Raum, in dem bis zu 60 Spieler:innen auf spielerische Weise einige der großen Herausforderungen unserer Zeit, und ihre Verbindungen, erkunden können – Ungleichheit, Armut, Klimawandel, gleiche Rechte für alle, Ernährung und Landwirtschaft sowie Energie. Das Spiel lädt dich ein, eine andere Zukunft zu gestalten als die, auf die wir derzeit zusteuern. Wir könnten tatsächlich eine Zukunft schaffen mit weniger Armut, weniger Ungleichheit, mehr sozialer Freiheit innerhalb der Grenzen unseres Planeten und mehr Wohlstand und Zufriedenheit für alle. Für uns, unsere Kinder und unsere Enkelkinder.
 
 ### Spielen
-Das Spiel soll auch den Spieler:innen das Erlebnis des selbstbestimmten **Handels** vermitteln - ohne erhobenen Zeigefinger. Unser Leben ist leider mehr und mehr zum **Vollziehen** verkommen, ohne Handlungs**spiel**räume - siehe Hartmut Rosa's Buch [Situation und Konstellation](https://www.suhrkamp.de/buch/hartmut-rosa-situation-und-konstellation-t-9783518588338).
+Das Spiel soll auch den Spieler:innen das Erlebnis des selbstbestimmten **Handels** vermitteln - ohne erhobenen Zeigefinger. Unser Leben ist leider mehr und mehr zum **Vollziehen** von Plänen Anderer verkommen, ohne Handlungs**spiel**räume - siehe Hartmut Rosa's Buch [Situation und Konstellation](https://www.suhrkamp.de/buch/hartmut-rosa-situation-und-konstellation-t-9783518588338).
+
+Wenn Du dich näher mit dem Thema befassen möchtest, schau Dir Tom DeMarcos Buch [Spielräume](https://www.kulturmanagement.net/Buecher/Spielraeume-Projektmanagement-jenseits-von-Burn-out-Stress-und-Effizienzwahn,61) und Stefan Kühls [Brauchbare Illegalität](https://campus.de/brauchbare-illegalitaet/CAM51301) an.
 
 In diesem Sinne versucht SimZukunft ein [unendliches Spiel](https://www.simonandschuster.com/books/Finite-and-Infinite-Games/James-Carse/9781476731711) zu sein.
 
@@ -15,7 +17,7 @@ Das alles ist nicht einfach, aber erstens gibt es kluge und engagierte Mitspiele
 
 Das Spiel ist in 10 geografische Regionen unterteilt, jede mit 6 Rollen, siehe [Personen](people.md) für Details. 
 
-### Gespräche, Diskussionen und Verhandlungen
+### Gespräche, Diskussionen, Verhandlungen
 
 Das Spiel berechnet die Auswirkungen der Massnahmen, die die Spieler:innen treffen, in jeder Region von jetzt bis zum Ende des Jahrhunderts – das ist weniger als 75 Jahre! Die Spieler:innen greifen dreimal in den Lauf der Ereignisse ein, um eine andere (Spiel-)Realität für die Zukunft zu schaffen: besser, würdiger und zufriedener. Bei jedem Eingriff entscheiden die Spieler:innen, **in welche Maßnahmen sie investieren wollen** und **wie viel** sie investieren wollen, vor dem Hintergrund eines begrenzten Budgets, das sich im Laufe der Zeit dynamisch verändert. Diese **Diskussionen und Verhandlungen sind der Kern des Spiels**. Sie zwingen die Spieler:innen dazu, ihre Entscheidungen zu begründen, die Vor- und Nachteile eines bestimmten Investitionsplans abzuwägen und Kompromisse einzugehen, um voranzukommen. 
 

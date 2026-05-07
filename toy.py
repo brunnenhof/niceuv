@@ -22,6 +22,7 @@ Key lessons
   - After reconnect/crash, token in URL restores correct identity from DB
 """
 
+import platform
 import random
 import secrets
 import sqlite3
@@ -128,23 +129,25 @@ def init_db():
                 token         TEXT PRIMARY KEY,
                 username      TEXT UNIQUE,
                 role          TEXT,
-                lang          TEXT    DEFAULT 'en',
-                dark          INTEGER DEFAULT 0,
                 human_regions TEXT    DEFAULT '',
                 setup_done    INTEGER DEFAULT 0,
                 game_id       TEXT    DEFAULT '',
                 game_token    TEXT    DEFAULT '',
                 region        TEXT    DEFAULT '',
-                current_round INTEGER DEFAULT 1,
-                num_rounds    INTEGER DEFAULT 3,
-                submitted     INTEGER DEFAULT 0,
                 last_active   INTEGER DEFAULT 0
             )
         """)
-        # Migrate: add last_active if missing (existing DB)
+        # Migrate existing sessions table
         existing_cols = {r[1] for r in conn.execute("PRAGMA table_info(sessions)").fetchall()}
         if "last_active" not in existing_cols:
             conn.execute("ALTER TABLE sessions ADD COLUMN last_active INTEGER DEFAULT 0")
+        # Drop columns that moved to maindb (lang/dark/submitted/current_round/num_rounds)
+        for _dead in ("lang", "dark", "submitted", "current_round", "num_rounds"):
+            if _dead in existing_cols:
+                try:
+                    conn.execute(f"ALTER TABLE sessions DROP COLUMN {_dead}")
+                except Exception:
+                    pass  # SQLite < 3.35 – live with the stale columns
         # Deduplicate human_regions: keep the row with MAX(sub_1) per (game_id, region_tag)
         conn.execute("""
             DELETE FROM human_regions WHERE id NOT IN (
@@ -154,12 +157,11 @@ def init_db():
         conn.commit()
 
 
-def db_create(token: str, username: str, role: str, lang: str = "en", dark: int = 0):
+def db_create(token: str, username: str, role: str):
     with get_db() as conn:
         conn.execute(
-            "INSERT OR REPLACE INTO sessions (token, username, role, lang, dark) "
-            "VALUES (?,?,?,?,?)",
-            (token, username, role, lang, dark),
+            "INSERT OR REPLACE INTO sessions (token, username, role) VALUES (?,?,?)",
+            (token, username, role),
         )
         conn.commit()
 
@@ -249,17 +251,42 @@ def db_heartbeat(token: str):
 
 
 def db_update_prefs(token: str, lang: str = None, dark: int = None):
-    fields, values = [], []
-    if lang is not None:
-        fields.append("lang = ?");  values.append(lang)
-    if dark is not None:
-        fields.append("dark = ?");  values.append(dark)
-    if not fields:
+    s = db_get(token)
+    if not s or not s.get("game_id"):
         return
-    values.append(token)
-    with get_db() as conn:
-        conn.execute(f"UPDATE sessions SET {', '.join(fields)} WHERE token = ?", values)
-        conn.commit()
+    game_id  = s["game_id"]
+    username = s["username"]
+    try:
+        with maindb.get_db() as pc:
+            if s["role"] == "GM":
+                if lang is not None:
+                    pc.execute("UPDATE games SET lang=?, langx=? WHERE game_id=?",
+                               (lang, LANG_TO_INDEX.get(lang, 0), game_id))
+                if dark is not None:
+                    pc.execute("UPDATE games SET mode=? WHERE game_id=?",
+                               ("dark" if dark else "normal", game_id))
+            else:
+                if lang is not None:
+                    pc.execute(
+                        """INSERT INTO players (game_id, username, region_tag, ministry, lang, langx)
+                           VALUES (?,?,?,?,?,?)
+                           ON CONFLICT(username) DO UPDATE SET lang=excluded.lang, langx=excluded.langx""",
+                        (game_id, username,
+                         s.get("region", ""), s.get("role", ""),
+                         lang, LANG_TO_INDEX.get(lang, 0))
+                    )
+                if dark is not None:
+                    pc.execute(
+                        """INSERT INTO players (game_id, username, region_tag, ministry, mode)
+                           VALUES (?,?,?,?,?)
+                           ON CONFLICT(username) DO UPDATE SET mode=excluded.mode""",
+                        (game_id, username,
+                         s.get("region", ""), s.get("role", ""),
+                         "dark" if dark else "normal")
+                    )
+            pc.commit()
+    except Exception:
+        pass
 
 
 # ── Pre-login prefs (browser storage) ─────────────────────────────────────────
@@ -275,6 +302,74 @@ def set_lang(lang: str):
 
 def set_dark(dark: bool):
     app.storage.user["dark"] = int(dark)
+
+
+# ── Maindb-authoritative reads ────────────────────────────────────────────────
+
+def _read_lang(token: str, s: dict = None) -> str:
+    """Lang from maindb (games for GM, players for ministers); storage as fallback."""
+    if s is None:
+        s = db_get(token)
+    if not s:
+        return app.storage.user.get("lang", "en")
+    game_id  = s.get("game_id", "")
+    username = s.get("username", "")
+    if not game_id:
+        return app.storage.user.get("lang", "en")
+    try:
+        with maindb.get_db() as c:
+            if s.get("role") == "GM":
+                row = c.execute("SELECT lang FROM games WHERE game_id=?", (game_id,)).fetchone()
+            else:
+                row = c.execute(
+                    "SELECT lang FROM players WHERE username=? AND game_id=?",
+                    (username, game_id)
+                ).fetchone()
+        if row and row["lang"]:
+            return row["lang"]
+    except Exception:
+        pass
+    return app.storage.user.get("lang", "en")
+
+
+def _read_dark(token: str, s: dict = None) -> bool:
+    """Dark mode from maindb; storage as fallback."""
+    if s is None:
+        s = db_get(token)
+    if not s:
+        return bool(app.storage.user.get("dark", 0))
+    game_id  = s.get("game_id", "")
+    username = s.get("username", "")
+    if not game_id:
+        return bool(app.storage.user.get("dark", 0))
+    try:
+        with maindb.get_db() as c:
+            if s.get("role") == "GM":
+                row = c.execute("SELECT mode FROM games WHERE game_id=?", (game_id,)).fetchone()
+            else:
+                row = c.execute(
+                    "SELECT mode FROM players WHERE username=? AND game_id=?",
+                    (username, game_id)
+                ).fetchone()
+        if row and row["mode"]:
+            return row["mode"] == "dark"
+    except Exception:
+        pass
+    return bool(app.storage.user.get("dark", 0))
+
+
+def _read_round(game_id: str) -> tuple[int, int]:
+    """(current_round, num_rounds) straight from maindb.games."""
+    try:
+        with maindb.get_db() as c:
+            row = c.execute(
+                "SELECT current_round, num_rounds FROM games WHERE game_id=?", (game_id,)
+            ).fetchone()
+        if row:
+            return row["current_round"], row["num_rounds"]
+    except Exception:
+        pass
+    return 1, 3
 
 
 # ── Token ─────────────────────────────────────────────────────────────────────
@@ -297,11 +392,11 @@ def create_header(token: str | None = None):
     Lesson: the dark-mode object must be created at page scope so NiceGUI
     applies it when the page loads.  Buttons only toggle it afterwards.
     """
-    # Determine current prefs (DB wins over browser storage on protected pages)
+    # Determine current prefs (maindb wins over browser storage on protected pages)
     if token:
         session = db_get(token)
-        lang = session["lang"] if session else get_lang()
-        dark = bool(session["dark"]) if session else get_dark()
+        lang = _read_lang(token, session)
+        dark = _read_dark(token, session)
     else:
         lang = get_lang()
         dark = get_dark()
@@ -342,6 +437,9 @@ def create_header(token: str | None = None):
             with ui.column().classes('gap-0 text-white font-bold'):
                 ui.label(luf.simfuture[langx]).classes('text-2xl')
                 ui.label(luf.the_age_of_consequences[langx]).classes('font-italic text-sm')
+
+        if platform.system() == "Windows":
+            ui.badge("LOCAL", color="orange").classes("text-xs font-bold")
 
         # Right: controls
         with ui.row().classes("items-center gap-2"):
@@ -487,20 +585,20 @@ def home():
                             "SELECT * FROM sessions WHERE game_token = ?",
                             (gm_row["token"],)
                         ).fetchall()
-                cutoff = int(time.time()) - 90  # active in the last 90 s → flag as live
+                cutoff = int(time.time()) - 300  # active in the last 5 min → flag as live
                 sessions = []
                 if gm_row:
                     gd = dict(gm_row)
                     live = gd.get("last_active", 0) > cutoff
                     desc = f"GM  [{gd['username']}]" + ("  ⚡ active" if live else "")
-                    sessions.append({"token": gd["token"], "role": "GM", "desc": desc})
+                    sessions.append({"token": gd["token"], "role": "GM", "desc": desc, "live": live})
                 for row in player_rows:
                     pd = dict(row)
                     live = pd.get("last_active", 0) > cutoff
                     rl = abbr_to_name.get(pd.get("region", ""), pd.get("region", ""))
                     desc = (f"{pd['role']}, {rl}  [{pd['username']}]"
                             + ("  ⚡ active" if live else ""))
-                    sessions.append({"token": pd["token"], "role": pd["role"], "desc": desc})
+                    sessions.append({"token": pd["token"], "role": pd["role"], "desc": desc, "live": live})
                 if not sessions:
                     err_label.set_text("No one has joined this game yet.")
                     return
@@ -519,34 +617,51 @@ def home():
                         if not s:
                             err_label.set_text("Session not found.")
                             return
-                        if s["role"] == "GM":
-                            with ui.dialog() as code_dlg, ui.card().classes("p-6"):
-                                ui.label(luf.gm_verification[langx]).classes("text-xl font-bold mb-4")
-                                ui.label(luf.enter_the_GM_start_code[langx]) \
-                                  .classes("text-gray-500 mb-2")
-                                code_input = ui.input(password=True,
-                                                      placeholder=luf.enter_code_tx[langx]) \
-                                               .props("autofocus").classes("w-full")
-                                code_err = ui.label("").classes("text-red-500 text-sm")
 
-                                def confirm_code():
-                                    if code_input.value.strip().lower() != "oscar":
-                                        code_err.set_text("Wrong code – try again.")
-                                        return
-                                    app.storage.user["token"] = chosen
-                                    code_dlg.close()
-                                    dlg.close()
-                                    ui.navigate.to(f"/gm/board?token={chosen}")
+                        def _proceed():
+                            if s["role"] == "GM":
+                                with ui.dialog() as code_dlg, ui.card().classes("p-6"):
+                                    ui.label(luf.gm_verification[langx]).classes("text-xl font-bold mb-4")
+                                    ui.label(luf.enter_the_GM_start_code[langx]) \
+                                      .classes("text-gray-500 mb-2")
+                                    code_input = ui.input(password=True,
+                                                          placeholder=luf.enter_code_tx[langx]) \
+                                                   .props("autofocus").classes("w-full")
+                                    code_err = ui.label("").classes("text-red-500 text-sm")
 
-                                code_input.on("keydown.enter", confirm_code)
-                                with ui.row().classes("mt-4 gap-2"):
-                                    ui.button(luf.weiter[langx], on_click=confirm_code)
-                                    ui.button(luf.cancel_btn[langx], on_click=code_dlg.close).props("flat")
-                            code_dlg.open()
-                            return
-                        app.storage.user["token"] = chosen
-                        dlg.close()
-                        ui.navigate.to(f"/dashboard?token={chosen}")
+                                    def confirm_code():
+                                        if code_input.value.strip().lower() != "oscar":
+                                            code_err.set_text("Wrong code – try again.")
+                                            return
+                                        app.storage.user["token"] = chosen
+                                        code_dlg.close()
+                                        dlg.close()
+                                        ui.navigate.to(f"/gm/board?token={chosen}")
+
+                                    code_input.on("keydown.enter", confirm_code)
+                                    with ui.row().classes("mt-4 gap-2"):
+                                        ui.button(luf.weiter[langx], on_click=confirm_code)
+                                        ui.button(luf.cancel_btn[langx], on_click=code_dlg.close).props("flat")
+                                code_dlg.open()
+                                return
+                            app.storage.user["token"] = chosen
+                            dlg.close()
+                            ui.navigate.to(f"/dashboard?token={chosen}")
+
+                        if s.get("live"):
+                            with ui.dialog() as warn_dlg, ui.card().classes("p-6 w-96"):
+                                ui.icon("warning").classes("text-orange-500 text-4xl mb-2")
+                                ui.label(luf.session_already_active_warning[langx]) \
+                                  .classes("text-base mb-4")
+                                with ui.row().classes("w-full justify-end gap-2"):
+                                    ui.button(luf.cancel_btn[langx],
+                                              on_click=warn_dlg.close).props("flat")
+                                    ui.button(luf.resume_anyway[langx],
+                                              on_click=lambda: (warn_dlg.close(), _proceed())) \
+                                      .props("color=warning")
+                            warn_dlg.open()
+                        else:
+                            _proceed()
 
                     ui.button(luf.resume[langx], icon="login", on_click=do_resume) \
                       .props("color=primary").classes("w-full mt-3")
@@ -582,16 +697,16 @@ def home():
                     err_label.set_text(luf.wrong_code_try_again[langx])
                     return
                 game_id = db_generate_game_id()
-                db_create(token, name, "GM",
-                          lang=get_lang(), dark=int(get_dark()))
+                db_create(token, name, "GM")
                 db_update(token, game_id=game_id)
                 _lang = get_lang()
-                with get_db() as _conn:
+                _mode = "dark" if get_dark() else "normal"
+                with maindb.get_db() as _conn:
                     _conn.execute(
                         "INSERT OR IGNORE INTO games (game_id, gm_username, num_rounds, "
                         "current_round, state, lang, langx, mode, state_x) "
-                        "VALUES (?,?,3,1,'active',?,?,'normal',1)",
-                        (game_id, name, _lang, 0 if _lang == "en" else 1),
+                        "VALUES (?,?,3,1,'active',?,?,?,1)",
+                        (game_id, name, _lang, LANG_TO_INDEX.get(_lang, 0), _mode),
                     )
                     _conn.commit()
                 dlg.close()
@@ -730,14 +845,23 @@ def home():
                             return
                         player_token = secrets.token_urlsafe(16)
                         app.storage.user["token"] = player_token
-                        db_create(player_token, name, ministry_sel.value,
-                                  lang=get_lang(), dark=int(get_dark()))
+                        db_create(player_token, name, ministry_sel.value)
                         gm_s = db_get(gm_token_ref[0]) if gm_token_ref[0] else {}
                         gm_game_id = gm_s.get("game_id", "") if gm_s else ""
                         db_update(player_token,
                                   game_token=gm_token_ref[0],
                                   game_id=gm_game_id,
                                   region=region_sel.value)
+                        # Write lang/dark to maindb immediately so reads are correct from first page load
+                        if gm_game_id:
+                            try:
+                                maindb.upsert_player_lang(
+                                    gm_game_id, name,
+                                    region_sel.value, ministry_sel.value,
+                                    get_lang(), int(get_dark()),
+                                )
+                            except Exception:
+                                pass
                         if gm_s and gm_s.get("game_id"):
                             with get_db() as _conn:
                                 exists = _conn.execute(
@@ -942,10 +1066,10 @@ def gm_board(token: str):
 
     abbr_to_name = dict(zip(REGION_ABBR, REGIONS))
     human_abbrs  = [r for r in session.get("human_regions", "").split(",") if r]
-    current_round = session.get("current_round", 1)
-    num_rounds    = session.get("num_rounds", 3)
-    lang    = session.get("lang", "en")
-    langx   = LANG_TO_INDEX.get(lang, 0)
+    game_id_gm   = session.get("game_id", "")
+    current_round, num_rounds = _read_round(game_id_gm)
+    lang  = _read_lang(token, session)
+    langx = LANG_TO_INDEX.get(lang, 0)
     
     regis = luf.regs[lang]
     minis = luf.minis[lang]
@@ -1129,7 +1253,6 @@ def gm_board(token: str):
         card_missing.set_visibility(not all_in and not game_done)
 
         # ── Card 3: Allow / Prevent submissions  (visible when all joined, not all submitted)
-        game_id_gm = session.get("game_id", "")
 
         with ui.card().classes("w-full p-4 bg-amber-400") as card_allow_prevent:
             ui.label("[Card 3 – Allow/Prevent submissions]").classes("text-xs text-gray-600 italic")
@@ -1181,12 +1304,18 @@ def gm_board(token: str):
                     for a in h_abbrs:
                         members = region_map.get(a, [])
                         if post_model:
-                            # Phase B: who has clicked "Check if results are ready"?
-                            checked = {p["role"]: p.get("current_round", 1) >= gm_round for p in members}
+                            # Phase B: who has opened their dashboard for the new round?
+                            advanced = maindb.get_players_advanced(game_id_gm, gm_round)
+                            checked = {p["role"]: p["username"] in advanced for p in members}
                             region_done = all(checked.values()) if checked else False
                         else:
-                            # Phase A: who has submitted sliders/proposals?
-                            checked = {p["role"]: bool(p.get("submitted", 0)) for p in members}
+                            # Phase A: who has saved slider/budget decisions?
+                            checked = {
+                                p["role"]: maindb.has_player_decisions(
+                                    game_id_gm, current_round, p["region"], p["role"]
+                                )
+                                for p in members
+                            }
                             region_done = maindb.is_region_submitted(game_id_gm, current_round, a)
                         r_icon  = "check_circle" if region_done else "pending"
                         r_color = "text-green-600" if region_done else "text-orange-500"
@@ -1207,8 +1336,9 @@ def gm_board(token: str):
             _accept_init = maindb.get_accept_decisions(game_id_gm, current_round)
         except Exception:
             _accept_init = 0
+        _advanced_init = maindb.get_players_advanced(game_id_gm, current_round)
         _all_checked_init = all(
-            p.get("current_round", 1) >= current_round for p in players
+            p["username"] in _advanced_init for p in players
         ) if players else True
         card_submissions.set_visibility(
             all_in and not game_done and (
@@ -1257,9 +1387,6 @@ def gm_board(token: str):
                         # Advance in game DB (increments current_round, resets accept_decisions)
                         if gid:
                             maindb.advance_round(gid)
-                        # Advance GM session only; players advance when they click "Check if results are ready"
-                        next_round = current_round + 1
-                        db_update(token, current_round=next_round)
                         ui.navigate.to(f"/gm/board?token={token}")
 
                     with ui.row().classes("gap-2 justify-end mt-4"):
@@ -1281,9 +1408,6 @@ def gm_board(token: str):
         card_done.set_visibility(False)
 
         # ── Card 6: GM graphs (visible once all players joined) ───────────────
-        lang    = session.get("lang", "en")
-        langx   = LANG_TO_INDEX.get(lang, 0)
-
         @ui.refreshable
         def gm_graphs():
             try:
@@ -1294,7 +1418,7 @@ def gm_board(token: str):
             if not plot_vars:
                 return
 
-            rnd   = db_get(token).get("current_round", 1)
+            rnd, _ = _read_round(game_id_gm)
             runde = rnd - 1  # 0 = historical; 1+ = post-model-run results
             game_data, actual_runde = game_plot_ug.load_game_data(game_id_gm, runde)
             if game_data is None:
@@ -1359,10 +1483,9 @@ def gm_board(token: str):
             ui.label("[Card 8 – Refresh]").classes("text-xs text-gray-400 italic")
             def refresh():
                 s        = db_get(token)
-                ps       = db_get_players(token, s.get("game_id", ""))
+                ps       = db_get_players(token, game_id_gm)
                 h_abbrs  = [r for r in (s.get("human_regions") or "").split(",") if r]
-                rnd      = s.get("current_round", 1)
-                n_rounds = s.get("num_rounds", 3)
+                rnd, n_rounds = _read_round(game_id_gm)
                 done     = rnd > n_rounds
                 miss     = _missing_slots(ps)
                 a_in     = len(miss) == 0 and len(h_abbrs) > 0
@@ -1379,9 +1502,8 @@ def gm_board(token: str):
                     _acc = maindb.get_accept_decisions(game_id_gm, rnd)
                 except Exception:
                     _acc = 0
-                _all_checked = all(
-                    p.get("current_round", 1) >= rnd for p in ps
-                ) if ps else True
+                _adv = maindb.get_players_advanced(game_id_gm, rnd)
+                _all_checked = all(p["username"] in _adv for p in ps) if ps else True
                 card_submissions.set_visibility(
                     a_in and not done and (
                         (not a_sub and _acc == 1) or
@@ -1405,11 +1527,12 @@ def gm_board(token: str):
 
 def _check_results_btn(token: str, game_id: str, current_round: int, region: str):
     """'Check if results are ready' button — shared by all ministry dashboards."""
-    lang = get_lang()
+    s = db_get(token)
+    lang = _read_lang(token, s)
     langx = LANG_TO_INDEX.get(lang, 0)
     def check_results():
-        
-        lang = get_lang()
+        s = db_get(token)
+        lang = _read_lang(token, s)
         langx = LANG_TO_INDEX.get(lang, 0)
         if not maindb.is_region_submitted(game_id, current_round, region):
             ui.notify(luf.waiting_for_Future_to_submit_proposals[langx], type="warning")
@@ -1424,7 +1547,6 @@ def _check_results_btn(token: str, game_id: str, current_round: int, region: str
         except Exception:
             new_round, game_complete = current_round, False
         if new_round > current_round or game_complete:
-            db_update(token, current_round=new_round, submitted=0)
             ui.navigate.to(f"/dashboard?token={token}")
         else:
             ui.notify(luf.results_not_ready_yet__the_gm_is_still_running_the_model[langx],
@@ -1522,12 +1644,21 @@ def _render_sliders(token: str, game_id: str, current_round: int,
     except Exception:
         pol_expls = {}
 
+    # Mark this minister as logged in for the current round the moment they open the slider page
+    s = db_get(token)
+    if s and s.get("username"):
+        try:
+            maindb.mark_player_submission(game_id, s["username"], current_round,
+                                          region_tag=region, ministry=role)
+        except Exception:
+            pass
+
     @ui.refreshable
     def slider_section():
         s = db_get(token)
-        lang = get_lang()
+        lang = _read_lang(token, s)
         langx = LANG_TO_INDEX.get(lang, 0)
-        minis = luf.minis[lang]
+        minis = luf.minis.get(lang, luf.minis["en"])
 
         # Game over – nothing more to do
         try:
@@ -1543,14 +1674,6 @@ def _render_sliders(token: str, game_id: str, current_round: int,
             with ui.card().classes("w-full p-4 bg-green-50"):
                 ui.label("[Card B – Region submitted / check results]").classes("text-xs text-gray-400 italic")
                 ui.label(luf.all_investment_proposals_for_your_region_have_been_submitted[langx]) \
-                  .classes("text-xl font-bold text-green-700 mb-3")
-                _check_results_btn(token, game_id, current_round, region)
-            return
-
-        if s and s.get("submitted", 0):
-            with ui.card().classes("w-full p-4 bg-green-50"):
-                ui.label("[Card B – Your decisions submitted / check results]").classes("text-xs text-gray-400 italic")
-                ui.label(luf.your_policy_decisions_have_been_submitted[langx]) \
                   .classes("text-xl font-bold text-green-700 mb-3")
                 _check_results_btn(token, game_id, current_round, region)
             return
@@ -1613,7 +1736,7 @@ def _render_sliders(token: str, game_id: str, current_round: int,
                         if manual_page:
                             lang_prefix = "de" if langx in (1, 2) else "en"
                             manual_url = f"{MANUAL_BASE}/{lang_prefix}/{manual_page}/"
-                            print(manual_url)
+#                            print(manual_url)
                             ui.link(luf.deep_dive[langx], manual_url, new_tab=True) \
                               .classes("text-sm text-blue-600 mt-1")
 
@@ -1730,9 +1853,8 @@ def _render_budget(token: str, game_id: str, current_round: int,
                         def _do_submit():
                             try:
                                 maindb.mark_region_submitted(game_id, current_round, region)
-                                db_update(token, submitted=1)
                             except Exception:
-                                db_update(token, submitted=1)
+                                pass
                             poll_paused[0] = False
                             confirm_dlg.close()
                             budget_section.refresh()
@@ -1741,16 +1863,23 @@ def _render_budget(token: str, game_id: str, current_round: int,
                 confirm_dlg.open()
 
             def _load_proposals():
+#                print("_load_proposals")
+#                print(lang)
+                pol_names_dict = luf.pol_names.get(lang, luf.pol_names["en"])
+#                print(lang)
+#                print(pol_names_dict)
+#                print(pol_names_dict["CCS"])
                 proposals_col.clear()
                 summary_col.clear()
                 grand_total[0] = 0.0
 
-                # Who has joined this region? (toy.py DB)
-                player_session = db_get(token)
-                gm_tok = player_session.get("game_token", "") if player_session else ""
-                region_players = [p for p in db_get_players(gm_tok) if p["region"] == region]
-                joined_minis   = {p["role"] for p in region_players}
+                # Who has logged in for the current round? (maindb players table)
                 non_fut_minis  = [m for m in MINISTRIES if m != "Future"]
+                try:
+                    not_logged_in = set(maindb.get_logged_for_reg(game_id, current_round, region))
+                except Exception:
+                    not_logged_in = set()
+
 
                 # Policy decisions from maindb (safe – only existing rows returned)
                 try:
@@ -1784,18 +1913,28 @@ def _render_budget(token: str, game_id: str, current_round: int,
                                    ORDER BY p.pol_name""",
                                 (game_id, current_round, region, ministry),
                             ).fetchall()
-                        return [{"policy": r["pol_name"], "value": f"{r['value']:.1f}", "amount": "–"}
+                        pol_names = luf.pol_names.get(lang, luf.pol_names["en"])
+#                        print(lang)
+#                        print(rows)
+#                        print(pol_names)
+#                        return [{"policy": pol_names.get(r["pol_tag"], r["pol_name"]),
+                        return [{"policy": pol_names_dict[r["pol_tag"]],
+                                 "value": f"{r['value']:.1f}", "amount": "–"}
                                 for r in rows]
                     except Exception:
                         return []
 
                 with proposals_col:
+                    mini_names = luf.mini_to_long[langx]
+                    pol_names  = luf.pol_names.get(lang, luf.pol_names["en"])
                     for m in non_fut_minis:
-                        if m not in joined_minis:
+                        m_name = mini_names.get(m, m)
+                        if m in not_logged_in:
                             with ui.card().classes("w-full p-3 bg-gray-50"):
                                 with ui.row().classes("items-center gap-2"):
                                     ui.icon("person_off").classes("text-gray-400")
-                                    ui.label(f"{m}  –  not joined yet").classes("text-gray-400 italic")
+                                    ui.label(f"{m_name}  {luf.not_logged_in_for_round[langx]} {current_round}") \
+                                      .classes("text-gray-400 italic")
                             continue
                         if m in budget_data:
                             # Full data: decisions + amounts
@@ -1805,14 +1944,15 @@ def _render_budget(token: str, game_id: str, current_round: int,
                             with ui.card().classes("w-full p-3"):
                                 with ui.row().classes("items-center gap-2 mb-2"):
                                     ui.icon("account_balance").classes("text-primary")
-                                    ui.label(f"{m}  –  {luf.total[langx]}: {min_total:.1f}").classes("font-semibold")
+                                    ui.label(f"{m_name}  –  {luf.total[langx]}: {min_total:.1f}").classes("font-semibold")
                                 ui.table(
                                     columns=[
-                                        {"name": "policy", "label": luf.policy[langx],    "field": "policy", "align": "left"},
-                                        {"name": "value",  "label": luf.pct_value[langx], "field": "value",  "align": "right"},
-                                        {"name": "amount", "label": luf.amount2[langx],   "field": "amount", "align": "right"},
+                                        {"name": "policy", "label": luf.policy[langx],    "field": "policy", "align": "left",  "style": "white-space: normal; word-break: break-word;"},
+                                        {"name": "value",  "label": luf.pct_value[langx], "field": "value",  "align": "right", "style": "white-space: nowrap; width: 4rem;"},
+                                        {"name": "amount", "label": luf.amount2[langx],   "field": "amount", "align": "right", "style": "white-space: nowrap; width: 4rem;"},
                                     ],
-                                    rows=[{"policy": p["name"], "value": f"{p['value']:.1f}", "amount": f"{p['amount']:.1f}"}
+                                    rows=[{"policy": pol_names.get(p["pol_tag"], p["name"]),
+                                           "value": f"{p['value']:.1f}", "amount": f"{p['amount']:.1f}"}
                                           for p in min_info["policies"]],
                                     row_key="policy",
                                 ).props("dense flat").classes("w-full")
@@ -1822,44 +1962,39 @@ def _render_budget(token: str, game_id: str, current_round: int,
                             with ui.card().classes("w-full p-3"):
                                 with ui.row().classes("items-center gap-2 mb-2"):
                                     ui.icon("account_balance").classes("text-green-600")
-                                    decisions_submitted = luf.decisions_submitted[langx]
-                                    ui.label(f"{m} {decisions_submitted}").classes("font-semibold text-green-700")
+                                    ui.label(f"{m_name} {luf.decisions_submitted[langx]}").classes("font-semibold text-green-700")
                                 ui.table(
                                     columns=[
-                                        {"name": "policy", "label": luf.policy[langx], "field": "policy", "align": "left"},
-                                        {"name": "value",  "label": luf.pct_value[langx], "field": "value", "align": "right"},
+                                        {"name": "policy", "label": luf.policy[langx],    "field": "policy", "align": "left",  "style": "white-space: normal; word-break: break-word;"},
+                                        {"name": "value",  "label": luf.pct_value[langx], "field": "value",  "align": "right", "style": "white-space: nowrap; width: 4rem;"},
                                     ],
                                     rows=dec_rows,
                                     row_key="policy",
                                 ).classes("w-full")
                         else:
-                            # Joined but sliders not yet moved
+                            # Logged in but sliders not yet moved
                             with ui.card().classes("w-full p-3 bg-amber-50"):
                                 with ui.row().classes("items-center gap-2"):
                                     ui.icon("pending").classes("text-orange-400")
-                                    no_slider_decisions_yet = luf.no_slider_decisions_yet[langx]
-                                    ui.label(f"{m} {no_slider_decisions_yet}").classes("text-orange-400 italic")
+                                    ui.label(f"{m_name} {luf.no_slider_decisions_yet[langx]}").classes("text-orange-400 italic")
 
                 with summary_col:
-                    all_joined = len(joined_minis & set(non_fut_minis)) == len(non_fut_minis)
-                    if not all_joined:
-                        with ui.card().classes("w-full bg-gray-50 p-1"):
-                            missing_names = ", ".join(m for m in non_fut_minis if m not in joined_minis)
-                            these_ministries_havent_yet_looked_at_their_graphs = luf.these_ministries_havent_yet_looked_at_their_graphs[langx]
-                            ui.label(f"{these_ministries_havent_yet_looked_at_their_graphs} {missing_names}") \
+                    all_logged_in = not not_logged_in
+                    if not all_logged_in:
+                        mini_to_long_x = luf.mini_to_long[langx]
+                        nylix = []
+                        for m in not_logged_in:
+                            mx = mini_to_long_x[m]
+                            nylix.append(mx)
+                        with ui.card().classes("w-full bg-red-50 p-2"):
+                            nyli = luf.not_yet_logged_in_for_round[langx]
+                            ui.label(f"{nyli} {current_round}:") \
                               .classes("text-red-600 font-bold")
-                    # Warn if any joined ministry hasn't clicked "Check if results are ready"
-                    not_checked = [
-                        p["role"] for p in region_players
-                        if p["role"] in joined_minis
-                        and p.get("current_round", 1) < current_round
-                    ]
-                    if not_checked:
-                        with ui.card().classes("w-full bg-gray-50 p-1"):
-                            these_ministries_havent_yet_looked_at_their_graphs = luf.these_ministries_havent_yet_looked_at_their_graphs[langx]
-                            ui.label(these_ministries_havent_yet_looked_at_their_graphs).classes("text-red-400 font-bold mb-1")
-                            ui.label(", ".join(not_checked)).classes("text-red-600 font-bold")
-                    if all_joined and not not_checked and grand_total[0] <= bud:
+                            ui.label(", ".join(sorted(nylix))) \
+                              .classes("text-red-700 font-semibold")
+                            ui.label(luf.submission_blocked_until_all_logged_in[langx]) \
+                              .classes("text-red-500 italic text-sm mt-1")
+                    if all_logged_in and grand_total[0] <= bud:
                         with ui.card().classes("w-full bg-green-50 p-1"):
                             ui.label(
                                 f"{luf.your_budget[langx]} {bud:.1f}  –  "
@@ -1867,7 +2002,7 @@ def _render_budget(token: str, game_id: str, current_round: int,
                             ).classes("text-xl font-bold text-green-700 mb-1")
                             ui.button(luf.submit_plans2[langx], icon="send",
                                       on_click=_submit_proposals).props("color=green")
-                    elif all_joined and not not_checked and grand_total[0] > bud:
+                    elif all_logged_in and grand_total[0] > bud:
                         with ui.card().classes("w-full bg-orange-50 p-1"):
                             ui.label(
                                 f"{luf.plans[langx]}{grand_total[0]:.1f}"
@@ -1904,21 +2039,13 @@ def dashboard(token: str):
 
     username = session["username"]
     role     = session["role"]
-    lang     = session.get("lang", "en") or "en"
-    langx    = LANG_TO_INDEX.get(lang, 0)
     region   = session.get("region", "")
+    game_id  = session.get("game_id", "")
 
-    # Game context from GM session
-    gm_session    = db_get(session.get("game_token", "")) if session.get("game_token") else None
-    game_id       = gm_session.get("game_id", "") if gm_session else ""
-    current_round = gm_session.get("current_round", 1) if gm_session else 1
-    num_rounds    = gm_session.get("num_rounds", 3) if gm_session else 3
-
-    # If the player refreshed their browser after the GM advanced, their own
-    # session current_round may lag behind.  Sync it now so that future-dashboard
-    # not_checked detection and _check_results_btn both work correctly.
-    if session.get("current_round", 1) < current_round:
-        db_update(token, current_round=current_round, submitted=0)
+    # All game state from maindb — single source of truth
+    current_round, num_rounds = _read_round(game_id)
+    lang  = _read_lang(token, session)
+    langx = LANG_TO_INDEX.get(lang, 0)
 
     translated_regs  = luf.regs.get(lang, luf.regs["en"])
     translated_minis = luf.minis.get(lang, luf.minis["en"])
@@ -1997,7 +2124,7 @@ def legal_page(token: str = ""):
 if __name__ in {"__main__", "__mp_main__"}:
     init_db()
     ui.run(
-        title="SimFuture",
+        title="SimFuture [LOCAL]",
         storage_secret="toy-secret",
         host="127.0.0.1",
         port=8899,

@@ -3,7 +3,6 @@
 How much energy does it take to produce the food we eat? The answer has changed dramatically over the last 200 years — and not in a good direction.
 
 #### Traditional Farming
-
 For most of human history, farming was powered by the sun. Seeds, rain, human muscle and animal power were the inputs. The energy return was positive: for every calorie of effort put in, farmers harvested roughly 5 to 10 calories of food. This ratio is called the Energy Return on Investment (**EROI**).
 
 #### The Industrial Turn

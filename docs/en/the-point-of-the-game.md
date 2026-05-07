@@ -2,10 +2,12 @@
 
 ### Big issues of our time
 
-The SDG game creates a space where up to 60 players can explore some of the big issues of our time - inequality, poverty, climate change, equal rights for all, food and agriculture, and energy - in a playful way. The game invites you to create a different future to the one we are currently moving towards. We could indeed create a future with less poverty, less inequality, more social freedom within the limits set by our planet, and more prosperity and happiness for all. For us, our children and our grandchildren.
+The SDG game creates a space where up to 60 players can discover and explore some of the big issues of our time, and their connections - inequality, poverty, climate change, equal rights for all, food and agriculture, and energy - in a **playful** way. The game invites you to create a different future to the one we are currently moving towards. We could indeed create a future with less poverty, less inequality, more social freedom within the limits set by our planet, and more prosperity and happiness for all. For us, our children and our grandchildren.
 
 ### Playing
-The game is also meant to let layers experience self-determined **agency** — without lecturing to them. Unfortunately, our lives have increasingly degenerated into mere **execution**, with no more room for **agency** of the self — see Hartmut Rosa’s book [Situation und Konstellation](https://www.suhrkamp.de/buch/hartmut-rosa-situation-und-konstellation-t-9783518588338).
+The game is also meant to let layers experience self-determined **agency** — without lecturing to them. Unfortunately, our lives have increasingly degenerated into mere **execution** of someone else's plan, with no more room for **agency** of the self — see Hartmut Rosa’s book [Situation und Konstellation](https://www.suhrkamp.de/buch/hartmut-rosa-situation-und-konstellation-t-9783518588338).
+
+To dig deeper have a look at Tom DeMarco's [Slack](https://www.penguinrandomhouse.com/books/39276/slack-by-tom-demarco/) and Stefan Kühl's [Brauchbare Illegalität](https://campus.de/brauchbare-illegalitaet/CAM51301).
 
 In this sense, SimFuture tries to be an [endless game](https://www.simonandschuster.com/books/Finite-and-Infinite-Games/James-Carse/9781476731711).
 

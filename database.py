@@ -35,14 +35,58 @@ def get_db():
 # In database.py - add functions to save/load preferences
 
 def save_player_preferences(username, lang, langx):
-    """Save user language and mode preferences"""
+    """Save user language preferences (UPSERT-safe)."""
     with get_db() as conn:
-        conn.execute("""
-            UPDATE players 
-            SET lang = ?, langx = ?
-            WHERE username = ?
-        """, (lang, langx, username))
+        conn.execute(
+            "UPDATE players SET lang = ?, langx = ? WHERE username = ?",
+            (lang, langx, username)
+        )
         conn.commit()
+
+
+def upsert_player_lang(game_id: str, username: str, region_tag: str,
+                       ministry: str, lang: str, dark: int = 0):
+    """Create or update the players row with correct lang/mode — called at join time."""
+    langx = 0
+    _map = {"en": 0, "de": 1, "de2": 2, "fr": 3, "no": 4}
+    langx = _map.get(lang, 0)
+    mode = "dark" if dark else "normal"
+    with get_db() as conn:
+        conn.execute(
+            """
+            INSERT INTO players (game_id, username, region_tag, ministry, lang, langx, mode)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(username) DO UPDATE SET
+                lang  = excluded.lang,
+                langx = excluded.langx,
+                mode  = excluded.mode
+            """,
+            (game_id, username, region_tag, ministry, lang, langx, mode)
+        )
+        conn.commit()
+
+
+def has_player_decisions(game_id: str, round_num: int,
+                         region_tag: str, ministry: str) -> bool:
+    """True if the minister has saved any slider decisions for this round."""
+    with get_db() as conn:
+        row = conn.execute(
+            "SELECT 1 FROM policy_decisions "
+            "WHERE game_id=? AND round=? AND region_tag=? AND ministry=? LIMIT 1",
+            (game_id, round_num, region_tag, ministry)
+        ).fetchone()
+    return row is not None
+
+
+def get_players_advanced(game_id: str, round_num: int) -> set:
+    """Usernames of players who have opened their dashboard for round_num."""
+    field = f"is_logged_in_round{round_num}"
+    with get_db() as conn:
+        rows = conn.execute(
+            f"SELECT username FROM players WHERE game_id=? AND {field}=1",
+            (game_id,)
+        ).fetchall()
+    return {r["username"] for r in rows}
 
 
 def get_player_preferences(username):
@@ -115,7 +159,7 @@ def init_database():
             )
         """)
         
-        # Players table - username UNIQUE, changed to region_tag, added submission tracking
+        # Players table
         conn.execute("""
             CREATE TABLE IF NOT EXISTS players (
                 player_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -127,14 +171,22 @@ def init_database():
                 is_logged_in_round1 BOOLEAN DEFAULT 0,
                 is_logged_in_round2 BOOLEAN DEFAULT 0,
                 is_logged_in_round3 BOOLEAN DEFAULT 0,
+                lang TEXT DEFAULT 'en',
+                langx INTEGER DEFAULT 0,
+                mode TEXT DEFAULT 'normal',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (game_id) REFERENCES games(game_id)
             )
         """)
-        
+        # Migrate: add lang/langx/mode to existing players tables
+        _pcols = {r[1] for r in conn.execute("PRAGMA table_info(players)").fetchall()}
+        for _col, _dflt in [("lang", "'en'"), ("langx", "0"), ("mode", "'normal'")]:
+            if _col not in _pcols:
+                conn.execute(f"ALTER TABLE players ADD COLUMN {_col} TEXT DEFAULT {_dflt}")
+
         # Create index on username for fast lookups
         conn.execute("""
-            CREATE INDEX IF NOT EXISTS idx_players_username 
+            CREATE INDEX IF NOT EXISTS idx_players_username
             ON players(username)
         """)
         
@@ -986,17 +1038,18 @@ def generate_ai_policy_decisions(game_id: str):
         saved_count = cursor.fetchone()['count']
         print(f"✅ Verified: {saved_count} regions in db")
         
-def mark_player_submission(game_id: str, username: str, round_num: int):
-    """Mark that a player has submitted their policies for a round"""
+def mark_player_submission(game_id: str, username: str, round_num: int,
+                           region_tag: str = "", ministry: str = ""):
+    """Mark that a player has opened their dashboard for a round (logged-in flag)."""
+    field = f"is_logged_in_round{round_num}"
     with get_db() as conn:
-        field = f"is_logged_in_round{round_num}"
         conn.execute(
             f"""
-            UPDATE players
-            SET {field} = 1
-            WHERE game_id = ? AND username = ?
+            INSERT INTO players (game_id, username, region_tag, ministry, {field})
+            VALUES (?, ?, ?, ?, 1)
+            ON CONFLICT(username) DO UPDATE SET {field} = 1
             """,
-            (game_id, username)
+            (game_id, username, region_tag, ministry)
         )
         conn.commit()
 
@@ -1333,9 +1386,10 @@ def get_budget_by_ministry_and_policy(game_id, current_round, region_tag):
     with get_db() as conn:
         cursor = conn.execute(
             """
-            SELECT 
+            SELECT
                 pd.ministry,
                 p.pol_ministry,
+                pd.pol_tag,
                 p.pol_name,
                 pd.value as policy_value,
                 (pd.value - p.pol_min) / (p.pol_max - p.pol_min) * b.value as amount_allocated
@@ -1366,6 +1420,7 @@ def get_budget_by_ministry_and_policy(game_id, current_round, region_tag):
             
             policy_info = {
                 'name': row['pol_name'],
+                'pol_tag': row['pol_tag'],
                 'value': row['policy_value'],
                 'amount': row['amount_allocated']
             }

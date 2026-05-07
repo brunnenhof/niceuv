@@ -65,11 +65,11 @@ cancel = [
     "Avbryt",
 ]
 check_game = [
-    "Check game",
-    "Spiel überprüfen",
-    "Spiel ansehen",
-    "Consultez le jeu",
-    "Sjekk spillet",
+    "Open game",
+    "Spiel aufrufen",
+    "Spiel aufrufen",
+    "Lancer le jeu",
+    "Åpne spillet",
 ]
 check_if_results_are_ready = [
     "Check if results are ready",
@@ -325,8 +325,8 @@ start_a_new_game_as_game_leader = [
 ]
 submission_status = [
     "Submission status",
-    "Status der Einreichungen",
-    "Status der Einreichungen",
+    "Status der Abgaben",
+    "Status der Abgaben",
     "Statut de la soumission",
     "Status for innsending",
 ]
@@ -737,8 +737,8 @@ some_regions_have_not_joined_yet = [
 ]
 waiting_for_submissions = [
     "– waiting for submissions",
-    "– auf Einreichungen warten",
-    "– auf Einreichungen warten",
+    "– auf Abgaben warten",
+    "– auf Abgaben warten",
     "– en attente de propositions",
     "– venter på innleveringer",
 ]
@@ -750,30 +750,30 @@ all_submitted = [
     "– alt er sendt inn!",
 ]
 submissions_are_ALLOWED_the_ministers_for_the_Future_can_submit = [
-    "Submissions are ALLOWED – The Ministers for the Future can submit.",
-    "Beiträge sind ERLAUBT – Die „Minister:innen für die Zukunft“ können Beiträge einreichen.",
-    "Beiträge sind ERLAUBT – Die „Minister:innen für die Zukunft“ können Beiträge einreichen.",
-    "Les contributions sont AUTORISÉES – Les ministres de l'avenir peuvent soumettre leurs propositions.",
-    "Innleveringer er TILLATT – «Ministrene for fremtiden» kan sende inn bidrag.",
+    "The Ministers for the Future can now submit their regional investment plans.",
+    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne jetzt einreichen.",
+    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne jetzt einreichen.",
+    "Les ministres chargés de l'avenir peuvent désormais présenter leurs plans d'investissement régionaux.",
+    "Fremtidsministrene kan nå legge frem sine regionale investeringsplaner.",
 ]
 prevent_submissions = [
     "Prevent Submissions",
-    "Einreichungen blockieren",
-    "Einreichungen blockieren",
+    "Abgaben blockieren",
+    "Abgaben blockieren",
     "Empêcher les soumissions",
     "Forhindre innsendinger",
 ]
 submissions_are_blocked_the_ministers_for_the_Future_can_submit = [
-    "Submissions are BLOCKED – The Ministers for the Future cannot submit.",
-    "Beiträge sind NICHT ERLAUBT – Die „Minister:innen für die Zukunft“ können keine Beiträge einreichen.",
-    "Beiträge sind NICHT ERLAUBT – Die „Minister:innen für die Zukunft“ können keine Beiträge einreichen.",
-    "Les soumissions sont BLOQUÉES – Les ministres de l'avenir ne peuvent pas soumettre de proposition.",
-    "Innleveringer er IKKE TILLATT – «Ministrene for fremtiden» kan ikke sende inn bidrag.",
+    "The Ministers for the Future CANNOT yet submit their regional investment plans.",
+    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne noch NICHT einreichen.",
+    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne noch NICHT einreichen.",
+    "Les ministres chargés de l'avenir ne peuvent PAS encore présenter leurs plans d'investissement régionaux.",
+    "Fremtidsministrene kan ennå IKKE legge frem sine regionale investeringsplaner.",
 ]
 allow_submissions = [
     "Allow Submissions",
-    "Einreichungen sind möglich",
-    "Einreichungen sind möglich",
+    "Abgaben zulassen",
+    "Abgaben zulassen",
     "Autoriser les soumissions",
     "Tillat innsendinger",
 ]
@@ -2300,7 +2300,7 @@ generating_random_policy_decisions = [
 monitoring = [
     "Monitoring ",
     "Beobachtung von ",
-    "Beobachtung von",
+    "Beobachtung von ",
     "Observation de ",
     "Observasjon av ",
 ]
@@ -2444,10 +2444,10 @@ gm_checkbox_open40_tx = [
 Once again, allow submissions or not when you are ready to move on to the next round.""",
     """Bitten Sie Ihre Spieler:innen, sich mit der Lage ihrer Region auseinanderzusetzen, insbesondere für den Zeitraum von 2025 bis 2040. Lassen Sie sie innerhalb ihres Teams und teamübergreifend diskutieren, ob sich die Dinge so entwickelt haben, wie sie es erwartet und erhofft hatten. Bitten Sie sie anschließend, Entscheidungen zu treffen, um das Leben ihrer Mitbürger:innen im Zeitraum von 2040 bis 2060 – das Leben ihrer Kinder – zu verbessern. 
 
-Schalten Sie wiederum die Einreichungen frei, oder nicht, je nachdem, wann Sie bereit sind, zur nächsten Runde überzugehen.""",
+Schalten Sie wiederum die Abgaben frei, oder nicht, je nachdem, wann Sie bereit sind, zur nächsten Runde überzugehen.""",
     """Bitte Deine Spieler:innen, sich mit der Lage ihrer Region auseinanderzusetzen, insbesondere für den Zeitraum von 2025 bis 2040. Lass sie innerhalb ihres Teams und teamübergreifend diskutieren, ob sich die Dinge so entwickelt haben, wie sie es erwartet und erhofft hatten. Bitte sie anschließend, Entscheidungen zu treffen, um das Leben ihrer Mitbürger:innen im Zeitraum von 2040 bis 2060 – das Leben ihrer Kinder – zu verbessern. 
 
-Schalte wiederum die Einreichungen frei, oder nicht, je nachdem, wann Du bereit bist, zur nächsten Runde überzugehen.""",
+Schalte wiederum die Abgaben frei, oder nicht, je nachdem, wann Du bereit bist, zur nächsten Runde überzugehen.""",
     """Demandez à vos joueurs et joueuses de se pencher sur la situation de leur région, en particulier pour la période allant de 2025 à 2040. Invitez-les à discuter, au sein de leur équipe et entre équipes, pour savoir si les choses ont évolué comme ils l'avaient prévu et espéré. Demandez-leur ensuite de prendre des décisions visant à améliorer la vie de leurs concitoyens entre 2040 et 2060 – la vie de leurs enfants. 
 
 Une fois encore, validez ou non les propositions, selon le moment où vous êtes prêt à passer à la phase suivante.""",
@@ -2461,10 +2461,10 @@ gm_checkbox_open60_tx = [
 Once again, allow submissions or not when you are ready to move on to the next round.""",
     """Bitten Sie Ihre Spieler:innen, sich mit der Lage ihrer Region auseinanderzusetzen, insbesondere für den Zeitraum von 2040 bis 2060. Lassen Sie sie innerhalb ihres Teams und teamübergreifend diskutieren, ob sich die Dinge so entwickelt haben, wie sie es erwartet und erhofft hatten. Bitten Sie sie anschließend, Entscheidungen zu treffen, um das Leben ihrer Mitbürger:innen im Zeitraum von 2060 bis 2100 – das Leben ihrer Enkel – zu verbessern. 
 
-Schalten Sie wiederum die Einreichungen frei, oder nicht, je nachdem, wann Sie bereit sind, zur nächsten Runde überzugehen.""",
+Schalten Sie wiederum die Abgaben frei, oder nicht, je nachdem, wann Sie bereit sind, zur nächsten Runde überzugehen.""",
     """Bitte Deine Spieler:innen, sich mit der Lage ihrer Region auseinanderzusetzen, insbesondere für den Zeitraum von 2040 bis 2060. Lass sie innerhalb ihres Teams und teamübergreifend diskutieren, ob sich die Dinge so entwickelt haben, wie sie es erwartet und erhofft hatten. Bitte sie anschließend, Entscheidungen zu treffen, um das Leben ihrer Mitbürger:innen im Zeitraum von 2060 bis 2100 – das Leben ihrer Enkel – zu verbessern. 
 
-Schalte wiederum die Einreichungen frei, oder nicht, je nachdem, wann Du bereit bist, zur nächsten Runde überzugehen.""",
+Schalte wiederum die Abgaben frei, oder nicht, je nachdem, wann Du bereit bist, zur nächsten Runde überzugehen.""",
     """Demandez à vos joueurs et joueuses de se pencher sur la situation de leur région, en particulier pour la période allant de 2040 à 2060. Invitez-les à discuter, au sein de leur équipe et entre équipes, pour savoir si les choses ont évolué comme ils l'avaient prévu et espéré. Demandez-leur ensuite de prendre des décisions visant à améliorer la vie de leurs concitoyens entre 2060 et 2100 – la vie de leur petite-fille. 
 
 Une fois encore, validez ou non les propositions, selon le moment où vous êtes prêt à passer à la phase suivante.""",
@@ -2499,6 +2499,20 @@ deep_dive = [
     "Weiterführende Informationen gibt es im Benutzerhandbuch",
     "Vous trouverez de plus amples informations dans le manuel d'utilisation",
     "Du finner mer informasjon i brukerhåndboken",
+]
+not_yet_logged_in_for_round = [
+    "Not yet logged in for round",
+    "Noch nicht angemeldet für Runde",
+    "Noch nicht angemeldet für Runde",
+    "Pas encore connecté pour tour",
+    "Ikke logget inn for runden",    
+]
+submission_is_not_possible_until_all_ministers_have_logged_in = [
+    "You cannot submit any decisions until all your ministers have logged in.",
+    "Sie können keine Entscheidungen einreichen, bevor sich alle Ihre Minister:innen angemeldet haben.",
+    "Du kannst keine Entscheidungen einreichen, bevor sich alle deine Minister:innen angemeldet haben.",
+    "Tu ne peux pas soumettre de décisions tant que tous tes ministres ne se sont pas connectés.",
+    "Det er ikke mulig å sende inn noen beslutninger før alle ministrene dine har logget seg på.",
 ]
 pcgd_rd1_info_tx_str = [
     """Make a note of the game ID and your username! You need both if you want to resume the game at a later stage.
@@ -2572,15 +2586,15 @@ to_2100 = [
 ]
 check_your_colleagues_investment_proposals = [
     "Refresh the numbers and check if submissions are open",
-    "Aktualisieren Sie die Zahlen und überprüfen Sie, ob Einreichungen möglich sind.",
-    "Aktualisiere die Zahlen und überprüfe, ob Einreichungen möglich sind.",
+    "Aktualisieren Sie die Zahlen und überprüfen Sie, ob Abgaben möglich sind.",
+    "Aktualisiere die Zahlen und überprüfe, ob Abgaben möglich sind.",
     "Actualisez les chiffres et vérifiez si les soumissions sont ouvertes.",
     "Oppdater tallene og sjekk om innsendingen er åpen", 
 ]
 ooops_GM_changed_mind = [
     "Submissions are NOT yet allowed by the game leader",
-    "Der/die Spielleiter:in hat die Einreichung noch NICHT frei gegeben.",
-    "Der/die Spielleiter:in hat die Einreichung noch NICHT frei gegeben.",
+    "Der/die Spielleiter:in hat die Abgaben noch NICHT frei gegeben.",
+    "Der/die Spielleiter:in hat die Abgaben noch NICHT frei gegeben.",
     "Le/la modérateur·rice n'a PAS encore validé la soumission",
     "Spilllederen har IKKE godkjent innsendingen ennå.",
 ]
@@ -2742,7 +2756,6 @@ bud_title_tx_str = [
     "Informations pour le tour ",
     "Informasjon om runden ",
 ]
-
 refresh_btn = [
     "Refresh",
     "Aktualisieren",
@@ -2756,4 +2769,54 @@ enter_code_tx = [
     "Start-Code, bitte",
     "Code de démarrage, s'il vous plaît",
     "Start-Code, vær så snilll",
+]
+# Card D – Budget proposals: login status strings
+not_logged_in_for_round = [
+    "– not logged in for round",
+    "– noch nicht angemeldet für Runde",
+    "– noch nicht angemeldet für Runde",
+    "– pas encore connecté·e pour le tour",
+    "– ikke innlogget for runde",
+]
+not_yet_logged_in_for_round = [
+    "Not yet logged in for round",
+    "Noch nicht angemeldet für Runde",
+    "Noch nicht angemeldet für Runde",
+    "Pas encore connecté·e pour le tour",
+    "Ikke innlogget for runde",
+]
+submission_blocked_until_all_logged_in = [
+    "Submission is not possible until all ministers have logged in.",
+    "Investmentpläne können erst eingereicht werden, wenn sich alle Minister:innen angemeldet haben.",
+    "Investmentpläne können erst eingereicht werden, wenn sich alle Minister:innen angemeldet haben.",
+    "Les plans d'investissement ne peuvent être soumis qu'une fois que tous les ministres se sont inscrits.",
+    "Investeringsplaner kan først sendes inn når alle ministrene har meldt seg på.",
+]
+active_positions_not_shown = [
+    "active position(s) currently in use – not shown.",
+    "aktive Position(en) gerade in Verwendung – nicht angezeigt.",
+    "aktive Position(en) gerade in Verwendung – nicht angezeigt.",
+    "position(s) active(s) en cours d'utilisation – non affichée(s).",
+    "aktiv(e) posisjon(er) er i bruk – vises ikke.",
+]
+all_positions_currently_active = [
+    "All positions in this game are currently active. Try again later.",
+    "Alle Positionen in diesem Spiel sind derzeit aktiv. Versuchen Sie es später erneut.",
+    "Alle Positionen in diesem Spiel sind derzeit aktiv. Versuche es später erneut.",
+    "Toutes les positions de ce jeu sont actuellement actives. Réessayez plus tard.",
+    "Alle posisjoner i dette spillet er for øyeblikket aktive. Prøv igjen senere.",
+]
+session_already_active_warning = [
+    "This session appears active in another tab. Resuming here will disconnect that tab.",
+    "Diese Sitzung scheint in einem anderen Tab aktiv zu sein. Wenn Sie hier fortfahren, wird dieser Tab getrennt.",
+    "Diese Sitzung scheint in einem anderen Tab aktiv zu sein. Wenn Du hier fortfährst, wird dieser Tab getrennt.",
+    "Cette session semble être active dans un autre onglet. Reprendre ici déconnectera cet onglet.",
+    "Denne sesjonen ser ut til å være aktiv i en annen fane. Hvis du fortsetter her, kobles den fanen fra.",
+]
+resume_anyway = [
+    "Resume anyway",
+    "Trotzdem fortfahren",
+    "Trotzdem fortfahren",
+    "Reprendre quand même",
+    "Fortsett uansett",
 ]
