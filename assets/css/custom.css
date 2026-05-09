@@ -4,6 +4,6 @@
   margin-right: auto;
 }
 [data-md-color-scheme="default"] {
-  --md-default-bg-color: #f1d30c;   /* warm parchment yellow */
+  --md-default-bg-color: #f1140c;   /* warm parchment yellow */
   --md-default-fg-color--lightest: rgba(0,0,0,.12);
 }
