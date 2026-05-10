@@ -8,7 +8,7 @@ Das Spiel besteht aus 3 Entscheidungsrunden. Zu Beginn des Spiels werden für je
 
 Sobald neue Informationen vorliegen, sollten die Spieler:innen die Ergebnisse prüfen und besprechen, zunächst in ihrer Region und anschließend regionenübergreifend. Zum Beispiel könnten sich alle Energieminister:innen treffen und Energiefragen erörtern, alle Minister:innen für Armutsbekämpfung könnten sich treffen und Fragen der Armutsbekämpfung erörtern usw.
 
-### Rezension abgeschlossen
+### Rückblick abgeschlossen
 
 Wenn der Rückblick auf die Vergangenheit abgeschlossen ist, müssen die Spieler:innen Entscheidungen treffen, die für ihr jeweiliges Ministerium relevant sind. Jedem:r Minister:in werden mehrere Investitionsmöglichkeiten angezeigt, aus denen er oder sie wählen kann. Jede Investitionsmaßnahme wird kurz erläutert, und sie können in Absprache mit ihren Ministerkollegen beschließen, einen bestimmten Betrag zu investieren, um hoffentlich das Leben der Bürger:innen ihrer Region zu verbessern. Er oder sie legt den zu investierenden Betrag fest, indem er oder sie einen Schieberegler verschiebt.
 
@@ -22,6 +22,6 @@ Sobald alle Regionen (die von menschlichen Spieler:innen gespielt werden) ihre E
 
 Die erste Runde, in der die Entscheidungen im laufenden Jahr getroffen werden, läuft bis zum Jahr 2040 – es geht also um die **Zukunft der Spieler:innen selbst**.
 
-Die zweite Runde, in der die Entscheidungen im Jahr 2040 getroffen werden, läuft bis 2060 – es geht also um die **Zukunft der Kinder der Spieler:innen**.
+Die zweite Runde, in der die Entscheidungen im Jahr 2040 getroffen werden, läuft bis 2060 – es geht also um die Zukunft der **Kinder** der Spieler:innen.
 
-Die dritte und letzte Runde, in der die Entscheidungen im Jahr 2060 getroffen werden, läuft bis zum Jahr 2100 – es geht also um die **Zukunft der Enkelkinder der Spieler:innen**.
+Die dritte und letzte Runde, in der die Entscheidungen im Jahr 2060 getroffen werden, läuft bis zum Jahr 2100 – es geht also um die Zukunft der **Enkelkinder** der Spieler:innen.

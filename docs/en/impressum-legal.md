@@ -6,11 +6,7 @@ The SDG Game is developed and maintained by Ulrich Goluke. He is the copyright h
 
 Service provider is 
 
-Ulrich Goluke
-
-Egerer Str 33
-
-91207 Lauf, Germany
+Ulrich Goluke, Egerer Str 33, 91207 Lauf, Germany
 
 ## Contact options
 E-mail address: lang@blue-way.net

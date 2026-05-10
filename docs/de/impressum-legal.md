@@ -6,9 +6,7 @@ Das SDG-Spiel wird von Ulrich Goluke entwickelt und gepflegt. Er ist der Urheber
 
 Der Dienstleister ist 
 
-Ulrich Goluke, 
-Egerer Straße 33, 
-91207 Lauf, Deutschland
+Ulrich Goluke, Egerer Straße 33, 91207 Lauf, Deutschland
 
 ## Kontaktmöglichkeiten
 E-Mail-Adresse: lang@blue-way.net

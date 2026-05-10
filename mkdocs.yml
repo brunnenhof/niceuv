@@ -30,6 +30,9 @@ theme:
 
 markdown_extensions:
   - attr_list
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
 
 plugins:
   - search
@@ -39,7 +42,6 @@ extra_css:
 
 extra_javascript:
   - assets/js/external-links.js
-
 
 nav:
   - English:
