@@ -491,9 +491,6 @@ def home():
     
     from nicegui import context
     
-    lang = get_lang()
-    langx = LANG_TO_INDEX.get(lang, 0)
-
     def get_default_lang() -> str:
         try:
             accept = context.client.request.headers.get("accept-language", "en")
@@ -508,7 +505,13 @@ def home():
         except Exception:
             pass
         return "en"
-    
+
+    if "lang" not in app.storage.user:
+        app.storage.user["lang"] = get_default_lang()
+
+    lang = get_lang()
+    langx = LANG_TO_INDEX.get(lang, 0)
+
     token = get_or_create_token()
     create_header()
 #    ui.colors(my_orange="#FF8A05")
