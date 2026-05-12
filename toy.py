@@ -611,26 +611,30 @@ def home():
                     return
                 sessions_ref[0] = sessions
                 look_up_btn.set_visibility(False)
-                opts = [{"token": s["token"], "desc": s["desc"], "disable": s["live"]}
-                        for s in sessions]
-                first_free = next((s["token"] for s in sessions if not s["live"]),
-                                  sessions[0]["token"])
+                free  = [s for s in sessions if not s["live"]]
+                live  = [s for s in sessions if     s["live"]]
 
                 with detail_col:
-                    sel = ui.select(opts, label=luf.your_session[langx],
-                                    value=first_free) \
-                             .props("option-value=token option-label=desc option-disable=disable") \
-                             .classes("w-full mt-3")
+                    if live:
+                        ui.label("⚡ " + luf.active_ug[langx] + ":") \
+                          .classes("text-xs text-gray-400 mt-3 mb-1")
+                        for ls in live:
+                            ui.label(ls["desc"]) \
+                              .classes("text-sm text-gray-400 line-through px-2 py-1")
 
-                    def do_resume():
-                        chosen = sel.value
-                        s = next((x for x in sessions_ref[0]
-                                  if x["token"] == chosen), None)
-                        if not s:
-                            err_label.set_text("Session not found.")
-                            return
+                    if free:
+                        free_opts = {s["token"]: s["desc"] for s in free}
+                        sel = ui.select(free_opts, label=luf.your_session[langx],
+                                        value=next(iter(free_opts))).classes("w-full mt-3")
 
-                        def _proceed():
+                        def do_resume():
+                            chosen = sel.value
+                            s = next((x for x in sessions_ref[0]
+                                      if x["token"] == chosen), None)
+                            if not s:
+                                err_label.set_text("Session not found.")
+                                return
+
                             if s["role"] == "GM":
                                 with ui.dialog() as code_dlg, ui.card().classes("p-6"):
                                     ui.label(luf.gm_verification[langx]).classes("text-xl font-bold mb-4")
@@ -660,23 +664,11 @@ def home():
                             dlg.close()
                             ui.navigate.to(f"/dashboard?token={chosen}")
 
-                        if s.get("live"):
-                            with ui.dialog() as warn_dlg, ui.card().classes("p-6 w-96"):
-                                ui.icon("warning").classes("text-orange-500 text-4xl mb-2")
-                                ui.label(luf.session_already_active_warning[langx]) \
-                                  .classes("text-base mb-4")
-                                with ui.row().classes("w-full justify-end gap-2"):
-                                    ui.button(luf.cancel_btn[langx],
-                                              on_click=warn_dlg.close).props("flat")
-                                    ui.button(luf.resume_anyway[langx],
-                                              on_click=lambda: (warn_dlg.close(), _proceed())) \
-                                      .props("color=warning")
-                            warn_dlg.open()
-                        else:
-                            _proceed()
-
-                    ui.button(luf.resume[langx], icon="login", on_click=do_resume) \
+                        ui.button(luf.resume[langx], icon="login", on_click=do_resume) \
                       .props("color=primary").classes("w-full mt-3")
+                    else:
+                        ui.label(luf.all_positions_currently_active[langx]) \
+                          .classes("text-orange-400 text-sm mt-3 text-center")
 
             gid_input.on("keydown.enter", look_up)
             look_up_btn = ui.button(luf.look_up_game[langx], on_click=look_up) \
@@ -1147,11 +1139,9 @@ def gm_board(token: str):
     # Submission: region complete when Future has submitted (mark_region_submitted called)
     def _unsubmitted():
         """Return {abbr: True} for regions where Future hasn't submitted yet."""
-        gid = session.get("game_id", "")
-        rnd = session.get("current_round", 1)
         result = {}
         for abbr in human_abbrs:
-            if not maindb.is_region_submitted(gid, rnd, abbr):
+            if not maindb.is_region_submitted(game_id_gm, current_round, abbr):
                 result[abbr] = abbr
         return result
 
@@ -1300,7 +1290,7 @@ def gm_board(token: str):
         # ── Card 4 (was 3): Submission status  (visible when all joined, not all submitted)
         with ui.card().classes("w-full p-4 bg-amber-100") as card_submissions:
             ui.label("[Card 4 – Submission status]").classes("text-xs text-gray-400 italic")
-            ui.label(luf.submission_status[langx]).classes("font-bold mb-2")
+            ui.label(luf.submission_status[langx]).classes("font-bold mb-2 text-accent-amber-900")
             sub_col = ui.column()
             def _fill_submissions(ps, h_abbrs, gm_round):
                 sub_col.clear()
@@ -1348,10 +1338,16 @@ def gm_board(token: str):
             _accept_init = maindb.get_accept_decisions(game_id_gm, current_round)
         except Exception:
             _accept_init = 0
-        _advanced_init = maindb.get_players_advanced(game_id_gm, current_round)
-        _all_checked_init = all(
-            p["username"] in _advanced_init for p in players
-        ) if players else True
+        if not game_done:
+            try:
+                _advanced_init = maindb.get_players_advanced(game_id_gm, current_round)
+            except Exception:
+                _advanced_init = set()
+            _all_checked_init = all(
+                p["username"] in _advanced_init for p in players
+            ) if players else True
+        else:
+            _all_checked_init = True
         card_submissions.set_visibility(
             all_in and not game_done and (
                 (not all_sub and _accept_init == 1) or        # Phase A: tracking submissions
@@ -1411,6 +1407,29 @@ def gm_board(token: str):
             ui.button(f"{run_model_to_round} {current_round + 1}",
                       icon="model_training", on_click=advance, color="positive")
         card_advance.set_visibility(all_sub and not game_done)
+
+        # ── Auto-refresh: reload board when state advances ────────────────────
+        if not game_done:
+            def _auto_refresh():
+                try:
+                    if not all_in:
+                        new_ps = db_get_players(token, game_id_gm)
+                        if len(_missing_slots(new_ps)) == 0 and len(human_abbrs) > 0:
+                            ui.navigate.to(f"/gm/board?token={token}")
+                    elif not all_sub:
+                        still_waiting = any(
+                            not maindb.is_region_submitted(game_id_gm, current_round, a)
+                            for a in human_abbrs
+                        )
+                        if not still_waiting:
+                            ui.navigate.to(f"/gm/board?token={token}")
+                    else:
+                        # Phase B: update Card 4 in-place as players open their results
+                        _fill_submissions(db_get_players(token, game_id_gm),
+                                          human_abbrs, current_round)
+                except RuntimeError:
+                    pass
+            ui.timer(5.0, _auto_refresh)
 
         # ── Card 5: Game complete ─────────────────────────────────────────────
         with ui.card().classes("w-full p-4 bg-purple-100") as card_done:

@@ -82,10 +82,13 @@ def get_players_advanced(game_id: str, round_num: int) -> set:
     """Usernames of players who have opened their dashboard for round_num."""
     field = f"is_logged_in_round{round_num}"
     with get_db() as conn:
-        rows = conn.execute(
-            f"SELECT username FROM players WHERE game_id=? AND {field}=1",
-            (game_id,)
-        ).fetchall()
+        try:
+            rows = conn.execute(
+                f"SELECT username FROM players WHERE game_id=? AND {field}=1",
+                (game_id,)
+            ).fetchall()
+        except Exception:
+            return set()
     return {r["username"] for r in rows}
 
 

@@ -30,11 +30,11 @@ no_one_has_joined_this_game_yet = [
     "Ingen har sluttet seg til dette spillet ennå.",
 ]
 a_fresh_game_start_or_join = [
-    "A Fresh Game: ORGANIZE OR JOIN",
-    "Ein neues Spiel: ORGANISIEREN ODER MITMACHEN",
-    "Ein neues Spiel: ORGANISIEREN ODER MITMACHEN",
-    "Une nouvelle partie : ORGANISER OU PARTICIPER",
-    "Et nytt spill: ORGANISER ELLER BLI MED",
+    "Fresh Game: ORGANIZE OR JOIN",
+    "Neues Spiel: ORGANISIEREN ODER MITMACHEN",
+    "Neues Spiel: ORGANISIEREN ODER MITMACHEN",
+    "Nouvelle partie : ORGANISER OU PARTICIPER",
+    "Nytt spill: ORGANISER ELLER BLI MED",
 ]
 ABC123 = [
     "ABC-123",
@@ -255,8 +255,8 @@ login_id = [
 ]
 resume_existing_game = [
     "Resume existing Game",
-    "Ein laufendes Spiel fortsetzen",
-    "Ein laufendes Spiel fortsetzen",
+    "Laufendes Spiel fortführen",
+    "Laufendes Spiel fortführen",
     "Reprendre une partie en cours",
     "Fortsett eksisterende spill",
 ]
@@ -403,7 +403,7 @@ plans = [
 plans2 = [
     " Giga$ are bigger than your budget of ",
     " Giga$ sind größer als Ihr Budget von ",
-    "Giga$ sind größer als Dein Budget von",
+    " Giga$ sind größer als Dein Budget von ",
     " Giga$ sont plus importants que votre budget de ",
     " Giga$ er større enn budsjettet ditt på ",
 ]
@@ -765,8 +765,8 @@ all_submitted = [
 ]
 submissions_are_ALLOWED_the_ministers_for_the_Future_can_submit = [
     "The Ministers for the Future can now submit their regional investment plans.",
-    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne jetzt einreichen.",
-    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne jetzt einreichen.",
+    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne jetzt abgeben.",
+    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne jetzt abgeben.",
     "Les ministres chargés de l'avenir peuvent désormais présenter leurs plans d'investissement régionaux.",
     "Fremtidsministrene kan nå legge frem sine regionale investeringsplaner.",
 ]
@@ -779,8 +779,8 @@ prevent_submissions = [
 ]
 submissions_are_blocked_the_ministers_for_the_Future_can_submit = [
     "The Ministers for the Future CANNOT yet submit their regional investment plans.",
-    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne noch NICHT einreichen.",
-    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne noch NICHT einreichen.",
+    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne noch NICHT abgeben.",
+    "Die Minister:innen für Zukunftsfragen können ihre regionalen Investitionspläne noch NICHT abgeben.",
     "Les ministres chargés de l'avenir ne peuvent PAS encore présenter leurs plans d'investissement régionaux.",
     "Fremtidsministrene kan ennå IKKE legge frem sine regionale investeringsplaner.",
 ]
