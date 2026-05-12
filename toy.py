@@ -490,6 +490,9 @@ def create_header(token: str | None = None):
 def home():
     
     from nicegui import context
+    
+    lang = get_lang()
+    langx = LANG_TO_INDEX.get(lang, 0)
 
     def get_default_lang() -> str:
         try:
@@ -582,33 +585,42 @@ def home():
                     player_rows = []
                     if gm_row:
                         player_rows = conn.execute(
-                            "SELECT * FROM sessions WHERE game_token = ?",
-                            (gm_row["token"],)
+                            "SELECT * FROM sessions WHERE game_token = ? AND game_id = ?",
+                            (gm_row["token"], gid)
                         ).fetchall()
                 cutoff = int(time.time()) - 300  # active in the last 5 min → flag as live
                 sessions = []
                 if gm_row:
                     gd = dict(gm_row)
+                    active_ug = luf.active_ug[langx]
+                    active_ug2 = "  ⚡ " + active_ug
                     live = gd.get("last_active", 0) > cutoff
-                    desc = f"GM  [{gd['username']}]" + ("  ⚡ active" if live else "")
+                    desc = f"GM  [{gd['username']}]" + (active_ug2 if live else "")
                     sessions.append({"token": gd["token"], "role": "GM", "desc": desc, "live": live})
                 for row in player_rows:
                     pd = dict(row)
+                    active_ug = luf.active_ug[langx]
+                    active_ug2 = "  ⚡ " + active_ug
                     live = pd.get("last_active", 0) > cutoff
                     rl = abbr_to_name.get(pd.get("region", ""), pd.get("region", ""))
                     desc = (f"{pd['role']}, {rl}  [{pd['username']}]"
-                            + ("  ⚡ active" if live else ""))
+                            + (active_ug2 if live else ""))
                     sessions.append({"token": pd["token"], "role": pd["role"], "desc": desc, "live": live})
                 if not sessions:
-                    err_label.set_text("No one has joined this game yet.")
+                    err_label.set_text(luf.no_one_has_joined_this_game_yet[langx])
                     return
                 sessions_ref[0] = sessions
                 look_up_btn.set_visibility(False)
-                opts = {s["token"]: s["desc"] for s in sessions}
+                opts = [{"token": s["token"], "desc": s["desc"], "disable": s["live"]}
+                        for s in sessions]
+                first_free = next((s["token"] for s in sessions if not s["live"]),
+                                  sessions[0]["token"])
 
                 with detail_col:
                     sel = ui.select(opts, label=luf.your_session[langx],
-                                    value=next(iter(opts))).classes("w-full mt-3")
+                                    value=first_free) \
+                             .props("option-value=token option-label=desc option-disable=disable") \
+                             .classes("w-full mt-3")
 
                     def do_resume():
                         chosen = sel.value
@@ -777,7 +789,7 @@ def home():
                       .classes("font-bold mt-3 mb-1")
 
                     def taken_slots():
-                        return db_get_players(gm_token_ref[0])
+                        return db_get_players(gm_token_ref[0], game_id=gid)
 
                     def avail_ministries(region_abbr, players):
                         used = {p["role"] for p in players

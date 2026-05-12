@@ -15,12 +15,26 @@ or_ug = [
     "-- OU --",
     "-- ELLER --",
 ]
+active_ug = [
+    "in use",
+    "wird genutzt",
+    "wird genutzt",
+    "est utilisé",
+    "brukes",
+]
+no_one_has_joined_this_game_yet = [
+    "No one has joined this game yet.",
+    "Bisher hat sich noch niemand diesem Spiel angeschlossen.",
+    "Bisher hat sich noch niemand diesem Spiel angeschlossen.",
+    "Pour l'instant, personne n'a rejoint cette partie.",
+    "Ingen har sluttet seg til dette spillet ennå.",
+]
 a_fresh_game_start_or_join = [
-    "A Fresh Game: START OR JOIN",
-    "Ein neues Spiel: STARTEN ODER MITMACHEN",
-    "Ein neues Spiel: STARTEN ODER MITMACHEN",
-    "Une nouvelle partie : COMMENCER OU REJOINDRE",
-    "Et nytt spill: START ELLER BLI MED",
+    "A Fresh Game: ORGANIZE OR JOIN",
+    "Ein neues Spiel: ORGANISIEREN ODER MITMACHEN",
+    "Ein neues Spiel: ORGANISIEREN ODER MITMACHEN",
+    "Une nouvelle partie : ORGANISER OU PARTICIPER",
+    "Et nytt spill: ORGANISER ELLER BLI MED",
 ]
 ABC123 = [
     "ABC-123",
@@ -157,10 +171,10 @@ join_game = [
 ]
 join_a_new_game_as_player = [
     "Join a new Game as Player",
-    "Als Spieler an einem neuen Spiel teilnehmen",
-    "Als Spieler an einem neuen Spiel teilnehmen",
-    "Rejoindre une nouvelle partie en tant que joueur",
-    "Bli med i et nytt spill som spiller",
+    "Als Spieler:in an einem neuen Spiel mitmachen",
+    "Als Spieler:in an einem neuen Spiel mitmachen",
+    "Participer à un nouveau jeu en tant que joueur ou joueuse",
+    "Delta som spiller i et nytt spill",
 ]
 join_ug = [
     "Join!",
@@ -317,11 +331,11 @@ start = [
     "Start",
 ]
 start_a_new_game_as_game_leader = [
-    "Start a new Game as Game Leader",
-    "Starten Sie ein neues Spiel als Spielleiter:in",
-    "Starte ein neues Spiel als Spielleiter:in",
-    "Lancer une nouvelle partie en tant que meneur de jeu",
-    "Start et nytt spill som spilleder",
+    "Start a new Game as Game Organizer",
+    "Starte ein neues Spiel als Spielorganisator:in",
+    "Starte ein neues Spiel als Spielorganisator:in",
+    "Commence une nouvelle partie en tant qu'organisateur·trice",
+    "Start et nytt spill som spillarrangør",
 ]
 submission_status = [
     "Submission status",
