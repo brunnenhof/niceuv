@@ -435,7 +435,9 @@ def create_header(token: str | None = None):
         # Left: title
         with ui.link(target="/").classes("text-white no-underline"):
             with ui.column().classes('gap-0 text-white font-bold'):
-                ui.label(luf.simfuture[langx]).classes('text-2xl')
+                with ui.row().classes("items-end gap-2"):
+                    ui.label(luf.simfuture[langx]).classes('text-2xl')
+                    ui.label(" v0a").classes('text-xs italic')
                 ui.label(luf.the_age_of_consequences[langx]).classes('font-italic text-sm')
 
         if platform.system() == "Windows":
