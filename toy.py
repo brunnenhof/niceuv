@@ -2158,7 +2158,7 @@ def legal_page(token: str = ""):
 if __name__ in {"__main__", "__mp_main__"}:
     init_db()
     ui.run(
-        title="SimFuture [LOCAL]",
+        title="SimFuture",
         storage_secret="toy-secret",
         host="127.0.0.1",
         port=8899,
