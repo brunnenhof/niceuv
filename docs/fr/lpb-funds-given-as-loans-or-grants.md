@@ -1,0 +1,9 @@
+# LPB : Fonds accordés sous forme de prêts ou de subventions
+
+Dès que tu auras choisi [tu empruntes de l'argent à des prêteurs publics](lending-from-public-bodies-lpb.md), tu pourras définir une deuxième option : déterminer si l'argent que tu reçois est versé à ton gouvernement sous forme de « [Subvention](https://en.wikipedia.org/wiki/Grant_(money) » ou de « [Prêt](https://www.youtube.com/watch?v=wSqtotgaNAc) ». Les prêts doivent être remboursés au fil du temps, et tu dois payer des intérêts au prêteur. Les subventions, quant à elles, ne doivent pas être remboursées et ne te coûtent pas d'intérêts.
+
+**Prêt** : Imaginons que tu empruntes 100 euros pour 3 ans à un taux d'intérêt de 3 % par an. Si tu rembourses une fois par an, tu devras payer 35,25 € chaque année, soit un total de 106,06 €. Les intérêts s'élèvent donc à 6,06 €. Tu peux faire tes propres calculs sur [ici](https://www.calculator.net/loan-calculator.html?cloanamount=100&cloanterm=3&cloantermmonth=0&cinterestrate=3&ccompound=annually&cpayback=year&x=Calculate&type=1#monthlyfixedr).
+
+Cette option te permet de choisir si la totalité des fonds mis à ta disposition est considérée comme un prêt (réglage du curseur sur 0) ou comme une subvention (réglage du curseur sur 100) – ou une valeur intermédiaire. 50 signifie que la moitié est considérée comme un prêt et l'autre moitié comme une subvention, 30 signifie que 30 % sont considérés comme un prêt et 70 % comme une subvention.
+
+Remarque : le réglage de ce curseur n'a de sens que si tu définis la mesure « [Prêts d'institutions publiques](lending-from-public-bodies-lpb.md) » sur une valeur autre que 0.

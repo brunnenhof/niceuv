@@ -178,3 +178,70 @@ nav:
         - 'Die Energiekosten der Welternährung': de/the-energy-cost-of-feeding-the-world.md
     - 'Lizenz': de/licence.md
     - 'Impressum / Rechtliche Hinweise': de/impressum-legal.md
+  - Français:
+    - 'Le but du jeu':
+        - 'Le but du jeu': fr/the-point-of-the-game.md
+        - 'Deux scénarios': fr/two-scenarios.md
+        - 'Remerciements': fr/thanks.md
+    - 'Façons de jouer':
+        - 'Façons de jouer': fr/ways-to-play-the-game.md
+        - 'Faire découvrir les ODD de l''ONU': fr/let-players-learn-about-the-un-sustainable-development-goals.md
+        - 'Engager les joueurs dans la discussion': fr/engage-players-in-conversation-discussion-and-negotiation.md
+        - 'Faire vivre les différences de pouvoir': fr/let-players-experience-differences-in-power.md
+        - 'D''une boucle causale à une compréhension systémique':
+            - 'D''une boucle causale à une compréhension systémique': fr/lead-players-from-one-simple-causal-feedbackloop-to-a-systems-understanding.md
+            - 'Inégalité et tensions sociales': fr/inequality-and-social-tension.md
+            - 'Émissions et température': fr/emissions-and-temperature.md
+            - 'Taxe carbone vs. plafonnement et échange': fr/carbon-tax-vs-cap-and-trade-example.md
+    - 'Ce dont vous avez besoin':
+        - 'Ce dont vous avez besoin': fr/what-you-need-to-play.md
+        - 'Participants': fr/people.md
+        - 'Lieu': fr/place.md
+        - 'Technologie': fr/technology.md
+        - 'Vie privée': fr/privacy.md
+    - 'Déroulement du jeu':
+        - 'Déroulement du jeu': fr/gameplay.md
+        - 'Rounds': fr/rounds.md
+        - 'Comment lire un graphique': fr/how-do-i-read-a-graph.md
+        - 'Curseurs de politique': fr/policy-sliders.md
+    - 'Politiques, en détail':
+        - 'Politiques, en détail': fr/policies-in-depth.md
+        - 'Élargir l''espace politique': fr/expand-policy-space.md
+        - 'Prêts d''organismes publics (LPB)': fr/lending-from-public-bodies-lpb.md
+        - 'LPB : Répartition des fonds': fr/lpb-split-the-use-of-funds-from-public-lenders.md
+        - 'LPB : prêts ou subventions': fr/lpb-funds-given-as-loans-or-grants.md
+        - 'Fraction de crédit privé non utilisée par an': fr/fraction-of-credit-with-private-lenders-not-drawn-down-per-year.md
+        - 'Imposition de la fortune des propriétaires': fr/taxing-owners-wealth.md
+        - 'Annuler la dette publique': fr/cancel-debt-from-public-lenders.md
+        - 'Réduction des fuites': fr/leakage-fraction-reduction.md
+        - 'Extension du remboursement': fr/stretch-repayment.md
+        - 'Taxes supplémentaires sur les ultra-riches': fr/extra-taxes-paid-by-the-super-rich.md
+        - 'Renforcer les syndicats': fr/strengthen-unions.md
+        - 'Réaction des travailleurs': fr/worker-reaction.md
+        - 'Dividende universel de base': fr/introduce-a-universal-basic-dividend.md
+        - 'Augmenter la TVA': fr/increase-consumption-tax-rate.md
+        - 'Augmenter l''impôt sur le revenu des propriétaires': fr/increase-owner-income-tax-rate.md
+        - 'Augmenter l''impôt sur le revenu des travailleurs': fr/increase-worker-income-tax-rate.md
+        - 'Introduire une taxe carbone': fr/introduce-a-carbon-tax.md
+        - 'Réorienter les dépenses publiques': fr/shift-govt-spending-to-investment.md
+        - 'Éducation pour tous': fr/education-to-all.md
+        - 'Leadership féminin': fr/female-leadership.md
+        - 'Retraite pour tous': fr/pensions-to-all.md
+        - 'Réduction des déchets alimentaires': fr/food-waste-reduction.md
+        - 'Agriculture régénératrice': fr/regenerative-agriculture.md
+        - 'Changer les régimes alimentaires': fr/change-diets.md
+        - 'Réduire les importations alimentaires': fr/reduce-food-imports.md
+        - 'Abattage forestier maximal': fr/max-forest-cutting.md
+        - 'Reboisement': fr/reforestation.md
+        - 'Efficacité du système énergétique': fr/energy-system-efficiency.md
+        - 'Tout électrifier': fr/electrify-everything.md
+        - 'Investir dans les renouvelables': fr/invest-in-renewables.md
+        - 'CCS : captage et stockage du carbone': fr/ccs-is-carbon-capture-and-storage-at-source.md
+        - 'Captage direct du CO₂': fr/direct-air-capture.md
+    - 'Glossaire':
+        - 'Glossaire': fr/glossary.md
+        - 'PIB': fr/gdp.md
+        - 'Financement hors bilan': fr/off-balance-sheet-financing.md
+        - 'Le coût énergétique de l''alimentation mondiale': fr/the-energy-cost-of-feeding-the-world.md
+    - 'Licence': fr/licence.md
+    - 'Mentions légales': fr/impressum-legal.md

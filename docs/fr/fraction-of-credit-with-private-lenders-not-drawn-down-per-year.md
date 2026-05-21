@@ -1,0 +1,9 @@
+# Part des crédits contractés auprès de prêteurs privés qui n'est PAS utilisée chaque année
+
+Les gouvernements – et toi aussi – ont une cote de crédit ([Solvabilité](https://www.experian.com/blogs/ask-experian/what-is-creditworthiness/)). Pour toi, jette un œil à ce lien ; pour les gouvernements, celle-ci correspond généralement à un multiple de leur PIB ([PIB](gdp.md)). En réalité, l'historique des remboursements joue également un rôle, et c'est là que les pays se distinguent les uns des autres (si ça t'intéresse : il existe un excellent livre sur le sujet intitulé « [Cette fois, c'est différent](https://press.princeton.edu/books/paperback/9780691152646/this-time-is-different) »). 
+
+En fonction de ta solvabilité, tu dois décider quelle part de ta ligne de crédit tu souhaites *utiliser*. Un exemple : si ta solvabilité s'élève à 100 millions de dollars, tu souhaiteras peut-être en *utiliser* la moitié (= 50 millions de dollars), c'est-à-dire en emprunter. Ou 30 % (= 30 millions de dollars). Ou rien du tout. 
+
+Pourquoi ne pas simplement tout emprunter ? Parce qu’une fois que tu as emprunté de l’argent, tu dois commencer à le rembourser et payer des intérêts. Deuxièmement : plus tes dettes sont élevées, plus ta solvabilité sera faible par la suite. La plupart du temps, ce sont les paiements d'intérêts qui poussent les gouvernements à réfléchir à deux fois avant de contracter des emprunts. Aux États-Unis, par exemple, le « [Paiement des intérêts Poste (en 2026)](https://www.pgpf.org/programs-and-projects/fiscal-policy/monthly-interest-tracker-national-debt/) » (service de la dette) est le troisième poste de dépenses du budget, devant même les dépenses militaires. 
+
+Plus tu empruntes, plus les intérêts sont élevés, et moins tu peux dépenser pour autre chose ! Réfléchis donc bien à ce que tu fais.

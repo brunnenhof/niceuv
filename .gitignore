@@ -30,6 +30,7 @@ corrections/
 # scratch files
 scratch
 putty
+test_screenshots
 
 # Runtime / generated
 .nicegui/

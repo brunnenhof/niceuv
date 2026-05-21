@@ -1,0 +1,3 @@
+# L'éducation pour tous
+
+[Plus le niveau d'éducation - en particulier chez les femmes - est élevé dans une société, plus le taux de natalité est faible.](https://www.demogr.mpg.de/en/news_events_6123/news_press_releases_4630/press/women_s_education_influences_fertility_rates_in_sub_saharan_africa_13644). Voir aussi [ici](https://ourworldindata.org/grapher/womens-educational-attainment-vs-fertility). L'éducation pour tous fait donc baisser le taux de natalité. De combien ? Fais une estimation éclairée : 0 signifie qu'il n'y a pas d'effet, 10 signifie une baisse de 10 % (le maximum possible), 5 signifie une baisse de 5 %, etc.

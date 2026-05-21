@@ -17,16 +17,21 @@ import re
 from urllib.parse import quote, unquote
 import sys
 import deepl
+from dotenv import load_dotenv
+load_dotenv()
 from pathlib import Path
 
 # ── Config ────────────────────────────────────────────────────────────────────
-API_KEY      = os.environ["DEEPL_API_KEY"]
+API_KEY      = ""   # set in main() so --dry-run works without the key
+GLOSSARY_ID  = os.environ.get("DEEPL_GLOSSARY_ID", "")  # optional
+_TAG         = "x"             # XML ignore tag sent to DeepL
+
+# Set by main() from CLI args — used by translation helpers
+SOURCE_LANG  = "EN"
 TARGET_LANG  = "DE"
-FORMALITY    = "less"          # du-form
-GLOSSARY_ID  = os.environ.get("DEEPL_GLOSSARY_ID")  # optional
+FORMALITY    = "less"
 SRC_DIR      = Path("docs/en")
 DST_DIR      = Path("docs/de")
-_TAG         = "x"             # XML ignore tag sent to DeepL
 
 
 # ── Protect non-translatable spans ───────────────────────────────────────────
@@ -155,7 +160,7 @@ def _translate_mailto_subjects(translator: deepl.Translator, text: str) -> str:
         return text
 
     unique = list(dict.fromkeys(unquote(m.group(2)) for m in matches))
-    results = translator.translate_text(unique, source_lang="EN", target_lang=TARGET_LANG)
+    results = translator.translate_text(unique, source_lang=SOURCE_LANG, target_lang=TARGET_LANG)
     if isinstance(results, deepl.TextResult):
         results = [results]
     mapping = {orig: res.text for orig, res in zip(unique, results)}
@@ -184,7 +189,7 @@ def _translate(translator: deepl.Translator, text: str) -> str:
         stores.append(s)
 
     kwargs: dict = dict(
-        source_lang="EN",
+        source_lang=SOURCE_LANG,
         target_lang=TARGET_LANG,
         tag_handling="xml",
         ignore_tags=[_TAG],
@@ -221,7 +226,7 @@ def _fix_internal_link_texts(translator: deepl.Translator, text: str) -> str:
         return text
 
     unique_texts = list(dict.fromkeys(m.group(1).strip() for m in matches))
-    kwargs: dict = dict(source_lang="EN", target_lang=TARGET_LANG, formality=FORMALITY)
+    kwargs: dict = dict(source_lang=SOURCE_LANG, target_lang=TARGET_LANG, formality=FORMALITY)
     if GLOSSARY_ID:
         kwargs["glossary"] = GLOSSARY_ID
     results = translator.translate_text(unique_texts, **kwargs)
@@ -245,11 +250,24 @@ def _char_count(text: str) -> int:
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Translate docs/en/*.md to docs/de/")
+    global SOURCE_LANG, TARGET_LANG, FORMALITY, SRC_DIR, DST_DIR
+    parser = argparse.ArgumentParser(description="Translate Markdown docs via DeepL")
+    parser.add_argument("--src-dir",       default="docs/en",  help="Source docs dir (default: docs/en)")
+    parser.add_argument("--dst-dir",       default="docs/de",  help="Target docs dir (default: docs/de)")
+    parser.add_argument("--source-lang",   default="EN",       help="DeepL source language code (default: EN)")
+    parser.add_argument("--target-lang",   default="DE",       help="DeepL target language code (default: DE)")
+    parser.add_argument("--formality",     default="less",     choices=["less", "more", "default"],
+                        help="DeepL formality (default: less)")
     parser.add_argument("--dry-run",       action="store_true", help="Count chars only, no API calls")
-    parser.add_argument("--skip-existing", action="store_true", help="Skip files already in docs/de/")
+    parser.add_argument("--skip-existing", action="store_true", help="Skip files already in dst-dir")
     parser.add_argument("--file",          help="Translate a single file (filename only, e.g. people.md)")
     args = parser.parse_args()
+
+    SOURCE_LANG = args.source_lang.upper()
+    TARGET_LANG = args.target_lang.upper()
+    FORMALITY   = args.formality
+    SRC_DIR     = Path(args.src_dir)
+    DST_DIR     = Path(args.dst_dir)
 
     DST_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -273,6 +291,8 @@ def main() -> None:
         print("Dry run — no API calls made.")
         return
 
+    global API_KEY
+    API_KEY = os.environ["DEEPL_API_KEY"]
     translator = deepl.Translator(API_KEY)
     usage = translator.get_usage()
     remaining = usage.character.limit - usage.character.count

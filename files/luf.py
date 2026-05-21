@@ -452,7 +452,7 @@ Sobald Sie sich angemeldet haben, entweder als Spielorganisator:in oder als Spie
 ## Sprache
 Bitte beachten Sie, dass Sie die Sprache nur ganz zu Beginn des Spiels ändern können!
 ## Dank
-Unser größter Dank gilt unseren Alpha-Testern, den Schülern und Schülerinnen des Kurses SW101 an der Sekundarschule Baesweiler, der im April 2024 von René Langohr unterrichtet wurde, sowie allen Beta-Testern.
+Unser größter Dank gilt unseren Alpha-Testern, den Schülern und Schülerinnen des Kurses SW101 an der Realschule Baesweiler, der im April 2024 von René Langohr unterrichtet wurde, sowie allen Beta-Testern.
 Links zu allen Arbeiten, auf denen wir aufgebaut haben, finden Sie im Benutzerhandbuch. Das Spiel wird unter der GNU Affero General Public License v3.0 veröffentlicht.
     """,
     """## Über SimZukunft
@@ -472,7 +472,7 @@ Sobald Du dich angemeldet hast, entweder als Spielorganisator:in oder als Spiele
 ## Sprache
 Bitte beachte, dass Du die Sprache nur ganz zu Beginn des Spiels ändern kannst
 ## Dank
-Unser größter Dank gilt unseren Alpha-Testern, den Schülern und Schülerinnen des Kurses SW101 an der Sekundarschule Baesweiler, der im April 2024 von René Langohr unterrichtet wurde, sowie allen Beta-Testern.
+Unser größter Dank gilt unseren Alpha-Testern, den Schülern und Schülerinnen des Kurses SW101 an der Realschule Baesweiler, der im April 2024 von René Langohr unterrichtet wurde, sowie allen Beta-Testern.
 Links zu allen Arbeiten, auf denen wir aufgebaut haben, findest Du im Benutzerhandbuch. Das Spiel wird unter der GNU Affero General Public License v3.0 veröffentlicht.""",
     """
 ## À propos de SimAvenir

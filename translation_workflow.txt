@@ -1,0 +1,58 @@
+deepl_api_key = "428b236c-2ac9-49a8-bc0e-6d1b49aaca05:fx"
+# PowerShell:
+$env:DEEPL_API_KEY = "428b236c-2ac9-49a8-bc0e-6d1b49aaca05:fx"
+$env:DEEPL_GLOSSARY_ID = "7e9a3cf1-d8f8-4d8b-842e-3ed713195c54"
+uv run python translate_md.py --skip-existing
+
+Translation workflow:
+MANUAL:
+locally
+# Norwegian
+uv run python translate_md.py --src-dir docs/de --dst-dir docs/nb --source-lang DE --target-lang NB --formality default
+
+# Chinese simplified
+uv run python translate_md.py --src-dir docs/de --dst-dir docs/zh --source-lang DE --target-lang ZH-HANS --formality default
+
+target-lang must be recognized by DeepL as of May 17 they are
+['AF', 'AN', 'AR', 'AS', 'AY', 'AZ', 'BA', 'BE', 'BG', 'BN', 'BR', 'BS', 'CA', 'CS', 'CY', 'DA', 'DE', 'DE-DE', 'EL', 'EN-GB', 'EN-US', 'EO', 'ES', 'ES-419', 'ET', 'EU', 'FA', 'FI', 'FR', 'FR-FR', 'GA', 'GL', 'GN', 'GU', 'HA', 'HE', 'HI', 'HR', 'HT', 'HU', 'HY', 'ID', 'IG', 'IS', 'IT', 'JA', 'JV', 'KA', 'KK', 'KO', 'KY', 'LA', 'LB', 'LN', 'LT', 'LV', 'MG', 'MI', 'MK', 'ML', 'MN', 'MR', 'MS', 'MT', 'MY', 'NB', 'NE', 'NL', 'OC', 'OM', 'PA', 'PL', 'PS', 'PT-BR', 'PT-PT', 'QU', 'RO', 'RU', 'SA', 'SK', 'SL', 'SQ', 'SR', 'ST', 'SU', 'SV', 'SW', 'TA', 'TE', 'TG', 'TH', 'TK', 'TL', 'TN', 'TR', 'TS', 'TT', 'UK', 'UR', 'UZ', 'VI', 'WO', 'XH', 'YI', 'ZH', 'ZH-HANS', 'ZH-HANT', 'ZU']
+
+add language to mkdocs.yml
+
+move files to server
+git add ~
+git commit -m "msg"
+git push
+
+uv run mkdocs gh-deploy
+
+ask volunteer to run https://simfututure.quest/review_fr
+When he / she is done
+run https://simfututure.quest/review_fr/approve
+copy clean server docs to local
+using this command locally:
+   
+
+STRINGS
+luf_editor.py
+apply_corrections.py
+
+adjust toy.py to handle added language, both strings and manual
+
+
+
+TO RE-SYNC APPROVED FILES FROM SERVER BACK TO LOCAL
+rsync is the best tool for this — only transfers changed files on repeat syncs. Run from your local example/ folder in Git Bash or WSL:
+
+# Pull reviewed + approval state from server → local
+rsync -av pete@SERVER:/home/pete/niceuv/example/docs/fr_reviewed/ docs/fr_reviewed/
+Or if you want the full docs folder (all language outputs):
+
+rsync -av pete@SERVER:/home/pete/niceuv/example/docs/ docs/
+Replace SERVER with the server's hostname or IP. The trailing slash on the source path matters in rsync — it means "copy the contents", not the folder itself.
+rsync -av pete@206.168.213.171:/home/pete/niceuv/example/docs/fr_reviewed/ docs/fr_reviewed/
+And to push local approved files back to the server after any local edits:
+rsync -av docs/fr_reviewed/ pete@206.168.213.171:/home/p
+
+If you're on Windows without WSL/Git Bash, scp from PowerShell works too but copies everything every time:
+
+scp -r pete@SERVER:/home/pete/niceuv/example/docs/fr_reviewed/ docs/

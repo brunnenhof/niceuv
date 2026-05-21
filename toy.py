@@ -36,6 +36,11 @@ from nicegui import app, run, ui
 import database as maindb
 import game_plot_ug
 from files import luf
+import review_fr  # registers /review and /review/approve pages
+
+import asyncio, logging
+logging.getLogger("asyncio").setLevel(logging.CRITICAL)
+
 
 app.add_static_files('/static', 'static')
 
@@ -292,7 +297,10 @@ def db_update_prefs(token: str, lang: str = None, dark: int = None):
 # ── Pre-login prefs (browser storage) ─────────────────────────────────────────
 
 def get_lang() -> str:
-    return app.storage.user.get("lang", "en")
+    try:
+        return app.storage.user.get("lang", "en")
+    except Exception:
+        return "en"
 
 def get_dark() -> bool:
     return bool(app.storage.user.get("dark", 0))
@@ -437,7 +445,7 @@ def create_header(token: str | None = None):
             with ui.column().classes('gap-0 text-white font-bold'):
                 with ui.row().classes("items-end gap-2"):
                     ui.label(luf.simfuture[langx]).classes('text-2xl')
-                    ui.label(" v0a").classes('text-xs italic')
+                    ui.label(" v0b").classes('text-xs italic')
                 ui.label(luf.the_age_of_consequences[langx]).classes('font-italic text-sm')
 
         if platform.system() == "Windows":
@@ -448,6 +456,8 @@ def create_header(token: str | None = None):
             langx = LANG_TO_INDEX.get(lang, 0)
             if langx == 1 or langx == 2:
                 help_link = 'https://brunnenhof.github.io/niceuv/de/the-point-of-the-game/'
+            elif langx == 3:
+                help_link = 'https://brunnenhof.github.io/niceuv/fr/the-point-of-the-game/'
             else:
                 help_link = 'https://brunnenhof.github.io/niceuv/en/the-point-of-the-game/'
 
@@ -824,17 +834,16 @@ def home():
                     ministry_ref[0] = ministry_sel
 
                     def refresh_availability():
+                        # Calling set_options() on an open Quasar q-select closes the
+                        # dropdown, breaking concurrent selections. Only intervene when
+                        # the currently-chosen region was just fully booked by others;
+                        # do_join() handles ministry conflicts via a final conflict check.
                         ps = taken_slots()
                         ar = avail_regions(ps)
-                        region_sel.set_options(ar)
-                        if region_sel.value not in ar:
+                        if region_sel.value and region_sel.value not in ar:
+                            region_sel.set_options(ar)
                             region_sel.value = None
                             ministry_sel.set_options([])
-                        elif region_sel.value:
-                            opts = avail_ministries(region_sel.value, ps)
-                            ministry_sel.set_options(opts)
-                            if ministry_sel.value not in opts:
-                                ministry_sel.value = next(iter(opts), None)
 
                     ui.timer(2.0, refresh_availability)
 
@@ -1107,7 +1116,8 @@ def gm_board(token: str):
                 _conn.commit()
             # Show spinner, generate in background, reload once done
             with ui.card().classes("mx-auto mt-32 p-8 items-center gap-4"):
-                ui.spinner(size="xl")
+#                ui.spinner(size="xl")
+                ui.spinner('dots', size='xl', color='red')
                 ui.label(luf.generating_random_policy_decisions[langx]).classes("text-lg")
 
             async def _do_generate():
@@ -1770,7 +1780,12 @@ def _render_sliders(token: str, game_id: str, current_round: int,
                           .classes("text-base text-orange-600 font-bold")
                         manual_page = POLICY_MANUAL_PAGE.get(pol_tag)
                         if manual_page:
-                            lang_prefix = "de" if langx in (1, 2) else "en"
+                            if langx in (1, 2):
+                                lang_prefix = "de" 
+                            elif langx in (3,):
+                                lang_prefix = "fr" 
+                            else:
+                                lang_prefix = "en"
                             manual_url = f"{MANUAL_BASE}/{lang_prefix}/{manual_page}/"
 #                            print(manual_url)
                             ui.link(luf.deep_dive[langx], manual_url, new_tab=True) \

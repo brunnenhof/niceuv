@@ -1,0 +1,7 @@
+# Mise en place d'un revenu de base universel
+
+On parle d'« [Dividende de base général](https://earth4all.life/universal-basic-dividend/) » lorsqu'un État impose des biens communs tels que les droits de pêche (voir par exemple [ici](https://www.sciencedirect.com/science/article/abs/pii/S0964569118300656)), les droits miniers (voir par exemple [ici](https://www.igfmining.org/financial-benefits/global-mining-tax-initiative/)), le droit d'utiliser les fréquences radio (voir par exemple [ici](https://www.ofcom.org.uk/siteassets/resources/documents/consultations/category-2-6-weeks/114665-annual-licence-fees/associated-documents/statement-annual-licence-fees-900-mhz-and-1800-mhz.pdf?v=323615)), etc. 
+
+Cette mesure fixe ce impôt en pourcentage de ton PIB, c'est-à-dire que 0 = 0 % du PIB, donc rien ; 5 = 5 % du PIB ; 3 = 3 % du PIB.  Tout l'argent que tu perçois de cette manière est versé dans les recettes fiscales générales du gouvernement. Le gouvernement peut ensuite utiliser cet argent supplémentaire pour [De nouveaux investissements ou des subventions pour ses citoyens:-nes](https://www.economicshelp.org/blog/glossary/difference-between-consumption-and-investment/).
+
+Parmi les exemples particulièrement réussis, on peut citer [Fonds permanent de l'Alaska](https://de.wikipedia.org/wiki/Alaska_Permanent_Fund) et [Fonds de pension de l'État norvégien](https://de.wikipedia.org/wiki/Staatlicher_Pensionsfonds_(Norwegen). En connais-tu d'autres ?
