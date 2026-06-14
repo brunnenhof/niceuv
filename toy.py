@@ -445,7 +445,7 @@ def create_header(token: str | None = None):
             with ui.column().classes('gap-0 text-white font-bold'):
                 with ui.row().classes("items-end gap-2"):
                     ui.label(luf.simfuture[langx]).classes('text-2xl')
-                    ui.label(" v0b").classes('text-xs italic')
+                    ui.label(" v0c ").classes('text-xs italic')
                 ui.label(luf.the_age_of_consequences[langx]).classes('font-italic text-sm')
 
         if platform.system() == "Windows":
@@ -1127,6 +1127,19 @@ def gm_board(token: str):
             ui.timer(0.1, _do_generate, once=True)
             return
 
+    # Model-running check: if GM disconnected mid-model-run, show a waiting spinner
+    # instead of the normal board.  The page auto-reloads every 4 s until the model
+    # finishes and advance_round() clears the flag.
+    if gid and maindb.get_model_running(gid):
+        with ui.card().classes("mx-auto mt-32 p-8 items-center gap-4"):
+            ui.spinner('dots', size='xl', color='orange')
+            ui.label(luf.model_running_please_wait[langx]).classes("text-lg font-bold")
+            ui.label(
+                "The simulation is running in the background. "
+                "This page will refresh automatically when it is done."
+            ).classes("text-sm text-gray-500 text-center max-w-sm")
+        ui.timer(4.0, lambda: ui.navigate.to(f"/gm/board?token={token}"), once=True)
+        return
 
     # Which players have joined / submitted this round?
     _gm_game_id = session.get("game_id", "")
@@ -1401,13 +1414,16 @@ def gm_board(token: str):
                     async def do_advance():
                         dlg.close()
                         gid = session.get("game_id", "")
+                        # Mark model as running so reconnecting GMs see the spinner
+                        if gid:
+                            maindb.set_model_running(gid, 1)
                         notify = ui.notify(luf.model_running_please_wait[langx],
                                            type="ongoing", timeout=0, position="center")
                         import ugregmod as _ugregmod
                         await run.io_bound(_ugregmod.ugregmod, gid, current_round)
                         if notify:
                             notify.dismiss()
-                        # Advance in game DB (increments current_round, resets accept_decisions)
+                        # Advance in game DB (increments current_round, resets model_running)
                         if gid:
                             maindb.advance_round(gid)
                         ui.navigate.to(f"/gm/board?token={token}")

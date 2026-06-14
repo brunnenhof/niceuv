@@ -1,0 +1,31 @@
+
+Reconnect Test Report
+════════════════════════════════════════════════════════════
+Total disconnects: 26  |  OK: 26  |  WARN/FAIL: 0
+
+  ✓  [se/Emp              ]  after_join
+  ✓  [se/Pov              ]  after_join
+  ✓  [se/Ine              ]  round_1_after_submit
+  ✓  [se/Ene              ]  round_1_after_submit
+  ✓  [se/Foo              ]  after_join
+  ✓  [se/Emp              ]  round_1_after_submit
+  ✓  [se/Fut              ]  round_1_after_submit
+  ✓  [GM                  ]  start_of_round_2
+  ✓  [se/Emp              ]  between_round_1_and_2
+  ✓  [se/Ine              ]  between_round_1_and_2
+  ✓  [se/Ene              ]  between_round_1_and_2
+  ✓  [se/Pov              ]  round_2_after_submit
+  ✓  [se/Foo              ]  round_2_after_submit
+  ✓  [se/Emp              ]  round_2_after_submit
+  ✓  [se/Ine              ]  round_2_after_submit
+  ✓  [se/Fut              ]  between_round_1_and_2
+  ✓  [se/Fut              ]  round_2_after_submit
+  ✓  [se/Pov              ]  round_3_after_submit
+  ✓  [se/Ine              ]  between_round_2_and_3
+  ✓  [se/Ene              ]  round_3_after_submit
+  ✓  [se/Emp              ]  between_round_2_and_3
+  ✓  [se/Foo              ]  between_round_2_and_3
+  ✓  [se/Fut              ]  between_round_2_and_3
+  ✓  [se/Ine              ]  round_3_after_submit
+  ✓  [se/Foo              ]  round_3_after_submit
+  ✓  [se/Emp              ]  round_3_after_submit

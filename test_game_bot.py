@@ -226,7 +226,8 @@ async def run_gm(browser):
             await page.wait_for_timeout(500)
 
             log("GM", f"Round {rnd}: waiting for all regions to submit")
-            await wait_for_text(page, f"Run model to Round {rnd + 1}", timeout=300_000)
+            await page.get_by_role("button", name=f"Run model to Round {rnd + 1}", exact=False) \
+                      .first.wait_for(state="visible", timeout=300_000)
 
             log("GM", f"Round {rnd}: running model")
             await click_button(page, f"Run model to Round {rnd + 1}")

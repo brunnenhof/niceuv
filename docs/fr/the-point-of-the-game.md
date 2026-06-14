@@ -7,7 +7,7 @@ SimAvenir offre un espace où jusqu’à 60 joueurs et joueuses peuvent explorer
 ### Jouer
 Le jeu vise aussi à faire découvrir aux joueurs et joueuses l'expérience d'une **action** autonome, sans tonner ni blâmer. Notre vie se réduit malheureusement de plus en plus à la **mise en œuvre** des projets d'autrui, sans aucune **marge de manœuvre** – voir le livre de Hartmut Rosa, *[Situation et constellation](https://www.suhrkamp.de/buch/hartmut-rosa-situation-und-konstellation-t-9783518588338)*.
 
-Si tu souhaites approfondir le sujet, jette un œil au livre de Tom DeMarco, *[Espaces de jeu](https://www.kulturmanagement.net/Buecher/Spielraeume-Projektmanagement-jenseits-von-Burn-out-Stress-und-Effizienzwahn,61)*, et à celui de Stefan Kühl, *[L'illégalité utile](https://campus.de/brauchbare-illegalitaet/CAM51301)*.
+Si tu souhaites approfondir le sujet, jette un œil au livre de Tom DeMarco, [Slack](https://www.penguinrandomhouse.com/books/39276/slack-by-tom-demarco/) et à celui de Stefan Kühl [L'illégalité utile](https://campus.de/brauchbare-illegalitaet/CAM51301).
 
 Dans cet esprit, SimAvenir se veut un site [Jeu infini](https://www.simonandschuster.com/books/Finite-and-Infinite-Games/James-Carse/9781476731711).
 

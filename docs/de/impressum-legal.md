@@ -21,4 +21,4 @@ Der Betreiber dieser Website gestattet die Nutzung oder das Herunterladen von In
 
 **Urheber- und Markenrechte:** Alle auf dieser Website dargestellten Inhalte, wie Texte, Fotos, Grafiken, Marken und Warenzeichen, sind durch die jeweiligen Schutzrechte (Urheberrechte, Markenrechte) geschützt. Die Nutzung, Vervielfältigung usw. unterliegen unseren Rechten oder den Rechten der jeweiligen Autoren oder Rechteinhaber.
 
-Erstellt mit [kostenloser datenschutz-generator.de](https://datenschutz-generator.de/) von Dr. Thomas Schwenke
+Erstellt mit dem kostenlosen [datenschutz-generator.de](https://datenschutz-generator.de/) von Dr. Thomas Schwenke

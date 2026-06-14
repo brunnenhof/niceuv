@@ -109,6 +109,7 @@ nav:
         - 'GDP': en/gdp.md
         - 'Off-balance sheet financing': en/off-balance-sheet-financing.md
         - 'The Energy Cost of Feeding the World': en/the-energy-cost-of-feeding-the-world.md
+        - 'Social trust and social tension': en/trust-and-tension.md
     - 'Licence': en/licence.md
     - 'Impressum / Legal': en/impressum-legal.md
   - Deutsch:
@@ -176,6 +177,7 @@ nav:
         - 'BIP': de/gdp.md
         - 'Außerbilanzielle Finanzierung': de/off-balance-sheet-financing.md
         - 'Die Energiekosten der Welternährung': de/the-energy-cost-of-feeding-the-world.md
+        - 'Soziales Vertrauen und soziale Spannungen': de/trust-and-tension.md
     - 'Lizenz': de/licence.md
     - 'Impressum / Rechtliche Hinweise': de/impressum-legal.md
   - Français:
@@ -243,5 +245,6 @@ nav:
         - 'PIB': fr/gdp.md
         - 'Financement hors bilan': fr/off-balance-sheet-financing.md
         - 'Le coût énergétique de l''alimentation mondiale': fr/the-energy-cost-of-feeding-the-world.md
+        - 'Confiance sociale et tensions sociales': fr/trust-and-tension.md
     - 'Licence': fr/licence.md
     - 'Mentions légales': fr/impressum-legal.md

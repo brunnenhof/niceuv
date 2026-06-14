@@ -146,10 +146,15 @@ def init_database():
                 langx INTEGER DEFAULT 0,
                 mode TEXT DEFAULT 'normal',
                 state_x INTEGER DEFAULT 1,
+                model_running INTEGER DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        # Migrate: add model_running to existing games tables
+        _gcols = {r[1] for r in conn.execute("PRAGMA table_info(games)").fetchall()}
+        if "model_running" not in _gcols:
+            conn.execute("ALTER TABLE games ADD COLUMN model_running INTEGER DEFAULT 0")
         
         # AI regions table - track which regions are AI-controlled
         conn.execute("""
@@ -1118,7 +1123,8 @@ def advance_round(game_id: str):
             conn.execute(
                 """
                 UPDATE games
-                SET state = 'complete', current_round = ?, updated_at = CURRENT_TIMESTAMP
+                SET state = 'complete', current_round = ?, model_running = 0,
+                    updated_at = CURRENT_TIMESTAMP
                 WHERE game_id = ?
                 """,
                 (new_round, game_id)
@@ -1128,7 +1134,7 @@ def advance_round(game_id: str):
             conn.execute(
                 """
                 UPDATE games
-                SET current_round = ?, accept_decisions = 0, 
+                SET current_round = ?, accept_decisions = 0, model_running = 0,
                     state = 'playing', updated_at = CURRENT_TIMESTAMP
                 WHERE game_id = ?
                 """,
@@ -1138,6 +1144,25 @@ def advance_round(game_id: str):
         conn.commit()
         
         return True
+
+
+def set_model_running(game_id: str, value: int):
+    """Set model_running flag (1 = model in progress, 0 = idle)."""
+    with get_db() as conn:
+        conn.execute(
+            "UPDATE games SET model_running = ?, updated_at = CURRENT_TIMESTAMP WHERE game_id = ?",
+            (value, game_id),
+        )
+        conn.commit()
+
+
+def get_model_running(game_id: str) -> int:
+    """Return 1 if model is currently running for this game, else 0."""
+    with get_db() as conn:
+        row = conn.execute(
+            "SELECT model_running FROM games WHERE game_id = ?", (game_id,)
+        ).fetchone()
+    return row["model_running"] if row else 0
 
 
 def set_accept_decisionsFAKE(game_id: str, accept: bool):
