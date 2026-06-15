@@ -90,6 +90,54 @@ SCREENSHOT_DIR = Path("test_screenshots")
 SCREENSHOT_DIR.mkdir(exist_ok=True)
 
 
+# Maps lang code → header button label (mirrors toy.py LANG_OPTIONS)
+_LANG_LABELS = {"en": "EN", "de": "DE-Sie", "de_inf": "DE-Du", "fr": "FR", "no": "NO"}
+
+# Button/label translations — indices = langx: en=0, de=1, de_inf=2, fr=3, no=4
+# Source: files/luf.py
+_TX: dict[str, list[str]] = {
+    # ── Join / create flow ────────────────────────────────────────────────────
+    "fresh_game":        ["Fresh Game",         "Neues Spiel",                 "Neues Spiel",                  "Nouvelle partie",               "Nytt spill"],
+    "start_new_game":    ["Start a new Game",   "Starte ein neues",            "Starte ein neues",             "Commence une nouvelle",         "Start et nytt spill"],
+    "start_game_dialog": ["Start",              "Start",                       "Start",                        "Commencer",                     "Start"],
+    "join_new_game":     ["Join a new Game",    "Als Spieler:in",              "Als Spieler:in",               "Participer à un nouveau",       "Delta som spiller"],
+    "open_game":         ["Open game",          "Spiel aufrufen",              "Spiel aufrufen",               "Lancer le jeu",                 "Åpne spillet"],
+    "join_btn":          ["Join!",              "Machen Sie mit!",             "Mach mit!",                    "Rejoignez-nous !",              "Bli med!"],
+    "confirm_selection": ["Confirm selection",  "Auswahl bestätigen",          "Auswahl bestätigen",           "Confirmez votre",               "Bekreft valg"],
+    "continue_to_board": ["Continue to GM",     "Weiter zur Spielleiter",      "Weiter zur Spielleiter",       "Accéder à l'aperçu",            "Gå videre til"],
+    "username_label":    ["Username",           "Benutzernamen",               "Benutzernamen",                "Nom d'utilisateur",             "Brukernavn"],
+    "game_id_label":     ["Game ID",            "Spiel-ID",                    "Spiel-ID",                     "Jeu d'identité",                "Spill-ID"],
+    # ── Game play ─────────────────────────────────────────────────────────────
+    "allow_submissions": ["Allow Submissions",  "Abgaben zulassen",            "Abgaben zulassen",             "Autoriser les soumissions",     "Tillat innsendinger"],
+    "run_model_prefix":  ["Run model to Round", "Das Modell fortschreiben zu Runde", "Das Modell fortschreiben bis Runde", "Mettre à jour le modèle pour le tour", "Kjør modellen til runde"],
+    "yes_run_model":     ["Yes, run model",     "Ja, Modell fortschreiben",    "Ja, Modell fortschreiben",     "Oui, exécuter le modèle",       "Ja, kjør modellen"],
+    "submit_proposals":  ["Submit proposals?",  "Vorschläge einreichen?",      "Vorschläge einreichen?",       "Soumettre des propositions ?",  "Sende inn forslag?"],
+    "yes_submit":        ["Yes, Submit",        "Ja, Absenden",                "Ja, Absenden",                 "Oui, envoyer",                  "Ja, send inn"],
+    "check_results":     ["Check if results are ready", "Prüfen Sie, ob Ergebnisse vorliegen", "Schau nach, ob Ergebnisse schon da sind", "Vérifiez si les résultats sont disponibles", "Sjekk om resultatene er klare"],
+}
+
+def tx(key: str, langx: int) -> str:
+    return _TX[key][langx]
+
+# Region display names by langx — mirrors luf.py rt_en / rt_de / rt_fr / rt_no
+_REGION_NAMES_LANG: dict[int, dict[str, str]] = {
+    0: {"us":"USA","af":"Africa South of Sahara","cn":"China","me":"Middle East and North Africa","sa":"South Asia","la":"Latin America","pa":"Pacific Rim","ec":"East Europe and Central Asia","eu":"Europe","se":"Southeast Asia"},
+    1: {"us":"USA","af":"Afrika, südlich der Sahara","cn":"China","me":"Naher Osten & Nordafrika","sa":"Südasien","la":"Lateinamerika","pa":"Pazifische Anrainer","ec":"Osteuropa & Zentralasien","eu":"Europa","se":"Südost Asien"},
+    2: {"us":"USA","af":"Afrika, südlich der Sahara","cn":"China","me":"Naher Osten & Nordafrika","sa":"Südasien","la":"Lateinamerika","pa":"Pazifische Anrainer","ec":"Osteuropa & Zentralasien","eu":"Europa","se":"Südost Asien"},
+    3: {"us":"États-Unis","af":"Afrique, au sud du Sahara","cn":"Chine","me":"Moyen-Orient et Afrique du Nord","sa":"Asie du Sud","la":"Amérique latine","pa":"Pays riverains du Pacifique","ec":"Europe de l'Est et Asie centrale","eu":"Europe","se":"Asie du Sud-Est"},
+    4: {"us":"USA","af":"Afrika, sør for Sahara","cn":"Kina","me":"Midtøsten og Nord-Afrika","sa":"Sør-Asia","la":"Latin-Amerika","pa":"Stillehavskyststater","ec":"Øst-Europa og Sentral-Asia","eu":"Europa","se":"Sørøst-Asia"},
+}
+
+# Ministry display names by langx — mirrors luf.py mini_en / mini_de / mini_fr / mini_no
+_MINISTRY_NAMES_LANG: dict[int, dict[str, str]] = {
+    0: {"Poverty":"Poverty","Inequality":"Inequality","Empowerment":"Empowerment","Food":"Food","Energy":"Energy","Future":"Future"},
+    1: {"Poverty":"Armut","Inequality":"Ungleichheit","Empowerment":"Befähigung","Food":"Ernährung & Agrar","Energy":"Energie","Future":"Zukunft"},
+    2: {"Poverty":"Armut","Inequality":"Ungleichheit","Empowerment":"Befähigung","Food":"Ernährung & Agrar","Energy":"Energie","Future":"Zukunft"},
+    3: {"Poverty":"La pauvreté","Inequality":"Les inégalités","Empowerment":"L'autonomisation","Food":"Alimentation et agriculture","Energy":"l'Énergie","Future":"l 'Avenir"},
+    4: {"Poverty":"Fattigdom","Inequality":"Ulikhet","Empowerment":"Myndiggjøring","Food":"Ernæring & landbruk","Energy":"Energi","Future":"Fremtiden"},
+}
+
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def log(actor: str, msg: str):
@@ -125,6 +173,55 @@ async def wait_for_text(page: Page, text: str, timeout: int = TIMEOUT):
     await page.get_by_text(text, exact=False).first.wait_for(state="visible", timeout=timeout)
 
 
+async def set_random_language(page: Page, actor: str) -> int:
+    """Pick a random language (langx 1–4) and set it via the header language button.
+
+    Expects the page to already be on the home page (language button enabled there).
+    Returns the langx integer (1–4) so callers can use translated button text.
+    """
+    chosen = random.choice(["de", "de_inf", "fr", "no"])
+    chosen_label = _LANG_LABELS[chosen]
+    langx = {"de": 1, "de_inf": 2, "fr": 3, "no": 4}[chosen]
+    log(actor, f"Language → {chosen_label} (langx={langx})")
+
+    header = page.locator("header")
+    clicked = False
+    for label in _LANG_LABELS.values():
+        btn = header.get_by_role("button", name=label, exact=True)
+        try:
+            await btn.first.wait_for(state="visible", timeout=1_000)
+            await btn.first.click()
+            clicked = True
+            break
+        except Exception:
+            continue
+    if not clicked:
+        log(actor, "Language button not found — keeping EN")
+        return 0
+
+    # q-menu teleports to <body>; pick the desired item
+    option = page.locator(".q-menu .q-item").filter(has_text=chosen_label).first
+    await option.wait_for(state="visible", timeout=TIMEOUT)
+    await option.click()
+
+    # FR and NO show a disclaimer dialog — dismiss it (triggers the page reload)
+    if chosen in ("fr", "no"):
+        try:
+            ok_btn = page.get_by_role("button", name="OK", exact=True).first
+            await ok_btn.wait_for(state="visible", timeout=5_000)
+            await ok_btn.click()
+        except Exception:
+            pass
+
+    # Pause so the language switch is visible in headed mode
+    if HEADED:
+        await page.wait_for_timeout(3_000)
+
+    await page.wait_for_load_state("networkidle", timeout=30_000)
+    await page.wait_for_timeout(1_000)
+    return langx
+
+
 async def fill_input_in(scope, label: str, value: str, timeout: int = TIMEOUT):
     """Fill a NiceGUI/Quasar input by floating label, scoped to a locator."""
     loc = scope.locator(f'.q-field:has(.q-field__label:text("{label}")) .q-field__native')
@@ -150,6 +247,18 @@ async def select_quasar(page: Page, nth: int, option_text: str, timeout: int = T
     await option.click()
 
 
+async def _fill_join_inputs(page: Page, username: str, game_id: str, langx: int):
+    """Fill the join dialog's username and game-ID inputs; falls back to positional."""
+    try:
+        await fill_input(page, tx("username_label", langx), username, timeout=5_000)
+        await fill_input(page, tx("game_id_label", langx), game_id, timeout=5_000)
+    except Exception:
+        dlg = page.locator(".q-dialog").last
+        inputs = dlg.locator("input")
+        await inputs.nth(0).fill(username)
+        await inputs.nth(1).fill(game_id)
+
+
 # ── GM flow ───────────────────────────────────────────────────────────────────
 
 async def run_gm(browser):
@@ -162,8 +271,10 @@ async def run_gm(browser):
         # ── Create game ───────────────────────────────────────────────────────
         log("GM", "Opening home page")
         await page.goto(BASE, timeout=TIMEOUT)
-        await click_button(page, "Fresh Game")
-        await click_button(page, "Start a new Game")
+        # Set language BEFORE creating — upsert_player_lang writes get_lang() to DB at join time
+        langx = await set_random_language(page, "GM")
+        await click_button(page, tx("fresh_game", langx))
+        await click_button(page, tx("start_new_game", langx))
 
         # Wait for Quasar dialog to finish animating in
         await page.wait_for_selector('.q-dialog', timeout=TIMEOUT)
@@ -182,9 +293,9 @@ async def run_gm(browser):
             inputs = dlg.locator('input')
             await inputs.nth(0).fill(gm_name)
             await inputs.nth(1).fill(START_CODE)
-        await click_button(page, "Start", exact=True)
+        await click_button(page, tx("start_game_dialog", langx), exact=True)
 
-        # ── Setup: select eu + us regions ────────────────────────────────────
+        # ── Setup: select regions ─────────────────────────────────────────────
         log("GM", "Waiting for setup page")
         await page.wait_for_url("**/gm/setup**", timeout=TIMEOUT)
 
@@ -198,40 +309,46 @@ async def run_gm(browser):
         log("GM", f"Game ID: {game_id_value}")
         game_id_event.set()
 
-        # Tick the two human regions
+        # Tick the human regions (names vary by language on the setup page)
         for reg in REGIONS:
-            label_text = REGION_NAMES[reg]
+            label_text = _REGION_NAMES_LANG[langx][reg]
             chk = page.get_by_text(label_text, exact=True).first
             await chk.wait_for(state="visible", timeout=TIMEOUT)
             await chk.click()
             log("GM", f"Selected region {reg} ({label_text})")
             await page.wait_for_timeout(200)
 
-        await click_button(page, "Confirm selection")
+        await click_button(page, tx("confirm_selection", langx))
         await page.wait_for_timeout(500)
-        await click_button(page, "Continue to GM Board")
+        await click_button(page, tx("continue_to_board", langx))
         await page.wait_for_url("**/gm/board**", timeout=TIMEOUT)
         log("GM", "On GM board")
         gm_board_event.set()   # release ministers — server is ready for joins
 
+        await page.wait_for_timeout(1_000)
+
         # ── Play through all rounds ───────────────────────────────────────────
+        allow_btn = tx("allow_submissions", langx)
+        run_prefix = tx("run_model_prefix", langx)
+        yes_run    = tx("yes_run_model", langx)
+
         for rnd in range(1, NUM_ROUNDS + 1):
             log("GM", f"Round {rnd}: waiting for all players to join")
-            # wait_for_text matches inner span children too; use the button role instead.
-            await page.get_by_role("button", name="Allow Submissions", exact=False) \
+            await page.get_by_role("button", name=allow_btn, exact=False) \
                       .first.wait_for(state="visible", timeout=120_000)
 
             log("GM", f"Round {rnd}: allowing submissions")
-            await click_button(page, "Allow Submissions")
+            await click_button(page, allow_btn)
             await page.wait_for_timeout(500)
 
+            run_btn = f"{run_prefix} {rnd + 1}"
             log("GM", f"Round {rnd}: waiting for all regions to submit")
-            await page.get_by_role("button", name=f"Run model to Round {rnd + 1}", exact=False) \
+            await page.get_by_role("button", name=run_btn, exact=False) \
                       .first.wait_for(state="visible", timeout=300_000)
 
             log("GM", f"Round {rnd}: running model")
-            await click_button(page, f"Run model to Round {rnd + 1}")
-            await click_button(page, "Yes, run model")
+            await click_button(page, run_btn)
+            await click_button(page, yes_run)
 
             log("GM", f"Round {rnd}: model running…")
             await page.wait_for_timeout(5000)
@@ -240,9 +357,8 @@ async def run_gm(browser):
             round_done_events[rnd].set()
 
             if rnd < NUM_ROUNDS:
-                # Wait for board to refresh to next round
-                await wait_for_text(page, f"Round {rnd + 1}", timeout=60_000)
-                # Page auto-reloads; re-allow submissions for next round
+                # Wait for board header to show next round (number-only match works in any language)
+                await wait_for_text(page, f"{rnd + 1}/{NUM_ROUNDS}", timeout=60_000)
                 await page.wait_for_timeout(3000)
 
         log("GM", "All rounds done — game complete")
@@ -289,7 +405,15 @@ async def run_minister(browser, region: str, ministry: str):
         # Rate-limited to 3 concurrent joins so NiceGUI's single-threaded event
         # loop isn't overwhelmed. After each failed attempt we wait up to 30 s
         # before retrying so a slow-but-successful join doesn't burn the slot.
+        langx = 0
         async with join_semaphore:
+            # Set language once before the retry loop so that upsert_player_lang
+            # at join time writes the chosen language into the DB. Changing it
+            # after joining doesn't work because create_header() on the home page
+            # receives no token, so db_update_prefs is never called.
+            await page.goto(BASE, timeout=TIMEOUT)
+            langx = await set_random_language(page, actor)
+
             for join_attempt in range(10):
                 if "/dashboard" in page.url:
                     break  # a slow previous attempt finally navigated us here
@@ -302,21 +426,20 @@ async def run_minister(browser, region: str, ministry: str):
 
                 try:
                     await page.goto(BASE, timeout=TIMEOUT)
-                    await click_button(page, "Fresh Game")
-                    await click_button(page, "Join a new game")
-                    await fill_input(page, "Username", username)
-                    await fill_input(page, "Game ID", game_id_value)
-                    await click_button(page, "Open game")
+                    await click_button(page, tx("fresh_game", langx))
+                    await click_button(page, tx("join_new_game", langx))
+                    await _fill_join_inputs(page, username, game_id_value, langx)
+                    await click_button(page, tx("open_game", langx))
 
-                    await select_quasar(page, 0, REGION_NAMES[region])
+                    await select_quasar(page, 0, _REGION_NAMES_LANG[langx][region])
                     log(actor, f"Join attempt {join_attempt + 1}: region selected")
                     await page.wait_for_timeout(800)
 
-                    await select_quasar(page, 1, ministry)
+                    await select_quasar(page, 1, _MINISTRY_NAMES_LANG[langx][ministry])
                     log(actor, f"Join attempt {join_attempt + 1}: ministry selected")
                     await page.wait_for_timeout(800)
 
-                    await click_button(page, "Join!")
+                    await click_button(page, tx("join_btn", langx))
                     await page.wait_for_url("**/dashboard**", timeout=TIMEOUT)
                     break  # success
                 except Exception as e:
@@ -346,7 +469,7 @@ async def run_minister(browser, region: str, ministry: str):
                 await _interact_slider(page, actor, region, ministry, rnd)
             else:
                 # Future minister: submit region proposals with retry
-                await _submit_region(page, actor, rnd)
+                await _submit_region(page, actor, rnd, langx)
 
             # Wait for GM to run model
             log(actor, f"Round {rnd}: waiting for model run")
@@ -355,16 +478,15 @@ async def run_minister(browser, region: str, ministry: str):
 
             log(actor, f"Round {rnd}: checking results")
             try:
-                await _check_results(page, actor, rnd)
+                await _check_results(page, actor, rnd, langx)
             except RuntimeError:
                 if rnd < NUM_ROUNDS:
                     raise  # mid-game failure is a real error
                 # Final round: the button sometimes disappears before we can
                 # click it (NiceGUI disconnection or server-side state race).
-                # Fall back to polling via page reloads — once advance_round()
-                # is called in the DB the reload will show current_round=4.
+                # Fall back to polling via page reloads.
                 log(actor, "Button gone on final round — polling via reload")
-                target = f"Round: {NUM_ROUNDS + 1}"
+                target = f": {NUM_ROUNDS + 1} /"
                 for _ in range(15):
                     await page.wait_for_timeout(3000)
                     try:
@@ -447,8 +569,10 @@ async def _interact_slider(page: Page, actor: str, region: str, ministry: str, r
     policy_log[(region, ministry, rnd)] = values
 
 
-async def _submit_region(page: Page, actor: str, rnd: int):
+async def _submit_region(page: Page, actor: str, rnd: int, langx: int = 0):
     """Click 'Submit proposals?' then confirm 'Yes, Submit', retrying if the dialog doesn't open."""
+    submit_btn  = tx("submit_proposals", langx)
+    yes_sub_btn = tx("yes_submit", langx)
     log(actor, f"Round {rnd}: waiting to submit region proposals")
     for attempt in range(10):
         # Close any dialog left open from the previous attempt (its backdrop
@@ -459,12 +583,12 @@ async def _submit_region(page: Page, actor: str, rnd: int):
         except Exception:
             pass
 
-        await click_button(page, "Submit proposals?", timeout=300_000)
+        await click_button(page, submit_btn, timeout=300_000)
         try:
             # Quasar dialog needs ~500ms to animate in; use 20s under server load
-            await page.get_by_role("button", name="Yes, Submit", exact=False) \
+            await page.get_by_role("button", name=yes_sub_btn, exact=False) \
                       .first.wait_for(state="visible", timeout=20_000)
-            await page.get_by_role("button", name="Yes, Submit", exact=False).first.click()
+            await page.get_by_role("button", name=yes_sub_btn, exact=False).first.click()
             log(actor, f"Round {rnd}: region submitted")
             return
         except Exception:
@@ -473,9 +597,11 @@ async def _submit_region(page: Page, actor: str, rnd: int):
     raise RuntimeError(f"Could not submit region proposals in round {rnd}")
 
 
-async def _check_results(page: Page, actor: str, rnd: int):
+async def _check_results(page: Page, actor: str, rnd: int, langx: int = 0):
     """Click 'Check if results are ready' and wait for next-round dashboard."""
-    target = f"Round: {rnd + 1}"
+    check_btn = tx("check_results", langx)
+    # Round label format is "{Round}: {current} / {total}" — match ": N /" in any language
+    target = f": {rnd + 1} /"
     for attempt in range(15):
         try:
             # Check first — we may have already navigated to the new round
@@ -484,7 +610,7 @@ async def _check_results(page: Page, actor: str, rnd: int):
                 log(actor, f"Advanced to round {rnd + 1}")
                 return
 
-            await click_button(page, "Check if results are ready", timeout=10_000)
+            await click_button(page, check_btn, timeout=10_000)
             # Wait for navigation + NiceGUI WebSocket re-hydration
             await page.wait_for_load_state("networkidle", timeout=20_000)
             await page.wait_for_timeout(1000)
