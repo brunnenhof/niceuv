@@ -11,6 +11,7 @@ import string
 from pathlib import Path
 from files import luf_original
 from nicegui import app
+import notify
 
 DB_PATH = str(Path(__file__).parent / "sdg3_game.db")
 
@@ -1129,6 +1130,8 @@ def advance_round(game_id: str):
                 """,
                 (new_round, game_id)
             )
+            gm_row = conn.execute("SELECT gm_username FROM games WHERE game_id=?", (game_id,)).fetchone()
+            notify.game_alert(game_id, gm_row["gm_username"] if gm_row else "", "finished")
         else:
             # Advance to next round
             conn.execute(

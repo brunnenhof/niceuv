@@ -38,24 +38,10 @@ import game_plot_ug
 from files import luf
 import review_fr  # registers /review and /review/approve pages
 
-import asyncio, logging, smtplib, threading
-from email.mime.text import MIMEText
+import asyncio, logging
 logging.getLogger("asyncio").setLevel(logging.CRITICAL)
 
-
-def _send_game_alert(game_id: str, gm_name: str) -> None:
-    """Send a notification email when a new game is started (runs in background thread)."""
-    try:
-        msg = MIMEText(f"Game {game_id} started by {gm_name}.")
-        msg["Subject"] = f"SimFuture: Game {game_id} started"
-        msg["From"]    = "post@blue-way.net"
-        msg["To"]      = "simfuture@blue-way.net"
-        with smtplib.SMTP("w014f358.kasserver.com", 587) as s:
-            s.starttls()
-            s.login("post@blue-way.net", "lokomotive!007AC")
-            s.sendmail("post@blue-way.net", ["simfuture@blue-way.net"], msg.as_string())
-    except Exception as e:
-        logging.getLogger(__name__).warning("game alert email failed: %s", e)
+import notify
 
 
 app.add_static_files('/static', 'static')
@@ -681,6 +667,9 @@ def home():
                                             code_err.set_text("Wrong code – try again.")
                                             return
                                         app.storage.user["token"] = chosen
+                                        with get_db() as _c:
+                                            _g = _c.execute("SELECT gm_username FROM games WHERE game_id=?", (s["game_id"],)).fetchone()
+                                        notify.game_alert(s["game_id"], _g["gm_username"] if _g else "", "resumed")
                                         code_dlg.close()
                                         dlg.close()
                                         ui.navigate.to(f"/gm/board?token={chosen}")
@@ -744,7 +733,7 @@ def home():
                         (game_id, name, _lang, LANG_TO_INDEX.get(_lang, 0), _mode),
                     )
                     _conn.commit()
-                threading.Thread(target=_send_game_alert, args=(game_id, name), daemon=True).start()
+                notify.game_alert(game_id, name, "started")
                 dlg.close()
                 ui.navigate.to(f"/gm/setup?token={token}")
 
