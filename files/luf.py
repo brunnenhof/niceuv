@@ -2496,7 +2496,7 @@ gm_checkbox_open21_tx = [
 of = [
     " of ",
     " von ",
-    "von",
+    " von ",
     " de ",
     " av ",
 ]
@@ -2814,11 +2814,11 @@ active_positions_not_shown = [
     "aktiv(e) posisjon(er) er i bruk – vises ikke.",
 ]
 all_positions_currently_active = [
-    "All positions in this game are currently active. Try again later.",
-    "Alle Positionen in diesem Spiel sind derzeit aktiv. Versuchen Sie es später erneut.",
-    "Alle Positionen in diesem Spiel sind derzeit aktiv. Versuche es später erneut.",
-    "Toutes les positions de ce jeu sont actuellement actives. Réessayez plus tard.",
-    "Alle posisjoner i dette spillet er for øyeblikket aktive. Prøv igjen senere.",
+    "All roles in this game are currently active, or the game heartbeat timer needs a few more seconds. Try again later.",
+    "Alle Rollen in diesem Spiel sind derzeit aktiv, bzw. der Heartbeat-Timer des Spiels benötigt noch ein paar Sekunden. Versuchen Sie es später erneut.",
+    "Alle Rollen in diesem Spiel sind derzeit aktiv, bzw. der Heartbeat-Timer des Spiels benötigt noch ein paar Sekunden. Versuche es später erneut.",
+    "Tous les rôles de ce jeu sont actuellement actifs, ou le compte à rebours du jeu a besoin de quelques secondes supplémentaires. Veuillez réessayer plus tard.",
+    "Alle roller i dette spillet er for øyeblikket aktive, eller spillets puls-timer trenger noen sekunder til. Prøv igjen senere.",
 ]
 session_already_active_warning = [
     "This session appears active in another tab. Resuming here will disconnect that tab.",
