@@ -1081,7 +1081,9 @@ def gm_setup(token: str):
 def gm_board(token: str):
     session = db_get(token)
     if not session or session["role"] != "GM":
-        ui.navigate.to("/")
+        reason = "token not found" if not session else f"role={session['role']}"
+        ui.label(f"Resume failed: {reason}. Returning home...").classes("text-red-500 m-8")
+        ui.timer(3, lambda: ui.navigate.to("/"), once=True)
         return
 
     create_header(token)
