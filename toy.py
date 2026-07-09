@@ -670,9 +670,11 @@ def home():
                                         with get_db() as _c:
                                             _g = _c.execute("SELECT gm_username FROM games WHERE game_id=?", (gid,)).fetchone()
                                         notify.game_alert(gid, _g["gm_username"] if _g else "", "resumed")
+                                        _dest = f"/gm/board?token={chosen}"
+                                        logging.info("confirm_code navigating to %s", _dest[:40])
                                         code_dlg.close()
                                         dlg.close()
-                                        ui.navigate.to(f"/gm/board?token={chosen}")
+                                        ui.run_javascript(f'window.location.href = "{_dest}"')
 
                                     code_input.on("keydown.enter", confirm_code)
                                     with ui.row().classes("mt-4 gap-2"):
@@ -1079,9 +1081,11 @@ def gm_setup(token: str):
 
 @ui.page("/gm/board")
 def gm_board(token: str):
+    logging.info("gm_board called token=%s", token[:8] if token else "EMPTY")
     session = db_get(token)
     if not session or session["role"] != "GM":
         reason = "token not found" if not session else f"role={session['role']}"
+        logging.warning("gm_board access denied: %s token=%s", reason, token[:8] if token else "EMPTY")
         ui.label(f"Resume failed: {reason}. Returning home...").classes("text-red-500 m-8")
         ui.timer(3, lambda: ui.navigate.to("/"), once=True)
         return
