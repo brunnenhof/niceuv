@@ -662,7 +662,7 @@ def home():
                                                    .props("autofocus").classes("w-full")
                                     code_err = ui.label("").classes("text-red-500 text-sm")
 
-                                    def confirm_code():
+                                    async def confirm_code():
                                         if code_input.value.strip().lower() != "oscar":
                                             code_err.set_text("Wrong code – try again.")
                                             return
@@ -670,10 +670,10 @@ def home():
                                         with get_db() as _c:
                                             _g = _c.execute("SELECT gm_username FROM games WHERE game_id=?", (gid,)).fetchone()
                                         notify.game_alert(gid, _g["gm_username"] if _g else "", "resumed")
-                                        _dest = f"/gm/board?token={chosen}"
                                         code_dlg.close()
                                         dlg.close()
-                                        ui.run_javascript(f'window.location.href = "{_dest}"')
+                                        await asyncio.sleep(0.05)
+                                        ui.navigate.to(f"/gm/board?token={chosen}")
 
                                     code_input.on("keydown.enter", confirm_code)
                                     with ui.row().classes("mt-4 gap-2"):
