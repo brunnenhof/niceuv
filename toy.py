@@ -605,7 +605,7 @@ def home():
                             "SELECT * FROM sessions WHERE game_token = ? AND game_id = ?",
                             (gm_row["token"], gid)
                         ).fetchall()
-                cutoff = int(time.time()) - 300  # active in the last 5 min → flag as live
+                cutoff = int(time.time()) - 60   # active in the last 60 s → flag as live
                 sessions = []
                 if gm_row:
                     gd = dict(gm_row)
@@ -668,8 +668,8 @@ def home():
                                             return
                                         app.storage.user["token"] = chosen
                                         with get_db() as _c:
-                                            _g = _c.execute("SELECT gm_username FROM games WHERE game_id=?", (s["game_id"],)).fetchone()
-                                        notify.game_alert(s["game_id"], _g["gm_username"] if _g else "", "resumed")
+                                            _g = _c.execute("SELECT gm_username FROM games WHERE game_id=?", (gid,)).fetchone()
+                                        notify.game_alert(gid, _g["gm_username"] if _g else "", "resumed")
                                         code_dlg.close()
                                         dlg.close()
                                         ui.navigate.to(f"/gm/board?token={chosen}")

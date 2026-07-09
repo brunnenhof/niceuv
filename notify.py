@@ -1,13 +1,16 @@
 """Email notifications for game events."""
-import logging, smtplib, threading
+import logging, os, smtplib, threading
 from email.mime.text import MIMEText
+from dotenv import load_dotenv
 
-_SMTP_HOST = "w014f358.kasserver.com"
-_SMTP_PORT = 587
-_SMTP_USER = "post@blue-way.net"
-_SMTP_PASS = "lokomotive!007AC"
-_FROM      = "post@blue-way.net"
-_TO        = "simfuture@blue-way.net"
+load_dotenv()
+
+_SMTP_HOST = os.environ.get("SMTP_HOST", "")
+_SMTP_PORT = int(os.environ.get("SMTP_PORT", 587))
+_SMTP_USER = os.environ.get("SMTP_USER", "")
+_SMTP_PASS = os.environ.get("SMTP_PASS", "")
+_FROM      = os.environ.get("SMTP_FROM", "")
+_TO        = os.environ.get("SMTP_TO", "")
 
 _SUBJECTS = {
     "started":  "SimFuture: Game {gid} started",
