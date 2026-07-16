@@ -520,8 +520,14 @@ def home():
             pass
         return "en"
 
-    if "lang" not in app.storage.user:
-        app.storage.user["lang"] = get_default_lang()
+    try:
+        if "lang" not in app.storage.user:
+            app.storage.user["lang"] = get_default_lang()
+    except AssertionError:
+        # Storage not yet initialised — happens under high concurrency with new sessions.
+        # Redirect forces the browser to re-request, by which time storage is ready.
+        ui.navigate.to("/")
+        return
 
     lang = get_lang()
     langx = LANG_TO_INDEX.get(lang, 0)
