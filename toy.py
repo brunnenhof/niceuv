@@ -27,9 +27,24 @@ import random
 import secrets
 import sqlite3
 import string
+import sys
 import time
 from contextlib import contextmanager
 from pathlib import Path
+
+# Several print() calls elsewhere in this app (and in database.py) include
+# emoji/non-ASCII characters. When stdout isn't attached to a UTF-8-capable
+# console -- e.g. output redirected to a log file, or Windows' default
+# cp1252 codepage -- those raise UnicodeEncodeError and kill whatever
+# background task or request handler was printing (discovered while chasing
+# an unrelated concurrency bug: this crash was silently aborting AI-region
+# policy generation mid-round). Force UTF-8 unconditionally so this can't
+# happen regardless of how the process is launched.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 
 from nicegui import app, run, ui
 
@@ -113,7 +128,12 @@ app.colors(primary="#014873", secondary="#0383A1", my_orange="#FF8A05")
 
 @contextmanager
 def get_db():
-    conn = sqlite3.connect(DB_PATH)
+    # WAL mode: readers no longer block behind a writer (default rollback-journal
+    # mode serializes all access). timeout=30: wait up to 30s for a contended
+    # lock instead of the sqlite3 default of 5s. Matters once many sessions hit
+    # the DB at once (e.g. a full game's worth of players joining together).
+    conn = sqlite3.connect(DB_PATH, timeout=30)
+    conn.execute("PRAGMA journal_mode=WAL")
     conn.row_factory = sqlite3.Row
     try:
         yield conn
@@ -501,7 +521,7 @@ def create_header(token: str | None = None):
 # ── Pages ─────────────────────────────────────────────────────────────────────
 
 @ui.page("/")
-def home():
+async def home():
     
     from nicegui import context
     
@@ -827,14 +847,14 @@ def home():
                     players_now   = taken_slots()
                     ministry_ref  = [None]   # filled after ministry_sel is created
 
-                    def on_region_change(e):
+                    async def on_region_change(e):
                         ms = ministry_ref[0]
                         if ms is None:
                             return
                         if not e.value:
                             ms.set_options([])
                             return
-                        opts = avail_ministries(e.value, taken_slots())
+                        opts = avail_ministries(e.value, await run.io_bound(taken_slots))
                         first = next(iter(opts), None)
                         ms.set_options(opts, value=first)
 
@@ -846,12 +866,16 @@ def home():
                                      .classes("w-full mt-2")
                     ministry_ref[0] = ministry_sel
 
-                    def refresh_availability():
+                    async def refresh_availability():
                         # Calling set_options() on an open Quasar q-select closes the
                         # dropdown, breaking concurrent selections. Only intervene when
                         # the currently-chosen region was just fully booked by others;
                         # do_join() handles ministry conflicts via a final conflict check.
-                        ps = taken_slots()
+                        #
+                        # Fires every 2s for every client sitting in this dialog, so with
+                        # a full game's worth of joiners waiting at once this must not
+                        # block the shared event loop.
+                        ps = await run.io_bound(taken_slots)
                         ar = avail_regions(ps)
                         if region_sel.value and region_sel.value not in ar:
                             region_sel.set_options(ar)
@@ -860,36 +884,24 @@ def home():
 
                     ui.timer(2.0, refresh_availability)
 
-                    def do_join():
-                        if not region_sel.value:
-                            err_label.set_text(luf.select_a_region_before_joining[langx])
-                            return
-                        if not ministry_sel.value:
-                            err_label.set_text(luf.select_a_ministry_before_joining[langx])
-                            return
-                        # Final race-condition check
-                        ps = taken_slots()
-                        if any(p["region"] == region_sel.value and
-                               p["role"]   == ministry_sel.value for p in ps):
-                            err_label.set_text(luf.that_slot_was_just_taken_please_pick_another[langx])
-                            refresh_availability()
-                            return
-                        player_token = secrets.token_urlsafe(16)
-                        app.storage.user["token"] = player_token
-                        db_create(player_token, name, ministry_sel.value)
-                        gm_s = db_get(gm_token_ref[0]) if gm_token_ref[0] else {}
+                    def _do_join_db_work(player_token, name, ministry, region,
+                                          gm_token, lang_val, dark_val):
+                        """All blocking DB work for one join, run off the event loop
+                        via run.io_bound. Must not touch app.storage.user/request-scoped
+                        state -- that context isn't propagated into the thread pool, so
+                        lang_val/dark_val are captured on the caller's side beforehand."""
+                        db_create(player_token, name, ministry)
+                        gm_s = db_get(gm_token) if gm_token else {}
                         gm_game_id = gm_s.get("game_id", "") if gm_s else ""
                         db_update(player_token,
-                                  game_token=gm_token_ref[0],
+                                  game_token=gm_token,
                                   game_id=gm_game_id,
-                                  region=region_sel.value)
+                                  region=region)
                         # Write lang/dark to maindb immediately so reads are correct from first page load
                         if gm_game_id:
                             try:
                                 maindb.upsert_player_lang(
-                                    gm_game_id, name,
-                                    region_sel.value, ministry_sel.value,
-                                    get_lang(), int(get_dark()),
+                                    gm_game_id, name, region, ministry, lang_val, dark_val,
                                 )
                             except Exception:
                                 pass
@@ -898,16 +910,42 @@ def home():
                                 exists = _conn.execute(
                                     "SELECT 1 FROM human_regions "
                                     "WHERE game_id=? AND region_tag=?",
-                                    (gm_s["game_id"], region_sel.value),
+                                    (gm_s["game_id"], region),
                                 ).fetchone()
                                 if not exists:
                                     _conn.execute(
                                         "INSERT INTO human_regions "
                                         "(game_id, region_tag, sub_1, sub_2, sub_3) "
                                         "VALUES (?,?,0,0,0)",
-                                        (gm_s["game_id"], region_sel.value),
+                                        (gm_s["game_id"], region),
                                     )
                                 _conn.commit()
+
+                    async def do_join():
+                        if not region_sel.value:
+                            err_label.set_text(luf.select_a_region_before_joining[langx])
+                            return
+                        if not ministry_sel.value:
+                            err_label.set_text(luf.select_a_ministry_before_joining[langx])
+                            return
+                        # Final race-condition check
+                        ps = await run.io_bound(taken_slots)
+                        if any(p["region"] == region_sel.value and
+                               p["role"]   == ministry_sel.value for p in ps):
+                            err_label.set_text(luf.that_slot_was_just_taken_please_pick_another[langx])
+                            await refresh_availability()
+                            return
+                        player_token = secrets.token_urlsafe(16)
+                        app.storage.user["token"] = player_token
+                        # get_lang()/get_dark() touch app.storage.user, which needs the
+                        # request context -- capture their values here, on the main
+                        # thread, before handing off to the background DB work.
+                        lang_val = get_lang()
+                        dark_val = int(get_dark())
+                        await run.io_bound(
+                            _do_join_db_work, player_token, name, ministry_sel.value,
+                            region_sel.value, gm_token_ref[0], lang_val, dark_val,
+                        )
                         dlg.close()
                         ui.navigate.to(f"/dashboard?token={player_token}")
 
@@ -924,7 +962,10 @@ def home():
         dlg.open()
 
     # ── Unified home card ───────────────────────────────────────────────────────
-    has_resumable = len(_resumable_sessions()) > 0
+    # Runs on every single page load, so it must not block the shared event
+    # loop -- especially under a login stampede where dozens of clients load
+    # this page within the same second.
+    has_resumable = len(await run.io_bound(_resumable_sessions)) > 0
 
     def open_new_or_join():
         with ui.dialog() as dlg, ui.card().classes("p-6 w-96"):
@@ -2210,4 +2251,14 @@ if __name__ in {"__main__", "__mp_main__"}:
         port=8899,
         reload=False,
         show=False,
+        # Default (3.0) derives ping_interval~4s/ping_timeout~2s (see nicegui's
+        # _startup: ping_interval = max(reconnect_timeout*0.8, 4), ping_timeout =
+        # max(reconnect_timeout*0.4, 2)) -- too tight when a burst of new
+        # sessions (e.g. a full game's worth of players joining at once)
+        # transiently saturates the single event loop: a client whose handshake
+        # ping isn't answered within ~2s gets dropped and force-reloaded by
+        # nicegui.js, which is the "connection lost, back to the opening
+        # screen" failure. Raising this gives the server much more slack
+        # before deciding a client is gone.
+        reconnect_timeout=30.0,
     )

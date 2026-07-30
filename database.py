@@ -25,8 +25,17 @@ MINISTRIES = ["Poverty", "Inequality", "Empowerment", "Food", "Energy", "Future"
 
 @contextmanager
 def get_db():
-    """Context manager for database connections"""
-    conn = sqlite3.connect(DB_PATH)
+    """Context manager for database connections.
+
+    WAL journal mode lets readers proceed concurrently with a writer instead
+    of blocking behind it (the default rollback-journal mode serializes all
+    access). timeout=30 makes a writer wait up to 30s for a contended lock
+    instead of the sqlite3 default of 5s before raising 'database is locked' --
+    both matter once dozens of sessions hit the DB at once (e.g. a full game's
+    worth of players joining within the same few seconds).
+    """
+    conn = sqlite3.connect(DB_PATH, timeout=30)
+    conn.execute("PRAGMA journal_mode=WAL")
     conn.row_factory = sqlite3.Row
     try:
         yield conn

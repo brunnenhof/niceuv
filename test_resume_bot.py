@@ -34,6 +34,18 @@ import random
 import logging
 logging.getLogger("asyncio").setLevel(logging.CRITICAL)
 
+# This file's own log/print output includes non-ASCII characters (arrows,
+# checkmarks, em-dashes). Under non-UTF-8 stdout (redirected to a file, or a
+# non-UTF-8 console codepage) those raise UnicodeEncodeError, which inside
+# asyncio.gather(..., return_exceptions=True) is silently swallowed into that
+# task's result -- leaving every other bot waiting forever on an event that
+# will now never fire. What looks like a hang is actually this crash.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 from playwright.async_api import BrowserContext, Page, async_playwright
 
 # ── Config ─────────────────────────────────────────────────────────────────────

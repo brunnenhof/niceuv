@@ -28,6 +28,19 @@ import random
 import asyncio, logging
 logging.getLogger("asyncio").setLevel(logging.CRITICAL)
 
+# log() below prints non-ASCII characters (e.g. the arrow in "Language -> X").
+# When stdout isn't UTF-8-capable (redirected to a file, non-UTF-8 console
+# codepage), that raises UnicodeEncodeError deep inside asyncio.gather(...,
+# return_exceptions=True) -- which silently swallows it into that task's
+# result instead of crashing visibly, leaving every other bot waiting forever
+# on an event (e.g. gm_board_event) that the now-dead GM task will never set.
+# What looks like a hang is actually this crash. Force UTF-8 unconditionally.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 from playwright.async_api import BrowserContext, Page, async_playwright
 
 # ── Config ────────────────────────────────────────────────────────────────────
