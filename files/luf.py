@@ -2140,6 +2140,13 @@ that_slot_was_just_taken_please_pick_another = [
     "Ce créneau vient d'être pris — veuillez en choisir un autre",
     "Den plassen ble nettopp tatt – vennligst velg en annen",
 ]
+join_busy_please_retry = [
+    "Lots of people are joining right now — please try again in a few seconds",
+    "Gerade treten sehr viele Personen bei – bitte versuchen Sie es in ein paar Sekunden erneut",
+    "Gerade treten sehr viele Personen bei – bitte versuch es in ein paar Sekunden erneut",
+    "Beaucoup de personnes rejoignent en ce moment — veuillez réessayer dans quelques secondes",
+    "Mange melder seg inn akkurat nå – vennligst prøv igjen om noen sekunder",
+]
 game_setup = [ 
     "Game Setup",
     "Spielaufbau",

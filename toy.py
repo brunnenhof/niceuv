@@ -520,6 +520,18 @@ def create_header(token: str | None = None):
 
 # ── Pages ─────────────────────────────────────────────────────────────────────
 
+# Caps how many people can be mid-way through the "join a new game" flow at
+# once. Found empirically: this server (2 vCPU) handles ~18 simultaneous new
+# joins fine but collapses completely by ~24 -- not a gradual slowdown, a hard
+# cliff, consistent with CPU saturation once too many new-session setups (page
+# render + DB writes + socket.io handshake) land within the same few seconds.
+# Real users don't self-throttle the way a workshop's arrival pattern might
+# suggest, so gate it explicitly: anyone over the cap gets an immediate,
+# honest "try again in a few seconds" instead of a multi-second hang that
+# ends in a confusing reload. Set comfortably under the ~18 safe threshold.
+JOIN_SLOTS = asyncio.Semaphore(12)
+
+
 @ui.page("/")
 async def home():
     
@@ -773,8 +785,30 @@ async def home():
         dlg.open()
 
     # ── Join game dialog ────────────────────────────────────────────────────────
-    def open_join():
+    async def open_join():
+        # Non-blocking try-acquire: if we're at capacity, fail immediately
+        # with a clear message rather than making this person wait.
+        try:
+            await asyncio.wait_for(JOIN_SLOTS.acquire(), timeout=0.01)
+        except asyncio.TimeoutError:
+            ui.notify(luf.join_busy_please_retry[langx], type="warning", timeout=6000)
+            return
+
+        released = [False]
+
+        def release_slot():
+            if not released[0]:
+                released[0] = True
+                JOIN_SLOTS.release()
+
+        # Safety net: guarantee the slot is freed even if some closure path
+        # below is missed (e.g. an unexpected exception) -- a leaked slot
+        # would otherwise make future joins fail forever, which is worse
+        # than the problem this is meant to fix.
+        ui.timer(90.0, release_slot, once=True)
+
         with ui.dialog() as dlg, ui.card().classes("p-2 w-96"):
+            dlg.on_value_change(lambda e: None if e.value else release_slot())
             ui.label(luf.join_game[langx]).classes("text-xl font-bold mb-2")
 
             name_input = ui.input(luf.please_enter_a_username[langx], placeholder=luf.choose_unique_username[langx]).props("autofocus") \
@@ -968,13 +1002,17 @@ async def home():
     has_resumable = len(await run.io_bound(_resumable_sessions)) > 0
 
     def open_new_or_join():
+        async def _go_join():
+            dlg.close()
+            await open_join()
+
         with ui.dialog() as dlg, ui.card().classes("p-6 w-96"):
             ui.label(luf.fresh_game[langx]).classes("text-xl font-bold mb-4")
             ui.button(luf.start_a_new_game_as_game_leader[langx], icon="add_circle",
                       on_click=lambda: (dlg.close(), open_new_game())) \
               .classes("w-full mb-2")
             ui.button(luf.join_a_new_game_as_player[langx], icon="sports_esports",
-                      on_click=lambda: (dlg.close(), open_join())) \
+                      on_click=_go_join) \
               .props("color=secondary").classes("w-full")
             ui.button(luf.cancel_btn[langx], on_click=dlg.close).props("flat").classes("w-full mt-2")
         dlg.open()
