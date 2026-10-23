@@ -488,6 +488,44 @@ def make_glob_overlay(game_data, lang):
 
     return f"data:image/png;base64,{img_base64}"
 
+def gm_graph_table(game_data, plot_vars, langx):
+    """Yearly values behind the GM graphs and the global overview, for the Excel export.
+
+    Returns (values_df, metrics_df): one column per graph with the values as
+    plotted (pct scaling applied), and a lookup of each column's metric text.
+    """
+    import pandas as pd
+
+    x = game_data[:, 0]
+    yearly = np.isclose(x, np.round(x))  # model steps are 1/32 year; keep whole years
+    values = {luf.year[langx]: np.round(x[yearly]).astype(int)}
+    metrics = []
+    for row in plot_vars:
+        rowid = int(row['pv_id'])
+        var = row['pv_vensim_name'].replace(' ', '_')
+        col = game_vars.index(var) + 1
+        label = luf.my_lab[rowid - 40][str(langx)] if rowid >= 40 else row['pv_indicator']
+        values[label] = game_data[yearly, col] * row['pv_pct']
+        metrics.append((label, luf.subtitle_dict[rowid][str(langx)]))
+
+    overview = [
+        ('Global_population', luf.nat_graph_9_title),
+        ('Global_social_trust', luf.nat_graph_7_title),
+        ('Global_Actual_inequality_index_higher_is_more_unequal', luf.nat_graph_6_title),
+        ('Global_Average_wellbeing_index', luf.nat_graph_5_title),
+        ('Global_GDPpp_USED', luf.nat_graph_11_title),
+        ('Temp_surface_anomaly_compared_to_anfang_degC', luf.nat_graph_4_title),
+    ]
+    for var, title in overview:
+        label = title[langx]
+        if label in values:
+            label = f"{label} ({luf.nat_graph_10_title[langx]})"
+        values[label] = game_data[yearly, game_vars.index(var) + 1]
+        metrics.append((label, luf.nat_graph_10_title[langx]))
+
+    return pd.DataFrame(values), pd.DataFrame(metrics, columns=['graph', 'metric'])
+
+
 def lang2int(lang):
     languages = {
         'en': 0,

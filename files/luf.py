@@ -155,6 +155,27 @@ game_complete = [
     "Le jeu est terminé !",
     "Spillet er fullført!",
 ]
+download_game_data = [
+    "Download game data (Excel)",
+    "Spieldaten herunterladen (Excel)",
+    "Spieldaten herunterladen (Excel)",
+    "Télécharger les données du jeu (Excel)",
+    "Last ned spilldata (Excel)",
+]
+download_failed = [
+    "Download failed, please try again",
+    "Download fehlgeschlagen, bitte erneut versuchen",
+    "Download hat nicht geklappt, versuch es nochmal",
+    "Le téléchargement a échoué, veuillez réessayer",
+    "Nedlastingen mislyktes, prøv igjen",
+]
+year = [
+    "Year",
+    "Jahr",
+    "Jahr",
+    "Année",
+    "År",
+]
 graph_data_unavailable = [
     "Graph data unavailable",
     "Keine Diagrammdaten verfügbar",

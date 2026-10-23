@@ -1502,6 +1502,52 @@ def delete_session(token: str):
         conn.execute('DELETE FROM sessions WHERE token = ?', (token,))
         conn.commit()
 
+def export_game_xlsx(game_id: str, graph_values=None, graph_metrics=None,
+                     graph_pngs: list[bytes] | None = None) -> bytes:
+    """Build an Excel workbook (as bytes) with everything stored for one game.
+
+    One sheet per game-scoped table, filtered to game_id. Decisions are joined
+    with their policy names so the sheet reads on its own. The sessions table is
+    left out on purpose: it holds login tokens.
+    Optional extras from the GM board: graph_values / graph_metrics DataFrames
+    (from game_plot_ug.gm_graph_table) and the rendered graph PNGs.
+    """
+    import io
+    import pandas as pd
+    from openpyxl.drawing.image import Image as XlImage
+
+    queries = {
+        "game": "SELECT * FROM games WHERE game_id = ?",
+        "players": """SELECT username, region_tag, ministry, is_ai, lang, created_at
+                      FROM players WHERE game_id = ? ORDER BY region_tag, ministry""",
+        "human_regions": "SELECT region_tag, sub_1, sub_2, sub_3 FROM human_regions WHERE game_id = ? ORDER BY region_tag",
+        "ai_regions": "SELECT region_tag FROM ai_regions WHERE game_id = ? ORDER BY region_tag",
+        "region_submissions": """SELECT round_num, region_tag, submitted_at FROM region_submissions
+                                 WHERE game_id = ? ORDER BY round_num, region_tag""",
+        "policy_decisions": """SELECT d.round, d.region_tag, d.ministry, p.pol_tag, p.pol_name,
+                                      p.pol_min, p.pol_max, d.value, d.timestamp
+                               FROM policy_decisions d LEFT JOIN policies p ON p.pol_id = d.pol_id
+                               WHERE d.game_id = ? ORDER BY d.round, d.region_tag, d.ministry, p.pol_tag""",
+    }
+
+    buf = io.BytesIO()
+    with get_db() as conn, pd.ExcelWriter(buf, engine="openpyxl") as writer:
+        for sheet, sql in queries.items():
+            pd.read_sql_query(sql, conn, params=(game_id,)).to_excel(writer, sheet_name=sheet, index=False)
+        if graph_values is not None:
+            graph_values.to_excel(writer, sheet_name="graph_values", index=False)
+        if graph_metrics is not None:
+            graph_metrics.to_excel(writer, sheet_name="graph_metrics", index=False)
+        if graph_pngs:
+            ws = writer.book.create_sheet("graphs")
+            for i, png in enumerate(graph_pngs):
+                img = XlImage(io.BytesIO(png))
+                scale = 560 / img.width  # two graphs side by side, like on the board
+                img.width, img.height = img.width * scale, img.height * scale
+                # 10 columns x 22 rows per slot fits a 560px-wide graph
+                ws.add_image(img, f"{'AK'[i % 2]}{1 + (i // 2) * 22}")
+    return buf.getvalue()
+
 if __name__ == "__main__":
     # Initialize database
     init_database()

@@ -22,6 +22,7 @@ Key lessons
   - After reconnect/crash, token in URL restores correct identity from DB
 """
 
+import base64
 import platform
 import random
 import secrets
@@ -1559,9 +1560,32 @@ def gm_board(token: str):
             ui.label("[Card 6 – Game complete]").classes("text-xs text-gray-400 italic")
             ui.label(luf.game_complete[langx]).classes("text-xl font-bold text-purple-700 mb-2")
             ui.label(luf.all_rounds_have_been_played_thank_you_for_playing[langx]).classes("text-sm")
-        card_done.set_visibility(False)
+
+            async def download_game_xlsx():
+                try:
+                    graph_values = graph_metrics = None
+                    plot_vars = maindb.get_plot_variables_for_ministry("GM")
+                    game_data, _ = game_plot_ug.load_game_data(game_id_gm, 3)
+                    if plot_vars and game_data is not None:
+                        graph_values, graph_metrics = game_plot_ug.gm_graph_table(game_data, plot_vars, langx)
+                    # PNGs come from Card 7, which already rendered them for this board
+                    pngs = [base64.b64decode(uri.split(",", 1)[1]) for uri in gm_graph_uris]
+                    data = await run.io_bound(maindb.export_game_xlsx, game_id_gm,
+                                              graph_values, graph_metrics, pngs)
+                except Exception:
+                    logging.exception("Excel export failed for game %s", game_id_gm)
+                    ui.notify(luf.download_failed[langx], type="negative")
+                    return
+                ui.download.content(data, f"{game_id_gm}.xlsx",
+                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+            ui.button(luf.download_game_data[langx], icon="download",
+                      on_click=download_game_xlsx).classes("mt-3")
+        card_done.set_visibility(game_done)
 
         # ── Card 6: GM graphs (visible once all players joined) ───────────────
+        gm_graph_uris = []  # last rendered graph images, reused by the Excel download
+
         @ui.refreshable
         def gm_graphs():
             try:
@@ -1624,9 +1648,11 @@ def gm_board(token: str):
                             else:
                                 ui.element("div").classes("lg:flex-1 w-full")
 
+                gm_graph_uris[:] = [img for _, img in graphs if img]
                 try:
                     overlay = game_plot_ug.make_glob_overlay(game_data, lang)
                     if overlay:
+                        gm_graph_uris.append(overlay)
                         with ui.card().classes("w-full p-4"):
                             ui.image(overlay).classes("w-full")
                 except Exception:
