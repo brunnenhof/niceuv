@@ -490,7 +490,19 @@ async def _submit_region(page: Page, actor: str, rnd: int):
         except Exception:
             pass
 
-        await click_button(page, "Submit proposals?", timeout=300_000)
+        # The Future page no longer auto-refreshes: press the refresh button
+        # until 'Submit proposals?' appears.
+        submit = page.get_by_role("button", name="Submit proposals?", exact=False).first
+        for _ in range(60):
+            if await submit.is_visible():
+                break
+            try:
+                await page.get_by_role("button", name="Show my colleagues' latest decisions",
+                                       exact=False).first.click(timeout=5_000)
+            except Exception:
+                pass
+            await page.wait_for_timeout(5_000)
+        await click_button(page, "Submit proposals?")
         try:
             await page.get_by_role("button", name="Yes, Submit", exact=False) \
                       .first.wait_for(state="visible", timeout=20_000)

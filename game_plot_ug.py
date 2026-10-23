@@ -1,5 +1,7 @@
+import asyncio
 import datetime
 import os
+from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 import matplotlib.pyplot as plt
 from files import luf
@@ -25,6 +27,27 @@ except FileNotFoundError:
     print(f"Warning: Could not load {PLOT_VAR_LIST_PATH}")
 
 regs = ['us', 'af', 'cn', 'me', 'sa', 'la', 'pa', 'ec', 'eu', 'se']
+
+# Graph queue: one worker thread draws every graph, first in first out.
+# A graph takes ~150 ms of matplotlib; drawn inline, 60 ministers opening their
+# results at once blocked the event loop for 13 s, socket.io timed out, the
+# reloads asked for the graphs again, and the game stalled (60-minister load
+# test). Off the loop, pages stay responsive and graphs arrive in turn.
+# One worker also keeps pyplot (not thread-safe) on a single thread -- so every
+# do_graph / make_glob_overlay call must go through draw_queued().
+_GRAPH_WORKER = ThreadPoolExecutor(max_workers=1, thread_name_prefix="graph-queue")
+
+
+async def draw_queued(fn, *args, still_wanted=lambda: True):
+    """Queue fn(*args) on the graph worker and await its result.
+
+    still_wanted is checked when the job reaches the front of the queue; if it
+    returns False (e.g. the page was closed or reloaded meanwhile) the graph is
+    skipped and None returned, so reload storms don't pile up dead work.
+    """
+    def job():
+        return fn(*args) if still_wanted() else None
+    return await asyncio.get_running_loop().run_in_executor(_GRAPH_WORKER, job)
 
 def load_historical_data():
     """Load the 1990-2025 historical data"""

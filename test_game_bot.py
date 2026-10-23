@@ -125,6 +125,7 @@ _TX: dict[str, list[str]] = {
     "run_model_prefix":  ["Run model to Round", "Das Modell fortschreiben zu Runde", "Das Modell fortschreiben bis Runde", "Mettre à jour le modèle pour le tour", "Kjør modellen til runde"],
     "yes_run_model":     ["Yes, run model",     "Ja, Modell fortschreiben",    "Ja, Modell fortschreiben",     "Oui, exécuter le modèle",       "Ja, kjør modellen"],
     "submit_proposals":  ["Submit proposals?",  "Vorschläge einreichen?",      "Vorschläge einreichen?",       "Soumettre des propositions ?",  "Sende inn forslag?"],
+    "see_latest":        ["Show my colleagues' latest decisions", "Aktuelle Entscheidungen meiner Kolleg:innen anzeigen", "Aktuelle Entscheidungen meiner Kolleg:innen anzeigen", "Afficher les dernières décisions de mes collègues", "Vis kollegenes siste beslutninger"],
     "yes_submit":        ["Yes, Submit",        "Ja, Absenden",                "Ja, Absenden",                 "Oui, envoyer",                  "Ja, send inn"],
     "check_results":     ["Check if results are ready", "Prüfen Sie, ob Ergebnisse vorliegen", "Schau nach, ob Ergebnisse schon da sind", "Vérifiez si les résultats sont disponibles", "Sjekk om resultatene er klare"],
 }
@@ -143,7 +144,7 @@ _REGION_NAMES_LANG: dict[int, dict[str, str]] = {
 
 # Ministry display names by langx — mirrors luf.py mini_en / mini_de / mini_fr / mini_no
 _MINISTRY_NAMES_LANG: dict[int, dict[str, str]] = {
-    0: {"Poverty":"Poverty","Inequality":"Inequality","Empowerment":"Empowerment","Food":"Food","Energy":"Energy","Future":"Future"},
+    0: {"Poverty":"Poverty","Inequality":"Inequality","Empowerment":"Empowerment","Food":"Food & Agriculture","Energy":"Energy","Future":"Future"},
     1: {"Poverty":"Armut","Inequality":"Ungleichheit","Empowerment":"Befähigung","Food":"Ernährung & Agrar","Energy":"Energie","Future":"Zukunft"},
     2: {"Poverty":"Armut","Inequality":"Ungleichheit","Empowerment":"Befähigung","Food":"Ernährung & Agrar","Energy":"Energie","Future":"Zukunft"},
     3: {"Poverty":"La pauvreté","Inequality":"Les inégalités","Empowerment":"L'autonomisation","Food":"Alimentation et agriculture","Energy":"l'Énergie","Future":"l 'Avenir"},
@@ -254,8 +255,10 @@ async def select_quasar(page: Page, nth: int, option_text: str, timeout: int = T
     trigger = scope.get_by_role("combobox").nth(nth)
     await trigger.wait_for(state="visible", timeout=timeout)
     await trigger.click()
-    # q-menu teleports to <body>, so search on the full page
-    option = page.locator(".q-menu .q-item").filter(has_text=option_text).first
+    # q-menu teleports to <body>, so search on the full page.
+    # Exact match: a plain substring match picks "East Europe and Central Asia" for "Europe".
+    exact = re.compile(rf"^\s*{re.escape(option_text)}\s*$")
+    option = page.locator(".q-menu .q-item").filter(has_text=exact).first
     await option.wait_for(state="visible", timeout=timeout)
     await option.click()
 
@@ -582,6 +585,22 @@ async def _interact_slider(page: Page, actor: str, region: str, ministry: str, r
     policy_log[(region, ministry, rnd)] = values
 
 
+async def wait_for_submit_button(page: Page, langx: int = 0, timeout_s: int = 300):
+    """The Future page no longer auto-refreshes: press 'Show my colleagues' latest
+    decisions' every few seconds until 'Submit proposals?' appears."""
+    submit = page.get_by_role("button", name=tx("submit_proposals", langx), exact=False).first
+    refresh = page.get_by_role("button", name=tx("see_latest", langx), exact=False).first
+    for _ in range(timeout_s // 5):
+        if await submit.is_visible():
+            return
+        try:
+            await refresh.click(timeout=5_000)
+        except Exception:
+            pass
+        await page.wait_for_timeout(5_000)
+    raise RuntimeError("'Submit proposals?' never appeared")
+
+
 async def _submit_region(page: Page, actor: str, rnd: int, langx: int = 0):
     """Click 'Submit proposals?' then confirm 'Yes, Submit', retrying if the dialog doesn't open."""
     submit_btn  = tx("submit_proposals", langx)
@@ -596,7 +615,8 @@ async def _submit_region(page: Page, actor: str, rnd: int, langx: int = 0):
         except Exception:
             pass
 
-        await click_button(page, submit_btn, timeout=300_000)
+        await wait_for_submit_button(page, langx)
+        await click_button(page, submit_btn)
         try:
             # Quasar dialog needs ~500ms to animate in; use 20s under server load
             await page.get_by_role("button", name=yes_sub_btn, exact=False) \

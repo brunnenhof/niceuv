@@ -2668,6 +2668,34 @@ your_budget = [
     "Votre budget :",
     "Ditt budsjett:", 
 ]
+see_latest_proposals = [
+    "Show my colleagues' latest decisions",
+    "Aktuelle Entscheidungen meiner Kolleg:innen anzeigen",
+    "Aktuelle Entscheidungen meiner Kolleg:innen anzeigen",
+    "Afficher les dernières décisions de mes collègues",
+    "Vis kollegenes siste beslutninger",
+]
+press_to_see_latest = [
+    "Press the button below to see the latest decisions of your fellow ministers. They are also updated automatically when you click *Submit proposals?*. From that moment on, your colleagues may still move their sliders, but the changes no longer count for this round.",
+    "Drücken Sie den Knopf unten, um die neuesten Entscheidungen Ihrer Ministerkolleg:innen zu sehen. Sie werden auch automatisch aktualisiert, wenn Sie auf *Vorschläge einreichen?* klicken. Ab diesem Moment können Ihre Kolleg:innen ihre Schieberegler zwar noch verändern, die Änderungen zählen in dieser Runde aber nicht mehr.",
+    "Drück den Knopf unten, um die neuesten Entscheidungen Deiner Ministerkolleg:innen zu sehen. Sie werden auch automatisch aktualisiert, wenn Du auf *Vorschläge einreichen?* klickst. Ab diesem Moment können Deine Kolleg:innen ihre Schieberegler zwar noch verändern, die Änderungen zählen in dieser Runde aber nicht mehr.",
+    "Appuyez sur le bouton ci-dessous pour voir les dernières décisions de vos collègues ministres. Elles sont aussi mises à jour automatiquement lorsque vous cliquez sur *Soumettre des propositions ?*. À partir de ce moment, vos collègues peuvent encore déplacer leurs curseurs, mais ces changements ne comptent plus pour ce tour.",
+    "Trykk på knappen nedenfor for å se de siste beslutningene til ministerkollegene dine. De oppdateres også automatisk når du klikker på *Sende inn forslag?*. Fra da av kan kollegene dine fortsatt flytte glidebryterne, men endringene teller ikke lenger i denne runden.",
+]
+last_updated = [
+    "Last updated:",
+    "Zuletzt aktualisiert:",
+    "Zuletzt aktualisiert:",
+    "Dernière mise à jour :",
+    "Sist oppdatert:",
+]
+proposals_changed_review = [
+    "Your colleagues' decisions have changed, please review the updated numbers.",
+    "Die Entscheidungen Ihrer Kolleg:innen haben sich geändert, bitte prüfen Sie die aktualisierten Zahlen.",
+    "Die Entscheidungen Deiner Kolleg:innen haben sich geändert, bitte prüf die aktualisierten Zahlen.",
+    "Les décisions de vos collègues ont changé, veuillez vérifier les chiffres mis à jour.",
+    "Kollegenes beslutninger er endret, sjekk de oppdaterte tallene.",
+]
 every_10_sec = [
     "Numbers are updated automatically every 10 seconds, and double checked just before submission. The moment you click on *Submit proposals?*, once visible, your ministerial colleagues may still change their sliders, but they are no longer taken into account for this round.",
     "Die Zahlen werden alle 10 Sekunden automatisch aktualisiert und unmittelbar vor der Übermittlung noch einmal überprüft. Sobald Sie auf *Vorschläge einreichen* klicken, sobald er sichtbar ist, können Ihre Ministerkollegen zwar noch ihre Schieberegler anpassen, diese Änderungen werden jedoch nicht mehr in dieser Runde berücksichtigt.",

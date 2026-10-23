@@ -3,6 +3,7 @@ Database schema and operations for SDG3 game
 Phase 1 Update: Correct regions, policies, plot variables, AI support
 """
 import sqlite3
+import threading
 import datetime
 from contextlib import contextmanager
 from typing import Optional, Dict, List, Tuple
@@ -15,12 +16,38 @@ import notify
 
 DB_PATH = str(Path(__file__).parent / "sdg3_game.db")
 
+# Anchor connection, held open for the life of the process and never used.
+# Every get_db() opens and closes its own connection; in WAL mode, closing the
+# *last* connection to the file checkpoints the WAL and deletes it, and the next
+# open recreates it -- under load that happened constantly, on the event loop,
+# taking exclusive locks (the main stall source in the 60-minister load test
+# once graphs were queued). With this one always open, closes are cheap.
+_WAL_ANCHOR = sqlite3.connect(DB_PATH, check_same_thread=False)
+_WAL_ANCHOR.execute("PRAGMA journal_mode=WAL")
+
 # Start code for game creation
 START_CODE = "oscar"
 
 REGION_ABBR = ['us', 'af', 'cn', 'me', 'sa', 'la', 'pa', 'ec', 'eu', 'se']
 
 MINISTRIES = ["Poverty", "Inequality", "Empowerment", "Food", "Energy", "Future"]
+
+
+class _ThreadConnection(sqlite3.Connection):
+    """A thread's long-lived connection, reused by every get_db() on that thread.
+    close() from callers is ignored -- get_db() rolls back instead (see below)."""
+    def close(self):
+        pass
+
+
+_thread_db = threading.local()
+
+
+def _connect(factory=sqlite3.Connection):
+    conn = sqlite3.connect(DB_PATH, timeout=30, factory=factory)
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 @contextmanager
@@ -33,14 +60,32 @@ def get_db():
     instead of the sqlite3 default of 5s before raising 'database is locked' --
     both matter once dozens of sessions hit the DB at once (e.g. a full game's
     worth of players joining within the same few seconds).
+
+    Each thread reuses one connection: opening one per call cost ~0.65 ms vs
+    ~0.007 ms per query on a reused one, and in the 60-minister load test the
+    opens were about half the event loop's time. Leaving the block rolls back
+    anything uncommitted, as closing used to. A nested get_db() on the same
+    thread (or a second coroutine entering while the first awaits) gets its
+    own fresh connection, so it can't commit or roll back the outer block's work.
     """
-    conn = sqlite3.connect(DB_PATH, timeout=30)
-    conn.execute("PRAGMA journal_mode=WAL")
-    conn.row_factory = sqlite3.Row
+    if getattr(_thread_db, "in_use", False):
+        conn = _connect()
+        try:
+            yield conn
+        finally:
+            conn.close()
+        return
+
+    conn = getattr(_thread_db, "conn", None)
+    if conn is None:
+        conn = _thread_db.conn = _connect(_ThreadConnection)
+    _thread_db.in_use = True
     try:
         yield conn
     finally:
-        conn.close()
+        _thread_db.in_use = False
+        if conn.in_transaction:
+            conn.rollback()
 
 # In database.py - add functions to save/load preferences
 
@@ -1501,6 +1546,7 @@ def delete_session(token: str):
     with get_db() as conn:
         conn.execute('DELETE FROM sessions WHERE token = ?', (token,))
         conn.commit()
+
 
 def export_game_xlsx(game_id: str, graph_values=None, graph_metrics=None,
                      graph_pngs: list[bytes] | None = None) -> bytes:

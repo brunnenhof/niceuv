@@ -47,7 +47,7 @@ for _stream in (sys.stdout, sys.stderr):
     except Exception:
         pass
 
-from nicegui import app, run, ui
+from nicegui import Client, app, background_tasks, context, run, ui
 
 import database as maindb
 import game_plot_ug
@@ -129,17 +129,10 @@ app.colors(primary="#014873", secondary="#0383A1", my_orange="#FF8A05")
 
 @contextmanager
 def get_db():
-    # WAL mode: readers no longer block behind a writer (default rollback-journal
-    # mode serializes all access). timeout=30: wait up to 30s for a contended
-    # lock instead of the sqlite3 default of 5s. Matters once many sessions hit
-    # the DB at once (e.g. a full game's worth of players joining together).
-    conn = sqlite3.connect(DB_PATH, timeout=30)
-    conn.execute("PRAGMA journal_mode=WAL")
-    conn.row_factory = sqlite3.Row
-    try:
+    # Same DB file as database.py: share its per-thread connection reuse
+    # (WAL, timeout=30, sqlite3.Row) instead of opening a connection per call.
+    with maindb.get_db() as conn:
         yield conn
-    finally:
-        conn.close()
 
 
 def init_db():
@@ -531,6 +524,12 @@ def create_header(token: str | None = None):
 # honest "try again in a few seconds" instead of a multi-second hang that
 # ends in a confusing reload. Set comfortably under the ~18 safe threshold.
 JOIN_SLOTS = asyncio.Semaphore(12)
+
+# Makes do_join's "is this seat still free?" check and the write that claims the
+# seat one atomic step. Without it, two players picking the same region+ministry
+# within the same second both pass the check (it awaits a DB read off the event
+# loop) and both get the seat -- seen in the 60-minister stampede load test.
+SEAT_CLAIM_LOCK = asyncio.Lock()
 
 
 @ui.page("/")
@@ -963,24 +962,28 @@ async def home():
                         if not ministry_sel.value:
                             err_label.set_text(luf.select_a_ministry_before_joining[langx])
                             return
-                        # Final race-condition check
-                        ps = await run.io_bound(taken_slots)
-                        if any(p["region"] == region_sel.value and
-                               p["role"]   == ministry_sel.value for p in ps):
-                            err_label.set_text(luf.that_slot_was_just_taken_please_pick_another[langx])
-                            await refresh_availability()
-                            return
-                        player_token = secrets.token_urlsafe(16)
-                        app.storage.user["token"] = player_token
+                        region, ministry = region_sel.value, ministry_sel.value
                         # get_lang()/get_dark() touch app.storage.user, which needs the
                         # request context -- capture their values here, on the main
                         # thread, before handing off to the background DB work.
                         lang_val = get_lang()
                         dark_val = int(get_dark())
-                        await run.io_bound(
-                            _do_join_db_work, player_token, name, ministry_sel.value,
-                            region_sel.value, gm_token_ref[0], lang_val, dark_val,
-                        )
+                        player_token = secrets.token_urlsafe(16)
+                        # Final race-condition check, atomic with the seat claim
+                        async with SEAT_CLAIM_LOCK:
+                            ps = await run.io_bound(taken_slots)
+                            taken = any(p["region"] == region and p["role"] == ministry
+                                        for p in ps)
+                            if not taken:
+                                await run.io_bound(
+                                    _do_join_db_work, player_token, name, ministry,
+                                    region, gm_token_ref[0], lang_val, dark_val,
+                                )
+                        if taken:
+                            err_label.set_text(luf.that_slot_was_just_taken_please_pick_another[langx])
+                            await refresh_availability()
+                            return
+                        app.storage.user["token"] = player_token
                         dlg.close()
                         ui.navigate.to(f"/dashboard?token={player_token}")
 
@@ -1568,8 +1571,10 @@ def gm_board(token: str):
                     game_data, _ = game_plot_ug.load_game_data(game_id_gm, 3)
                     if plot_vars and game_data is not None:
                         graph_values, graph_metrics = game_plot_ug.gm_graph_table(game_data, plot_vars, langx)
-                    # PNGs come from Card 7, which already rendered them for this board
-                    pngs = [base64.b64decode(uri.split(",", 1)[1]) for uri in gm_graph_uris]
+                    # PNGs come from Card 7, which queued them for this board; under
+                    # load they may still be waiting in the graph queue
+                    await asyncio.gather(*gm_graph_tasks, return_exceptions=True)
+                    pngs = [base64.b64decode(uri.split(",", 1)[1]) for uri in gm_graph_uris if uri]
                     data = await run.io_bound(maindb.export_game_xlsx, game_id_gm,
                                               graph_values, graph_metrics, pngs)
                 except Exception:
@@ -1584,7 +1589,8 @@ def gm_board(token: str):
         card_done.set_visibility(game_done)
 
         # ── Card 6: GM graphs (visible once all players joined) ───────────────
-        gm_graph_uris = []  # last rendered graph images, reused by the Excel download
+        gm_graph_uris = []   # last rendered graph images, reused by the Excel download
+        gm_graph_tasks = []  # their pending graph-queue jobs, awaited by the download
 
         @ui.refreshable
         def gm_graphs():
@@ -1622,41 +1628,19 @@ def gm_board(token: str):
                     f"{luf.indicator_for[langx]} {luf.game_master[langx]}"
                 ).classes("text-orange-500 font-bold mb-4")
 
-                graphs = []
-                for pv in plot_vars:
-                    img = game_plot_ug.do_graph(game_data, pv, actual_runde, "glob", "GM", langx)
-                    graphs.append((pv, img))
-
-                with ui.column().classes("w-full gap-4"):
-                    for i in range(0, len(graphs), 2):
-                        with ui.row().classes("w-full gap-4"):
-                            pv, img = graphs[i]
-                            with ui.card().classes("lg:flex-1 w-full p-4"):
-                                if img:
-                                    ui.image(img)
-                                else:
-                                    ui.label(pv.get("pv_indicator","")).classes("text-lg font-bold")
-                                    ui.label(luf.graph_data_unavailable[langx]).classes("text-sm text-orange-400 italic")
-                            if i + 1 < len(graphs):
-                                pv, img = graphs[i + 1]
-                                with ui.card().classes("lg:flex-1 w-full p-4"):
-                                    if img:
-                                        ui.image(img)
-                                    else:
-                                        ui.label(pv.get("pv_indicator","")).classes("text-lg font-bold")
-                                        ui.label(luf.graph_data_unavailable[langx]).classes("text-sm text-orange-400 italic")
-                            else:
-                                ui.element("div").classes("lg:flex-1 w-full")
-
-                gm_graph_uris[:] = [img for _, img in graphs if img]
-                try:
-                    overlay = game_plot_ug.make_glob_overlay(game_data, lang)
-                    if overlay:
-                        gm_graph_uris.append(overlay)
-                        with ui.card().classes("w-full p-4"):
-                            ui.image(overlay).classes("w-full")
-                except Exception:
-                    pass
+                # Slots filled in plot order as the graph queue delivers them;
+                # the last one is the global overview.
+                gm_graph_uris[:] = [None] * (len(plot_vars) + 1)
+                gm_graph_tasks[:] = _queued_graph_grid(
+                    [(pv, (game_data, pv, actual_runde, "glob", "GM", langx)) for pv in plot_vars],
+                    luf.graph_data_unavailable[langx],
+                    on_drawn=lambda i, img: gm_graph_uris.__setitem__(i, img),
+                )
+                with ui.card().classes("w-full p-4"):
+                    gm_graph_tasks.append(_queued_graph(
+                        game_plot_ug.make_glob_overlay, (game_data, lang),
+                        "", luf.graph_data_unavailable[langx], img_classes="w-full",
+                        on_drawn=lambda img: gm_graph_uris.__setitem__(-1, img), aspect="5 / 3"))
 
         # ── Card 8: Refresh ───────────────────────────────────────────────────
         with ui.card().classes("w-full p-2 bg-stone-50") as card_refresh:
@@ -1784,31 +1768,72 @@ def _render_graphs(game_id: str, region: str, role: str, lang: str, langx: int,
         ).classes("text-orange-500 font-bold mb-4")
         ui.markdown(lufinfo)
 
-        graphs = []
-        for pv in plot_vars:
-            img = game_plot_ug.do_graph(game_data, pv, actual_runde, region, role, langx)
-            graphs.append((pv, img))
+        _queued_graph_grid(
+            [(pv, (game_data, pv, actual_runde, region, role, langx)) for pv in plot_vars],
+            luf.no_graph_data_available[langx],
+        )
 
-        with ui.column().classes("w-full gap-4"):
-            for i in range(0, len(graphs), 2):
-                with ui.row().classes("w-full gap-4"):
-                    pv, img = graphs[i]
-                    with ui.card().classes("lg:flex-1 w-full p-4"):
-                        if img:
-                            ui.image(img)
-                        else:
-                            ui.label(pv.get("pv_indicator", "")).classes("text-lg font-bold")
-                            ui.label(luf.no_graph_data_available[langx]).classes("text-sm text-orange-400 italic")
-                    if i + 1 < len(graphs):
-                        pv, img = graphs[i + 1]
-                        with ui.card().classes("lg:flex-1 w-full p-4"):
-                            if img:
-                                ui.image(img)
-                            else:
-                                ui.label(pv.get("pv_indicator", "")).classes("text-lg font-bold")
-                                ui.label(luf.no_graph_data_available[langx]).classes("text-sm text-orange-400 italic")
-                    else:
+
+def _queued_graph(fn, args: tuple, title: str, unavailable: str,
+                  img_classes: str = "", on_drawn=None, aspect: str = "8 / 7"):
+    """Graph placeholder: a spinner now, the image once the graph queue has drawn it.
+
+    Must be called while building a page (needs the client context). Jobs are
+    queued in call order, so a page's graphs arrive top to bottom. The spinner
+    box reserves the graph's shape (do_graph PNGs are ~8:7) so the page doesn't
+    jump as graphs arrive -- buttons below them would move under the cursor.
+    """
+    client = context.client
+    box = ui.element("div").classes("w-full")
+    with box:
+        with ui.element("div").classes("w-full flex items-center justify-center") \
+                .style(f"aspect-ratio: {aspect}"):
+            ui.spinner(size="lg")
+
+    def page_alive():
+        return client.id in Client.instances
+
+    async def fill():
+        try:
+            img = await game_plot_ug.draw_queued(fn, *args, still_wanted=page_alive)
+        except Exception:
+            logging.exception("Graph failed: %s", title or fn.__name__)
+            img = None
+        if not page_alive():
+            return
+        box.clear()
+        with box:
+            if img:
+                ui.image(img).classes(img_classes)
+            else:
+                ui.label(title).classes("text-lg font-bold")
+                ui.label(unavailable).classes("text-sm text-orange-400 italic")
+        if img and on_drawn:
+            on_drawn(img)
+
+    return background_tasks.create(fill(), name="queued graph")
+
+
+def _queued_graph_grid(jobs: list, unavailable: str, on_drawn=None):
+    """Two-column grid of do_graph cards, drawn through the graph queue.
+
+    jobs: [(pv, do_graph_args), ...]. on_drawn(index, img) is called per finished graph.
+    Returns the queued tasks, in job order.
+    """
+    tasks = []
+    with ui.column().classes("w-full gap-4"):
+        for i in range(0, len(jobs), 2):
+            with ui.row().classes("w-full gap-4"):
+                for j in (i, i + 1):
+                    if j >= len(jobs):
                         ui.element("div").classes("lg:flex-1 w-full")
+                        continue
+                    pv, args = jobs[j]
+                    with ui.card().classes("lg:flex-1 w-full p-4"):
+                        tasks.append(_queued_graph(
+                            game_plot_ug.do_graph, args, pv.get("pv_indicator", ""), unavailable,
+                            on_drawn=(lambda img, j=j: on_drawn(j, img)) if on_drawn else None))
+    return tasks
 
 
 def _render_sliders(token: str, game_id: str, current_round: int,
@@ -1959,7 +1984,6 @@ def _render_budget(token: str, game_id: str, current_round: int,
     round_ranges = [luf.now_2040, luf.to_2060, luf.to_2100]
     rrange = round_ranges[min(current_round - 1, 2)][langx]
     grand_total  = [0.0]
-    poll_paused  = [False]   # True while confirm dialog is open
 
     try:
         budg = maindb.get_budget(
@@ -1996,20 +2020,23 @@ def _render_budget(token: str, game_id: str, current_round: int,
                 _check_results_btn(token, game_id, current_round, region)
             return
 
-        with ui.card().classes("w-full p-2 gap-2"):
+        with ui.card().classes("w-full p-2 gap-2") as budget_card:
             ui.label("[Card D – Budget proposals]").classes("text-xs text-gray-400 italic")
             ui.label(f"{luf.budget_considerations[langx]}, {display_region}") \
               .classes("text-2xl font-bold")
             ui.label(luf.bud_title_tx_str[langx] + str(current_round) + rrange) \
               .classes("text-blue-600 text-lg")
-            ui.markdown(luf.every_10_sec[langx]) \
+            ui.markdown(luf.press_to_see_latest[langx]) \
               .classes("text-black dark:text-white")
 
-#            ui.button(
-#                luf.check_your_colleagues_investment_proposals[langx],
-#                icon="refresh",
-#                on_click=lambda: _load_proposals(),
-#            ).props("color=primary")
+            # Refreshed on demand (and just before submitting) rather than by a
+            # 10 s timer: with 10 Future pages polling, the timer was a steady
+            # share of the server's CPU in the 60-minister load test.
+            with ui.row().classes("w-full items-center gap-4"):
+                ui.button(luf.see_latest_proposals[langx], icon="refresh",
+                          on_click=lambda: _load_proposals()) \
+                  .props("color=primary size=lg").classes("font-bold")
+                last_updated_lbl = ui.label("").classes("text-sm text-gray-500 italic")
 
             summary_col   = ui.column().classes("w-full")
             proposals_col = ui.column().classes("w-full gap-2")
@@ -2023,31 +2050,37 @@ def _render_budget(token: str, game_id: str, current_round: int,
                     ui.notify(luf.ooops_GM_changed_mind[langx],
                               type="negative", position="center")
                     return
-                with ui.dialog() as confirm_dlg, ui.card():
+                # Re-check right before submitting: colleagues may have moved their
+                # sliders since the last refresh. This rebuilds summary_col, which
+                # holds the button that called us -- so the dialog goes on the card.
+                if not _load_proposals():
+                    ui.notify(luf.proposals_changed_review[langx],
+                              type="warning", position="center")
+                    return
+                with budget_card, ui.dialog() as confirm_dlg, ui.card():
                     ui.label(luf.confirm_submission[langx]).classes("text-xl font-bold mb-2")
                     ui.label(luf.are_you_sure_you_want_to_submit_all_investment_proposals[langx])
                     ui.label(f"{luf.budget2[langx]}: {bud:.1f}")
                     ui.label(f"{luf.total2[langx]}: {grand_total[0]:.1f}")
                     ui.label(luf.once_submitted[langx]).classes("text-orange-600 mt-2")
                     with ui.row().classes("w-full justify-end gap-2 mt-4"):
-                        def _cancel():
-                            poll_paused[0] = False
-                            confirm_dlg.close()
                         ui.button(luf.cancel_btn[langx],
-                                  on_click=_cancel).props("flat color=secondary")
+                                  on_click=confirm_dlg.close).props("flat color=secondary")
                         def _do_submit():
                             try:
                                 maindb.mark_region_submitted(game_id, current_round, region)
                             except Exception:
                                 pass
-                            poll_paused[0] = False
                             confirm_dlg.close()
                             budget_section.refresh()
                         ui.button(luf.yes_submit[langx], on_click=_do_submit).props("color=primary")
-                poll_paused[0] = True
                 confirm_dlg.open()
 
             def _load_proposals():
+                """Rebuild the proposals + summary from the DB.
+                Returns True if the region can submit (all logged in, within budget)."""
+                last_updated_lbl.set_text(
+                    f"{luf.last_updated[langx]} {time.strftime('%H:%M:%S')}")
 #                print("_load_proposals")
 #                print(lang)
                 pol_names_dict = luf.pol_names.get(lang, luf.pol_names["en"])
@@ -2193,19 +2226,11 @@ def _render_budget(token: str, game_id: str, current_round: int,
                                 f"{luf.plans[langx]}{grand_total[0]:.1f}"
                                 f"{luf.plans2[langx]}{bud:.1f}{luf.plans3[langx]}"
                             ).classes("text-orange-700 text-lg font-bold")
+                return all_logged_in and grand_total[0] <= bud
 
             _load_proposals()
 
     budget_section()
-
-    # Auto-refresh proposals so Future always sees current slider values
-    def _poll_proposals():
-        if maindb.is_region_submitted(game_id, current_round, region):
-            _budget_poll.cancel()
-        elif not poll_paused[0]:
-            budget_section.refresh()
-
-    _budget_poll = ui.timer(10.0, _poll_proposals)
 
 
 @ui.page("/dashboard")
