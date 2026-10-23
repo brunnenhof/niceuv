@@ -31,8 +31,17 @@ corrections/
 scratch
 putty
 test_screenshots
+server_dumps
+corrections
+~
+docs
+site
+static
 
 # Runtime / generated
 .nicegui/
+.claude/
 
 sdg3_game.db
+sdg3_game.db-wal
+sdg3_game.db-shm
