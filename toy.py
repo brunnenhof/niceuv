@@ -2059,10 +2059,13 @@ def _render_budget(token: str, game_id: str, current_round: int,
                     return
                 # Re-check right before submitting: colleagues may have moved their
                 # sliders since the last refresh. This rebuilds summary_col, which
-                # holds the button that called us -- so the dialog goes on the card.
-                if not _load_proposals():
-                    ui.notify(luf.proposals_changed_review[langx],
-                              type="warning", position="center")
+                # holds the button that called us -- so whatever we show next
+                # (notification or dialog) has to be created on the card.
+                can_submit = _load_proposals()
+                if not can_submit:
+                    with budget_card:
+                        ui.notify(luf.proposals_changed_review[langx],
+                                  type="warning", position="center")
                     return
                 with budget_card, ui.dialog() as confirm_dlg, ui.card():
                     ui.label(luf.confirm_submission[langx]).classes("text-xl font-bold mb-2")

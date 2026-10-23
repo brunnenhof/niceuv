@@ -4,6 +4,7 @@ Phase 1 Update: Correct regions, policies, plot variables, AI support
 """
 import sqlite3
 import threading
+import weakref
 import datetime
 from contextlib import contextmanager
 from typing import Optional, Dict, List, Tuple
@@ -35,9 +36,47 @@ MINISTRIES = ["Poverty", "Inequality", "Empowerment", "Food", "Energy", "Future"
 
 class _ThreadConnection(sqlite3.Connection):
     """A thread's long-lived connection, reused by every get_db() on that thread.
-    close() from callers is ignored -- get_db() rolls back instead (see below)."""
+
+    close() from callers is ignored; leaving a get_db() block calls end_block(),
+    which closes every cursor the block opened and rolls back anything
+    uncommitted -- what closing a per-call connection used to do. Closing the
+    cursors matters: one unfinished SELECT kept alive (e.g. fetchone() on a
+    multi-row query, cursor still referenced) holds a read snapshot for the
+    whole connection, and every later read on this thread then sees the data
+    as it was back then. On prod that froze 'submissions allowed' at 0 for all
+    Future pages until the holding page closed (60-minister load test).
+    Cursors are tracked by weak reference: a temporary cursor must still be
+    freed (and its statement reset) at once, or commit() fails with "SQL
+    statements in progress".
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._block_cursors = weakref.WeakSet()
+
+    def cursor(self, *args, **kwargs):
+        cur = super().cursor(*args, **kwargs)
+        self._block_cursors.add(cur)
+        return cur
+
+    # Connection.execute*() create their cursor internally, bypassing cursor()
+    def execute(self, *args):
+        return self.cursor().execute(*args)
+
+    def executemany(self, *args):
+        return self.cursor().executemany(*args)
+
+    def executescript(self, *args):
+        return self.cursor().executescript(*args)
+
     def close(self):
         pass
+
+    def end_block(self):
+        for cur in list(self._block_cursors):  # only cursors something still holds
+            cur.close()
+        self._block_cursors.clear()
+        if self.in_transaction:
+            self.rollback()
 
 
 _thread_db = threading.local()
@@ -84,8 +123,7 @@ def get_db():
         yield conn
     finally:
         _thread_db.in_use = False
-        if conn.in_transaction:
-            conn.rollback()
+        conn.end_block()
 
 # In database.py - add functions to save/load preferences
 
