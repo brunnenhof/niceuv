@@ -23,6 +23,7 @@ Key lessons
 """
 
 import base64
+import multiprocessing
 import platform
 import random
 import secrets
@@ -1632,13 +1633,13 @@ def gm_board(token: str):
                 # the last one is the global overview.
                 gm_graph_uris[:] = [None] * (len(plot_vars) + 1)
                 gm_graph_tasks[:] = _queued_graph_grid(
-                    [(pv, (game_data, pv, actual_runde, "glob", "GM", langx)) for pv in plot_vars],
+                    [(pv, (game_id_gm, runde, pv, "glob", "GM", langx)) for pv in plot_vars],
                     luf.graph_data_unavailable[langx],
                     on_drawn=lambda i, img: gm_graph_uris.__setitem__(i, img),
                 )
                 with ui.card().classes("w-full p-4"):
                     gm_graph_tasks.append(_queued_graph(
-                        game_plot_ug.make_glob_overlay, (game_data, lang),
+                        game_plot_ug.draw_overlay_job, (game_id_gm, runde, lang),
                         "", luf.graph_data_unavailable[langx], img_classes="w-full",
                         on_drawn=lambda img: gm_graph_uris.__setitem__(-1, img), aspect="5 / 3"))
 
@@ -1769,7 +1770,7 @@ def _render_graphs(game_id: str, region: str, role: str, lang: str, langx: int,
         ui.markdown(lufinfo)
 
         _queued_graph_grid(
-            [(pv, (game_data, pv, actual_runde, region, role, langx)) for pv in plot_vars],
+            [(pv, (game_id, runde, pv, region, role, langx)) for pv in plot_vars],
             luf.no_graph_data_available[langx],
         )
 
@@ -1815,9 +1816,9 @@ def _queued_graph(fn, args: tuple, title: str, unavailable: str,
 
 
 def _queued_graph_grid(jobs: list, unavailable: str, on_drawn=None):
-    """Two-column grid of do_graph cards, drawn through the graph queue.
+    """Two-column grid of graph cards, drawn through the graph queue.
 
-    jobs: [(pv, do_graph_args), ...]. on_drawn(index, img) is called per finished graph.
+    jobs: [(pv, draw_graph_job_args), ...]. on_drawn(index, img) is called per finished graph.
     Returns the queued tasks, in job order.
     """
     tasks = []
@@ -1831,7 +1832,7 @@ def _queued_graph_grid(jobs: list, unavailable: str, on_drawn=None):
                     pv, args = jobs[j]
                     with ui.card().classes("lg:flex-1 w-full p-4"):
                         tasks.append(_queued_graph(
-                            game_plot_ug.do_graph, args, pv.get("pv_indicator", ""), unavailable,
+                            game_plot_ug.draw_graph_job, args, pv.get("pv_indicator", ""), unavailable,
                             on_drawn=(lambda img, j=j: on_drawn(j, img)) if on_drawn else None))
     return tasks
 
@@ -2332,7 +2333,12 @@ def legal_page(token: str = ""):
 # ── Run ───────────────────────────────────────────────────────────────────────
 
 if __name__ in {"__main__", "__mp_main__"}:
-    init_db()
+    # The graph worker process (spawn) re-imports this file as __mp_main__;
+    # ui.run() already does nothing there, init_db() must not run there either.
+    if multiprocessing.current_process().name == "MainProcess":
+        init_db()
+        app.on_startup(game_plot_ug.start_graph_worker)
+        app.on_shutdown(game_plot_ug.shutdown_graph_worker)
     ui.run(
         title="SimFuture",
         storage_secret="toy-secret",

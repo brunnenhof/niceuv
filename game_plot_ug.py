@@ -1,7 +1,9 @@
 import asyncio
 import datetime
+import multiprocessing
 import os
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures.process import BrokenProcessPool
 import numpy as np
 import matplotlib.pyplot as plt
 from files import luf
@@ -28,26 +30,97 @@ except FileNotFoundError:
 
 regs = ['us', 'af', 'cn', 'me', 'sa', 'la', 'pa', 'ec', 'eu', 'se']
 
-# Graph queue: one worker thread draws every graph, first in first out.
+# Graph queue: one worker *process* draws every graph, first in first out.
 # A graph takes ~150 ms of matplotlib; drawn inline, 60 ministers opening their
 # results at once blocked the event loop for 13 s, socket.io timed out, the
 # reloads asked for the graphs again, and the game stalled (60-minister load
-# test). Off the loop, pages stay responsive and graphs arrive in turn.
-# One worker also keeps pyplot (not thread-safe) on a single thread -- so every
-# do_graph / make_glob_overlay call must go through draw_queued().
-_GRAPH_WORKER = ThreadPoolExecutor(max_workers=1, thread_name_prefix="graph-queue")
+# test). A worker thread fixed the blocking but still shared toy.py's one core
+# (the GIL) -- graphs took ~1 s under load. A separate process runs on the
+# server's second vCPU instead. Only draw_graph_job / draw_overlay_job run
+# there: they get the game id (not the 11 MB game data) and load the npy
+# files themselves, cached per round.
+# "spawn" on every platform: Linux's default "fork" would copy a process that
+# already runs many threads (NiceGUI, sqlite), which can deadlock the child.
+_graph_worker = None
+_graph_turn = asyncio.Lock()  # FIFO: one job in the worker at a time
+
+
+def _get_graph_worker():
+    global _graph_worker
+    if _graph_worker is None:
+        _graph_worker = ProcessPoolExecutor(
+            max_workers=1, mp_context=multiprocessing.get_context("spawn"))
+    return _graph_worker
+
+
+def _worker_ready():
+    return True
+
+
+def start_graph_worker():
+    """Start the worker process now (app startup), not on the first player's graphs."""
+    _get_graph_worker().submit(_worker_ready)
+
+
+def shutdown_graph_worker():
+    global _graph_worker
+    if _graph_worker is not None:
+        _graph_worker.shutdown(wait=False, cancel_futures=True)
+        _graph_worker = None
+
+
+async def _run_in_worker(fn, *args):
+    global _graph_worker
+    try:
+        return await asyncio.get_running_loop().run_in_executor(_get_graph_worker(), fn, *args)
+    except BrokenProcessPool:
+        _graph_worker = None  # worker died; the next job starts a fresh one
+        raise
 
 
 async def draw_queued(fn, *args, still_wanted=lambda: True):
-    """Queue fn(*args) on the graph worker and await its result.
+    """Queue fn(*args) on the graph worker process and await its result.
 
     still_wanted is checked when the job reaches the front of the queue; if it
     returns False (e.g. the page was closed or reloaded meanwhile) the graph is
     skipped and None returned, so reload storms don't pile up dead work.
     """
-    def job():
-        return fn(*args) if still_wanted() else None
-    return await asyncio.get_running_loop().run_in_executor(_GRAPH_WORKER, job)
+    async with _graph_turn:
+        if not still_wanted():
+            return None
+        return await _run_in_worker(fn, *args)
+
+
+# ── Worker-process side ───────────────────────────────────────────────────────
+_worker_data: dict = {}  # (game_id, runde) -> (game_data, actual_runde), complete rounds only
+
+
+def _game_data_in_worker(game_id: str, runde: int):
+    key = (game_id, runde)
+    if key not in _worker_data:
+        game_data, actual_runde = load_game_data(game_id, runde)
+        if game_data is None or actual_runde < runde:
+            return game_data, actual_runde  # model files not all there yet: don't cache
+        if len(_worker_data) >= 16:
+            _worker_data.pop(next(iter(_worker_data)))
+        _worker_data[key] = (game_data, actual_runde)
+    return _worker_data[key]
+
+
+def draw_graph_job(game_id: str, runde: int, row, reg, role, langx):
+    """do_graph for one indicator, run in the graph worker process."""
+    game_data, actual_runde = _game_data_in_worker(game_id, runde)
+    if game_data is None:
+        return None
+    return do_graph(game_data, row, actual_runde, reg, role, langx)
+
+
+def draw_overlay_job(game_id: str, runde: int, lang):
+    """make_glob_overlay, run in the graph worker process."""
+    game_data, _ = _game_data_in_worker(game_id, runde)
+    if game_data is None:
+        return None
+    return make_glob_overlay(game_data, lang)
 
 def load_historical_data():
     """Load the 1990-2025 historical data"""
