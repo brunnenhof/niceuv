@@ -533,7 +533,13 @@ JOIN_SLOTS = asyncio.Semaphore(12)
 SEAT_CLAIM_LOCK = asyncio.Lock()
 
 
-@ui.page("/")
+# response_timeout: this is the only async page (it awaits a DB check via
+# run.io_bound). NiceGUI's default 3 s is too short when a full game opens it at
+# once: past the timeout NiceGUI deletes the page's client but still sends the
+# page, the browser's socket is refused ("implicit handshake failed") and it
+# reloads -- 19 of 60 bots in a stampede test. The page is still sent as soon
+# as it's built; this only changes slow-but-fine into reload.
+@ui.page("/", response_timeout=20)
 async def home():
     
     from nicegui import context
