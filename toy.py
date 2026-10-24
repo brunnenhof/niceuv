@@ -1353,7 +1353,7 @@ def gm_board(token: str):
             def _update_labels(rnd, all_joined, all_submitted, done):
                 if done:
                     status_label.set_text(luf.game_complete[langx])
-                    anweisung_label.set_content(luf.pcgd_rd1_infoend_str[langx])
+                    anweisung_label.set_content(luf.pcgd_rd1_infoend_str_gm[langx])
 #                    info_label.set_text("All rounds have been played.")
                 elif not all_joined:
                     ui.notify(f'current_round={current_round}',type='warning')
