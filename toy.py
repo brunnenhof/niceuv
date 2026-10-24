@@ -533,6 +533,23 @@ JOIN_SLOTS = asyncio.Semaphore(12)
 SEAT_CLAIM_LOCK = asyncio.Lock()
 
 
+class _SelectWithDisabled(ui.select):
+    """ui.select in which some options are shown greyed out and can't be chosen.
+
+    NiceGUI rebuilds the option list on every update(), so the Quasar 'disable'
+    flag is re-applied in _update_options rather than set once afterwards.
+    """
+    def __init__(self, *args, disabled_values=(), **kwargs):
+        self._disabled_values = set(disabled_values)  # needed by super().__init__
+        super().__init__(*args, **kwargs)
+
+    def _update_options(self) -> None:
+        super()._update_options()
+        for opt in self._props["options"]:
+            if self._values[opt["value"]] in self._disabled_values:
+                opt["disable"] = True
+
+
 # response_timeout: this is the only async page (it awaits a DB check via
 # run.io_bound). NiceGUI's default 3 s is too short when a full game opens it at
 # once: past the timeout NiceGUI deletes the page's client but still sends the
@@ -677,17 +694,18 @@ async def home():
                 live  = [s for s in sessions if     s["live"]]
 
                 with detail_col:
-                    if live:
-                        ui.label("⚡ " + luf.active_ug[langx] + ":") \
-                          .classes("text-xs text-gray-400 mt-3 mb-1")
-                        for ls in live:
-                            ui.label(ls["desc"]) \
-                              .classes("text-sm text-gray-400 line-through px-2 py-1")
+                    # One dropdown: sessions that can be resumed first, then the
+                    # live ones (someone active in the last 60 s) greyed out and
+                    # not selectable -- still visible, so nobody wonders where
+                    # their seat went, but they can't take over one in use.
+                    opts = {s["token"]: s["desc"] for s in free + live}
+                    sel = _SelectWithDisabled(
+                        opts, label=luf.your_session[langx],
+                        value=free[0]["token"] if free else None,
+                        disabled_values=[s["token"] for s in live],
+                    ).classes("w-full mt-3")
 
                     if free:
-                        free_opts = {s["token"]: s["desc"] for s in free}
-                        sel = ui.select(free_opts, label=luf.your_session[langx],
-                                        value=next(iter(free_opts))).classes("w-full mt-3")
 
                         def do_resume():
                             chosen = sel.value
@@ -854,6 +872,9 @@ async def home():
                     game_ug = luf.game_ug[langx]
                     not_found_ug = luf.not_found[langx]
                     err_label.set_text(f"{game_ug} '{gid}' {not_found_ug}.")
+                    ui.notify(luf.game_id_does_not_exist[langx], type="warning",
+                              position="center", timeout=6000)
+                    gid_input.run_method("select")  # ready to type the correct ID
                     return
 
                 gm_token_ref[0] = gm["token"]
@@ -1421,7 +1442,7 @@ def gm_board(token: str):
         # ── Card 4 (was 3): Submission status  (visible when all joined, not all submitted)
         with ui.card().classes("w-full p-4 bg-amber-100") as card_submissions:
             ui.label("[Card 4 – Submission status]").classes("text-xs text-gray-400 italic")
-            ui.label(luf.submission_status[langx]).classes("font-bold mb-2 text-accent-amber-900")
+            ui.label(luf.submission_status[langx]).classes("font-bold mb-2 text-orange-500")
             sub_col = ui.column()
             def _fill_submissions(ps, h_abbrs, gm_round):
                 sub_col.clear()
@@ -1886,7 +1907,7 @@ def _render_sliders(token: str, game_id: str, current_round: int,
             with ui.card().classes("w-full p-4 bg-green-50"):
                 ui.label("[Card B – Region submitted / check results]").classes("text-xs text-gray-400 italic")
                 ui.label(luf.all_investment_proposals_for_your_region_have_been_submitted[langx]) \
-                  .classes("text-xl font-bold text-green-700 mb-3")
+                  .classes("text-xl font-medium text-green-700 mb-3")
                 _check_results_btn(token, game_id, current_round, region)
             return
 
@@ -2002,6 +2023,18 @@ def _render_budget(token: str, game_id: str, current_round: int,
     except Exception:
         bud = 999.0
 
+    # Mark the Future minister as logged in for this round, as _render_sliders
+    # does for the other ministers. Without it the GM's Card 4 showed Future
+    # with an amber clock after every model run, and never counted the region
+    # as having checked its results.
+    s = db_get(token)
+    if s and s.get("username"):
+        try:
+            maindb.mark_player_submission(game_id, s["username"], current_round,
+                                          region_tag=region, ministry=role)
+        except Exception:
+            pass
+
     @ui.refreshable
     def budget_section():
         # Check game state from DB (num_rounds may differ from session current_round)
@@ -2033,8 +2066,10 @@ def _render_budget(token: str, game_id: str, current_round: int,
               .classes("text-2xl font-bold")
             ui.label(luf.bud_title_tx_str[langx] + str(current_round) + rrange) \
               .classes("text-blue-600 text-lg")
-            ui.markdown(luf.press_to_see_latest[langx]) \
-              .classes("text-black dark:text-white")
+            # No colour classes: the text follows the light/dark theme like the
+            # rest of the page. (Tailwind's dark: variant tracks the OS setting,
+            # not the app's dark-mode toggle, so "dark:text-white" never fired.)
+            ui.markdown(luf.press_to_see_latest[langx])
 
             # Refreshed on demand (and just before submitting) rather than by a
             # 10 s timer: with 10 Future pages polling, the timer was a steady

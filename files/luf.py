@@ -2133,6 +2133,13 @@ game_ug = [
     "Jeu",
     "Spill",
 ]
+game_id_does_not_exist = [
+    "The game ID you entered does not exist. Please enter a correct one or Cancel.",
+    "Die eingegebene Spiel-ID existiert nicht. Bitte geben Sie eine korrekte ein oder klicken Sie auf Abbrechen.",
+    "Die eingegebene Spiel-ID existiert nicht. Bitte gib eine korrekte ein oder klick auf Abbrechen.",
+    "L'identifiant du jeu saisi n'existe pas. Veuillez en saisir un correct ou cliquer sur Annuler.",
+    "Spill-ID-en du skrev inn finnes ikke. Skriv inn en riktig, eller klikk Avbryt.",
+]
 not_found_ug = [
     "not found",
     "nicht gefunden",
@@ -2179,7 +2186,7 @@ gm_id_title_str = [
     "Game ID",
     "Spiel-ID",
     "Spiel-ID",
-    "Jeu d'identité",
+    "Identifiant du jeu",
     "Spill-ID",
 ]
 tick_every_region_that_will_be_played_by_a_human = [
@@ -2305,11 +2312,11 @@ minis = {
   "no":     mini_no
 }
 historical_data = [
-  "Your Indicators - Historical Data (1990-2025)",
-  "Ihre Indikatoren – Historische Daten (1990–2025)",
-  "Deine Indikatoren – Historische Daten (1990–2025)",
-  "Vos indicateurs - Données historiques (1990-2025)",
-  "Dine indikatorer – historiske data (1990–2025)"
+  "Your Indicators - Historical Data (1990-now)",
+  "Ihre Indikatoren – Historische Daten (1990–jetzt)",
+  "Deine Indikatoren – Historische Daten (1990–jetzt)",
+  "Vos indicateurs - Données historiques (1990-maintenant)",
+  "Dine indikatorer – historiske data (1990–nå)"
 ]
 hist_2040 = [
   "Your Indicators - from 1990 until 2040",
@@ -2604,6 +2611,33 @@ Maintenant, quittez l'univers du jeu et revenez à la réalité. Aimeriez-vous �
 Hvis du vil sende oss tilbakemelding: simfuture@blue-way.net
 
 Nå kan du legge spillverdenen bak deg og vende tilbake til virkeligheten. Ville du ønsket å være minister i den virkelige verden? Hvorfor? Hvorfor ikke? Hvordan ville du forberedt deg? Hvem sin hjelp ville du trengt?""",
+]
+pcgd_rd1_infoend_str_gm = [
+    """The game is over. Thanks for your time and engagement. Sit back, relax and reflect: What was good? What was bad? What surprised you? What was confusing? How was your interaction with your players? The interaction within each team? Across teams?
+
+If you want to send us feedback: simfuture@blue-way.net  If you want to analyze the game, you can download the game data with all decisions as an Excel file by pressing the button below.
+
+Now, leave the game world behind and return to reality. Ask your players if they would want to be a minister in the real world? Why? Why not? How would they prepare? Whose help would they need?""",
+    """Das Spiel ist vorbei. Vielen Dank für Ihre Zeit und Ihr Engagement. Lehnen Sie sich zurück, entspannen Sie sich und denken Sie nach: Was war gut? Was war schlecht? Was hat Sie überrascht? Was war verwirrend? Wie war der Austausch mit Ihren Spieler:innen? Wie war der Austausch innerhalb der einzelnen Regionen? Und zwischen den Regionen?
+
+Wenn Sie uns Feedback senden möchten: simfuture@blue-way.net  Wenn Sie die Partie analysieren möchten, können Sie die Spieldaten mit allen Zügen als Excel-Datei herunterladen, indem Sie auf die Schaltfläche unten klicken.
+
+Lassen Sie nun die Spielwelt hinter sich und kehren Sie in die Realität zurück. Besprechen Sie mit Ihren Spieler:innen, ob sie in der realen Welt gerne Minister werden würden. Warum? Warum nicht? Wie würden sie sich darauf vorbereiten? Wessen Hilfe würden sie dabei benötigen?""",
+    """Das Spiel ist vorbei. Vielen Dank für Deine Zeit und Dein Engagement. Lehn dich zurück, entspann dich und denke mal nach: Was war gut? Was war schlecht? Was hat Dich überrascht? Was war verwirrend? Wie war der Austausch mit Deine Spieler:innen? Wie war der Austausch innerhalb der einzelnen Regionen?
+
+Wenn Du uns Feedback senden möchtest: simfuture@blue-way.net  Wenn Du die Partie analysieren möchtest, kannst Du die Spieldaten mit allen Zügen als Excel-Datei herunterladen, indem Du auf die Schaltfläche unten klickst.
+
+Lass nun die Spielwelt hinter dir und kehre zurück in die Realität. Besprich mit Deinen Spieler:innen, ob sie in der realen Welt gerne Minister werden würden. Warum? Warum nicht? Wie würden sie sich darauf vorbereiten? Wessen Hilfe würden sie dabei benötigen?""",
+    """Le jeu est terminé. Merci pour votre temps et votre participation. Installez-vous confortablement, détendez-vous et réfléchissez : qu'est-ce qui vous a plu ? Qu'est-ce qui vous a déplu ? Qu'est-ce qui vous a surpris ? Qu'est-ce qui vous a semblé confus ? Comment s'est passée votre interaction avec vos joueurs ? Et au sein de chaque équipe ? Entre les équipes ?
+
+Si vous souhaitez nous faire part de vos commentaires : simfuture@blue-way.net  Si vous souhaitez analyser la partie, vous pouvez télécharger les données de la partie, comprenant toutes les décisions, sous forme de fichier Excel en cliquant sur le bouton ci-dessous.
+
+Maintenant, quittez l'univers du jeu et revenez à la réalité. Demandez à vos joueurs s'ils aimeraient devenir ministres dans la vie réelle. Pourquoi ? Pourquoi pas ? Comment s'y prépareraient-ils ? De l'aide de qui auraient-ils besoin pour cela ?""",
+    """Spillet er over. Takk for tiden og engasjementet ditt. Len deg tilbake, slapp av og reflekter: Hva var bra? Hva var dårlig? Hva overrasket deg? Hva var forvirrende? Hvordan var samspillet med spillerne dine? Samspillet innenfor hvert lag? Mellom lagene?
+
+Hvis du vil sende oss tilbakemelding: simfuture@blue-way.net  Hvis du ønsker å analysere spillet, kan du laste ned spilldataene med alle avgjørelser som en Excel-fil ved å klikke på knappen nedenfor.
+
+Nå kan du legge spillverdenen bak deg og vende tilbake til virkeligheten. Snakk med spillerne dine om hvorvidt de gjerne ville blitt minister i den virkelige verden. Hvorfor? Hvorfor ikke? Hvordan ville de forberedt seg på det? Hvem ville de trengt hjelp fra?""",
 ]
 now_2040 = [
     " (now - 2040) - this is your future :)",
