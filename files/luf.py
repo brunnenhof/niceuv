@@ -1,13 +1,6 @@
 #########
 ######### luf = language used full
 #########
-empty = [
-    "empty",
-    "leer",
-    "leer",
-    "vide",
-    "tom",
-]
 or_ug = [
     "-- OR --",
     "-- ODER --",
@@ -70,13 +63,6 @@ at_least_one_region_must_be_played_by_human_players = [
     "Mindestens eine Region muss von menschlichen Spieler:innen gespielt werden",
     "Au moins une région doit être jouée par des joueurs humains",
     "Minst én region må spilles av menneskelige spillere",
-]
-cancel = [
-    "Cancel",
-    "Abbrechen",
-    "Abbrechen",
-    "Annuler",
-    "Avbryt",
 ]
 check_game = [
     "Open game",
@@ -281,13 +267,6 @@ resume_existing_game = [
     "Reprendre une partie en cours",
     "Fortsett eksisterende spill",
 ]
-refresh = [
-    "Refresh",
-    "Aktualisieren",
-    "Aktualisieren",
-    "Actualiser",
-    "Oppdater",
-]
 region = [
     "Region",
     "Region",
@@ -371,13 +350,6 @@ the_age_of_consequences = [
     "Das Zeitalter der Konsequenzen",
     "L'ère des conséquences",
     "Konsekvensenes tidsalder",
-]
-these_ministries_havent_yet_looked_at_their_graphs = [
-    "These ministries haven't yet looked at their graphs:",
-    "Diese Ministerien haben sich ihre Grafiken noch nicht angesehen:",
-    "Diese Ministerien haben sich ihre Grafiken noch nicht angesehen:",
-    "Ces ministères n'ont pas encore examiné leurs graphiques :",
-    "Disse departementene har ennå ikke sett på grafene sine:",
 ]
 waiting_for_players_to_check_results = [
     "Waiting for players to check results:",
@@ -672,13 +644,6 @@ Leverandørene og alle tredjeparter som er nevnt på dette nettstedet forbeholde
 Denne impressum er opprettet ved hjelp av impressumgeneratoren fra HENSCHE Rechtsanwälte, Nürnberg: http://www.hensche.de/impressum-generator.html.
     """,
 ]
-starting = [
-   "Start a NEW Game",
-   "Neues Spiel starten",
-   "Neues Spiel starten",
-   "Commencer une nouvelle partie",
-   "Starte et nytt spill",
-]
 is_already_taken_choose_another = [
     "is already taken – choose another.",
      "ist bereits vergeben – wählen Sie einen anderen.",
@@ -706,13 +671,6 @@ your_name_for_this_game = [
     "Der Name für dieses Spiel",
     "Le nom que tu choisis pour ce jeu",
     "Hva skal du kalle dette spillet?"
-]
-joining = [
-   "Joining a new game",
-   "Neuem Spiel beitreten",
-   "Neuem Spiel beitreten",
-   "Rejoindre une nouvelle partie",
-   "Delta i et nytt spill",
 ]
 legal = [
    "Legal notice",
@@ -755,13 +713,6 @@ simfuture = [
   "SimZukunft",
   "SimAvenir",
   "SimFremtid",
-]
-close = [
-  "Close",
-  "Schließen",
-  "Schließen",
-  "Fermer",
-  "Lukk"
 ]
 some_regions_have_not_joined_yet = [
     "Some regions have not joined yet (see below).",
@@ -854,13 +805,6 @@ waiting_for_Future_to_submit_proposals = [
     "Dans l'attente des propositions du ministre chargé de l'avenir.",
     "Vi venter på at fremtidens minister skal legge frem forslag.",
 ] 
-your_policy_decisions_have_been_submitted = [
-    "Your policy decisions have been submitted.",
-    "Ihre Entscheidungen wurden übermittelt.",
-    "Deine Entscheidungen wurden übermittelt.",
-    "Vos décisions ont été soumises.",
-    "Dine beslutninger er sendt inn.",
-]
 decisions_submitted = [
     "– decisions submitted",
     "– Entscheidungen übermittelt",
@@ -874,20 +818,6 @@ no_slider_decisions_yet = [
     "– noch keine Entscheidung getätigt",
     " – aucune décision n'a encore été prise",
     " – ingen beslutning er tatt ennå",
-]
-nat_graph_1_title = [
-  "Trust in institutions",
-  "Vertrauen in Institutionen",
-  "Vertrauen in Institutionen",
-  "Confiance dans les institutions",
-  "Tillit til institusjoner",
-]
-nat_graph_2_title = [
-  "Energy intensity in terms of primary energy & GDP",
-  "Energieintensität in Bezug auf Primärenergie und BIP",
-  "Energieintensität in Bezug auf Primärenergie und BIP",
-  "Intensité énergétique en termes d'énergie primaire et de PIB",
-  "Energiintensitet målt i primærenergi og BNP",
 ]
 nat_graph_4_title = [
   "Perceived global warming",
@@ -938,13 +868,6 @@ nat_graph_10_title = [
   "Aperçu global",
   "Global oversikt",
 ]
-affects = [
-    "belongs to ",
-    "beeinflusst ",
-    "beeinflusst",
-    "affecte ",
-    "påvirker ",
-]
 welcome = [
   "Welcome",
   "Willkommen",
@@ -973,13 +896,6 @@ submit_plans2 = [
     "Soumettre des propositions ?",
     "Sende inn forslag?",
 ]
-saved = [
-  "Registration has been saved - thanks",
-  "Die Registrierung wurde gespeichert – vielen Dank.",
-  "Die Registrierung wurde gespeichert – vielen Dank.",
-  "L'inscription a été enregistrée - merci",
-  "Registreringen er lagret – takk",
-]
 player_join_name = [
   "Enter a username",
   "Benutzernamen eingeben",
@@ -994,18 +910,6 @@ choose_unique_username = [
     "Choisissez un nom d'utilisateur unique",
     "Velg et unikt brukernavn", 
 ]
-reg_to_long_en = {
-    "us":  "USA",
-    "af":  "Africa South of Sahara",
-    "cn":  "China",
-    "me":  "Middle East & North Africa",
-    "sa":  "South Asia",
-    "la":  "Latin America",
-    "pa":  "Pacific Rim",
-    "ec":  "East Europe & Central Asia",
-    "eu":  "Europe",
-    "se":  "Southeast Asia",
-}
 reg_to_long_de = {
     "us":  "USA",
     "af":  "Afrika südlich der Sahara",
@@ -2126,26 +2030,12 @@ please_enter_a_Game_ID = [
     "Veuillez saisir un identifiant de jeu.",
     "Vennligst oppgi et spill-ID", 
 ]
-game_ug = [
-    "Game",
-    "Spiel",
-    "Spiel",
-    "Jeu",
-    "Spill",
-]
-game_id_does_not_exist = [
-    "The game ID you entered does not exist. Please enter a correct one or Cancel.",
-    "Die eingegebene Spiel-ID existiert nicht. Bitte geben Sie eine korrekte ein oder klicken Sie auf Abbrechen.",
-    "Die eingegebene Spiel-ID existiert nicht. Bitte gib eine korrekte ein oder klick auf Abbrechen.",
-    "L'identifiant du jeu saisi n'existe pas. Veuillez en saisir un correct ou cliquer sur Annuler.",
-    "Spill-ID-en du skrev inn finnes ikke. Skriv inn en riktig, eller klikk Avbryt.",
-]
-not_found_ug = [
-    "not found",
-    "nicht gefunden",
-    "nicht gefunden",
-    "introuvable",
-    "ikke funnet",
+game_id_unavailable = [
+    "This game does not exist or all its places are taken. Please enter a different game ID.",
+    "Dieses Spiel existiert nicht oder alle Plätze sind vergeben. Bitte geben Sie eine andere Spiel-ID ein.",
+    "Dieses Spiel existiert nicht oder alle Plätze sind vergeben. Bitte gib eine andere Spiel-ID ein.",
+    "Ce jeu n'existe pas ou toutes les places sont prises. Veuillez saisir un autre identifiant du jeu.",
+    "Dette spillet finnes ikke, eller alle plassene er tatt. Skriv inn en annen spill-ID.",
 ]
 select_a_region_before_joining = [
     "Select a region before joining",
@@ -2384,7 +2274,9 @@ select_your_region_and_ministry = [
 ui_gm_info_start = [
     """All roles have been set up now. Make a note of your username shown above - you need it if you want to resume the game at a later time. As the game master or mistress, you **must** make a note of the game ID. Without it, the game cannot be continued later**!**
 
-Tell your players to log in **now**, using the Game ID shown above. Ask them to look at the state of their region for the last 35 years and to discuss the decisions they need to take to improve the lives of their people. 
+Tell your players to log in **now**, using the Game ID shown above. It is **very important** that they **use the Game ID you give them**.  While it is *highly* unlikely that they log into a different game being started at the same time elsewhere in the world, the likelihood is **not** zero. I guess you can image what problems that will cause. So, write the Game ID in **big** letters and digits somewhere for all to see and **insist** your players pay attention!
+
+Once your players logged in, ask them to look at the state of their region for the last 35 years and to discuss the decisions they need to take to improve the lives of their people.Tell your players to log in **now**, using the Game ID shown above. Ask them to look at the state of their region for the last 35 years and to discuss the decisions they need to take to improve the lives of their people. 
 
 Check repeatedly if all your players have logged in by clicking the **Refresh** further below button. 
 
@@ -2395,7 +2287,9 @@ Once all logged in, you will see button to accept decisions for the next round. 
 Clicking the button **Player IDs** above gives you a list of all players and their Login IDs. This can be useful, when someone does not remember theirs.""",
     """Alle Rollen sind nun eingerichtet. Notieren Sie sich Ihren oben angezeigten Benutzernamen – Sie benötigen ihn, wenn Sie das Spiel zu einem späteren Zeitpunkt fortsetzen möchten.  Als Spielleiter:in müssen Sie sich **unbedingt** auch die Spiel ID merken. Ohne die kann das Spiel nicht später fortgesetzt werden**!**
 
-Bitten Sie Ihre Spieler:innen, sich **jetzt** mit der oben angegebenen Spiel-ID anzumelden. Weisen Sie sie an, sich die Lage ihrer Region in den letzten 35 Jahren anzusehen und miteinander die Entscheidungzu diskutiere, die sie treffen müssen, um das Leben ihrer Befölkerung zu verbessern. Danach sollen sie Massnahmen zur Verbesserung des Lebens ihrer Bevölkerung diskutieren. 
+Weisen Sie Ihre Spieler:innen an, sich **jetzt** mit der oben angegebenen Spiel-ID anzumelden. Es ist **sehr wichtig**, dass sie **die von Ihnen angegebene Spiel-ID verwenden**. Auch wenn es *äußerst* unwahrscheinlich ist, dass sie sich in ein anderes Spiel einloggen, das zur gleichen Zeit an einem anderen Ort der Welt gestartet wird, ist die Wahrscheinlichkeit dafür **nicht** gleich Null. Ich denke, Sie können sich vorstellen, welche Probleme das verursachen würde. Schreiben Sie die Spiel-ID daher irgendwo in **großen** Buchstaben und Ziffern an, sodass sie für alle gut sichtbar ist, und **bestehen Sie darauf**, dass Ihre Spieler:innen darauf achten!
+
+Sobald sich Ihre Spieler:innen angemeldet haben, bitten Sie sie, sich die Entwicklung ihrer Region in den letzten 35 Jahren anzusehen und zu besprechen, welche Entscheidungen sie treffen müssen, um das Leben ihrer Bevölkerung zu verbessern.
 
 Überprüfen Sie wiederholt, ob sich alle Ihre Spieler angemeldet haben, indem Sie auf die Schaltfläche **Aktualisieren** klicken. 
 
@@ -2406,7 +2300,9 @@ Sobald alle eingeloggt sind, wird eine Schaltfläche angezeigt, mit der Sie die 
 Wenn Sie auf die Schaltfläche **Spieler-IDs** klicken, erhalten Sie eine Liste aller Spieler und ihrer Login-IDs. Dies kann nützlich sein, wenn sich jemand nicht an seine ID erinnert.""",
     """Alle Rollen sind nun eingerichtet. **Notiere Dir Deinen oben angezeigten Benutzernamen** – Du benötigst ihn, wenn Du das Spiel zu einem späteren Zeitpunkt fortsetzen möchtest. Als Spielleiter:in musst Du dir **unbedingt** auch die Spiel ID merken. Ohne die kann das Spiel nicht später fortgesetzt werden**!**. 
 
-Bitte Deine Spieler:innen, sich **jetzt** mit der oben angegebenen Spiel-ID anzumelden. Weise sie an, sich die Lage ihrer Region in den letzten 35 Jahren anzusehen und miteinander zu diskutieren. Danach sollen sie Massnahmen zur Verbesserung des Lebens ihrer Bevölkerung diskutieren. 
+WeiseDein Ihre Spieler:innen an, sich **jetzt** mit der oben angegebenen Spiel-ID anzumelden. Es ist **sehr wichtig**, dass sie **die von Dir angegebene Spiel-ID verwenden**. Auch wenn es *äußerst* unwahrscheinlich ist, dass sie sich in ein anderes Spiel einloggen, das zur gleichen Zeit an einem anderen Ort der Welt gestartet wird, ist die Wahrscheinlichkeit dafür **nicht** gleich Null. Ich denke, Du kannst dir vorstellen, welche Probleme das verursachen würde. Schreibe die Spiel-ID daher irgendwo in **großen** Buchstaben und Ziffern an, sodass sie für alle gut sichtbar ist, und **bestehe darauf**, dass Deine Spieler:innen darauf achten!
+
+Sobald sich Deine Spieler:innen angemeldet haben, bitte sie, sich die Entwicklung ihrer Region in den letzten 35 Jahren anzusehen und zu besprechen, welche Entscheidungen sie treffen müssen, um das Leben ihrer Bevölkerung zu verbessern.
 
 Überprüfe wiederholt, ob sich alle Deine Spieler:innen angemeldet haben, indem Du auf die Schaltfläche **Aktualisieren** weiter unten klickst. 
 
@@ -2417,7 +2313,9 @@ Sobald alle eingeloggt sind, wird eine Schaltfläche angezeigt, mit dem Du die E
 Wenn Du auf die Schaltfläche **Spieler:innen-IDs Anzeigen** oben klickst, erhältst du eine Liste aller Spieler:innen und ihrer Login-IDs. Dies kann nützlich sein, wenn sich jemand nicht an seine ID erinnert.""",
     """Tous les rôles ont été configurés. Notez votre nom d'utilisateur indiqué ci-dessus, vous en aurez besoin si vous souhaitez reprendre la partie ultérieurement. En tant que maître ou maîtresse de jeu, vous **devez** noter l'identifiant de la partie. Sans lui, il ne sera pas possible de reprendre la partie plus tard**!** 
 
-Demandez à vos joueurs de se connecter **maintenant** à l'aide de l'identifiant de jeu indiqué ci-dessus. Demandez-leur d'examiner la situation de leur région au cours des 35 dernières années et de discuter de leurs décisions visant à améliorer la vie de leur population. 
+Demandez à vos joueurs de se connecter **dès maintenant**, en utilisant l'identifiant de partie indiqué ci-dessus. Il est **très important** qu'ils **utilisent l'identifiant de partie que vous leur avez donné**. Même s'il est *très* improbable qu'ils se connectent à une autre partie lancée au même moment ailleurs dans le monde, cette probabilité n'est **pas** nulle. Vous imaginez sans doute les problèmes que cela pourrait causer. Écrivez donc l’identifiant de la partie en **grandes** lettres et chiffres à un endroit bien visible par tous et **insistez** auprès de vos joueurs pour qu’ils y prêtent attention !
+
+Une fois que vos joueurs se sont connectés, demandez-leur d’examiner la situation de leur région au cours des 35 dernières années et de discuter des décisions qu’ils doivent prendre pour améliorer la vie de leur population.
 
 Vérifiez régulièrement que tous vos joueurs se sont connectés en cliquant sur le bouton **Actualiser**. 
 
@@ -2428,7 +2326,9 @@ Une fois que tous les joueurs sont connectés, un bouton s'affiche pour accepter
 En cliquant sur le bouton **Identifiants des joueurs**, vous obtenez une liste de tous les joueurs et de leurs identifiants de connexion. Cela peut être utile lorsque quelqu'un ne se souvient plus du sien.""",
     """Alle roller er nå opprettet. Noter deg brukernavnet ditt som vises ovenfor – du trenger det hvis du vil fortsette spillet senere. Som spillleder **må** du notere deg spill-ID-en. Uten den kan spillet ikke fortsette senere**!** 
 
-Be spillerne logge inn **nå** ved å bruke spill-ID-en som er vist ovenfor. Be dem se på tilstanden i regionen deres de siste 35 årene og diskutere beslutningene de har tatt for å forbedre livene til innbyggerne. 
+Be spillerne dine om å logge seg inn **nå** ved å bruke spill-ID-en som er vist ovenfor. Det er **svært viktig** at de **bruker den spill-ID-en du gir dem**. Selv om det er *svært* usannsynlig at de logger seg inn på et annet spill som starter samtidig et annet sted i verden, er sannsynligheten **ikke** null. Du kan vel forestille deg hvilke problemer det vil føre til. Så skriv spill-ID-en med **store** bokstaver og tall et sted hvor alle kan se den, og **insister** på at spillerne dine følger med!
+
+Når spillerne dine har logget seg inn, be dem om å se på situasjonen i regionen deres de siste 35 årene og diskutere hvilke beslutninger de må ta for å forbedre livene til innbyggerne sine.
 
 Sjekk gjentatte ganger om alle spillerne har logget inn ved å klikke på **Oppdatering**-knappen. 
 
@@ -2528,13 +2428,6 @@ gm_checkbox_open21_tx = [
     "Demandez à vos joueurs d'examiner la situation de leur région, en particulier pour la période allant de 2060 à 2100. Invitez-les à discuter au sein de leur équipe, mais aussi entre équipes, pour déterminer si les choses se sont déroulées comme ils l'avaient prévu et espéré. Sont-ils satisfaits ? Leurs citoyens sont-ils satisfaits ? La planète est-elle toujours habitable ? Ont-ils créé un bel avenir ? Un mauvais avenir ? Qu'est-ce qui a mal tourné ? Qu'est-ce qui a bien fonctionné ? Que feraient-ils différemment la prochaine fois ? Dans la vie réelle, qui décide de leur avenir, de celui de leurs enfants et de leurs petits-enfants ? Est-ce que vous et vos joueurs faites confiance à ces personnes, quelles qu'elles soient, pour prendre les bonnes décisions ?",
     "Be spillerne dine om å se på situasjonen i regionen deres, spesielt for perioden 2060 til 2100. La dem diskutere i sine egne lag og på tvers av lagene om ting utviklet seg slik de forventet og håpet på. Er de fornøyde? Er innbyggerne deres fornøyde? Er planeten fortsatt beboelig? Skapte de en god fremtid? En dårlig en? Hva gikk galt? Hva gikk bra? Hva ville de gjort annerledes neste gang? I virkeligheten, hvem bestemmer over deres, deres barns og deres barnebarns fremtid? Stoler du og spillerne dine på at de som bestemmer, uansett hvem de er, tar de riktige beslutningene?",
 ]
-of = [
-    " of ",
-    " von ",
-    " von ",
-    " de ",
-    " av ",
-]
 weiter = [
   "Continue",
   "Weiter",
@@ -2555,13 +2448,6 @@ not_yet_logged_in_for_round = [
     "Noch nicht angemeldet für Runde",
     "Pas encore connecté pour tour",
     "Ikke logget inn for runden",    
-]
-submission_is_not_possible_until_all_ministers_have_logged_in = [
-    "You cannot submit any decisions until all your ministers have logged in.",
-    "Sie können keine Entscheidungen einreichen, bevor sich alle Ihre Minister:innen angemeldet haben.",
-    "Du kannst keine Entscheidungen einreichen, bevor sich alle deine Minister:innen angemeldet haben.",
-    "Tu ne peux pas soumettre de décisions tant que tous tes ministres ne se sont pas connectés.",
-    "Det er ikke mulig å sende inn noen beslutninger før alle ministrene dine har logget seg på.",
 ]
 pcgd_rd1_info_tx_str = [
     """Make a note of the game ID and your username! You need both if you want to resume the game at a later stage.
@@ -2660,13 +2546,6 @@ to_2100 = [
     " (2060 - 2100) - c’est l'avenir de vos petits-enfants",
     " (2060–2100) – dette er dine barnebarns fremtid",
 ]
-check_your_colleagues_investment_proposals = [
-    "Refresh the numbers and check if submissions are open",
-    "Aktualisieren Sie die Zahlen und überprüfen Sie, ob Abgaben möglich sind.",
-    "Aktualisiere die Zahlen und überprüfe, ob Abgaben möglich sind.",
-    "Actualisez les chiffres et vérifiez si les soumissions sont ouvertes.",
-    "Oppdater tallene og sjekk om innsendingen er åpen", 
-]
 ooops_GM_changed_mind = [
     "Submissions are NOT yet allowed by the game leader",
     "Der/die Spielleiter:in hat die Abgaben noch NICHT frei gegeben.",
@@ -2729,13 +2608,6 @@ proposals_changed_review = [
     "Die Entscheidungen Deiner Kolleg:innen haben sich geändert, bitte prüf die aktualisierten Zahlen.",
     "Les décisions de vos collègues ont changé, veuillez vérifier les chiffres mis à jour.",
     "Kollegenes beslutninger er endret, sjekk de oppdaterte tallene.",
-]
-every_10_sec = [
-    "Numbers are updated automatically every 10 seconds, and double checked just before submission. The moment you click on *Submit proposals?*, once visible, your ministerial colleagues may still change their sliders, but they are no longer taken into account for this round.",
-    "Die Zahlen werden alle 10 Sekunden automatisch aktualisiert und unmittelbar vor der Übermittlung noch einmal überprüft. Sobald Sie auf *Vorschläge einreichen* klicken, sobald er sichtbar ist, können Ihre Ministerkollegen zwar noch ihre Schieberegler anpassen, diese Änderungen werden jedoch nicht mehr in dieser Runde berücksichtigt.",
-    "Die Zahlen werden alle 10 Sekunden automatisch aktualisiert und unmittelbar vor der Übermittlung noch einmal überprüft. Sobald Du auf *Vorschläge einreichen* klickst, wenn der Button sichtbar ist, können Deine Ministerkolleg:innen zwar noch ihre Schieberegler anpassen, diese Änderungen werden jedoch nicht mehr in dieser Runde berücksichtigt.",
-    "Les chiffres sont mis à jour automatiquement toutes les 10 secondes et vérifiés une nouvelle fois juste avant l'envoi.  Dès que vous cliquez sur *Soumettre les propositions*, une fois visible, vos collègues ministres peuvent certes encore ajuster leurs curseurs, mais ces modifications ne seront plus prises en compte dans ce tour .",
-    "Tallene oppdateres automatisk hvert 10. sekund og kontrolleres nøye rett før innsending. Så snart du klikker på *Send inn forslag*, når den først er synlig, kan dine ministerkolleger fortsatt justere glidebryterne, men disse endringene vil ikke lenger bli tatt med i betraktningen i denne runden.",
 ]
 not_all_submitted = [
     "For submissions to be made by the Ministers for the Future, you need to allow them. Once the Future Ministers have submitted, click on **Refresh** to start advancing the model to the next round. Your Future Ministers know who in their respective regions has not yet looked at their results. Maybe those need help?",
@@ -2896,13 +2768,6 @@ submission_blocked_until_all_logged_in = [
     "Les plans d'investissement ne peuvent être soumis qu'une fois que tous les ministres se sont inscrits.",
     "Investeringsplaner kan først sendes inn når alle ministrene har meldt seg på.",
 ]
-active_positions_not_shown = [
-    "active position(s) currently in use – not shown.",
-    "aktive Position(en) gerade in Verwendung – nicht angezeigt.",
-    "aktive Position(en) gerade in Verwendung – nicht angezeigt.",
-    "position(s) active(s) en cours d'utilisation – non affichée(s).",
-    "aktiv(e) posisjon(er) er i bruk – vises ikke.",
-]
 all_positions_currently_active = [
     "All roles in this game are currently active, or the game heartbeat timer needs a few more seconds. Try again later.",
     "Alle Rollen in diesem Spiel sind derzeit aktiv, bzw. der Heartbeat-Timer des Spiels benötigt noch ein paar Sekunden. Versuchen Sie es später erneut.",
@@ -2910,17 +2775,15 @@ all_positions_currently_active = [
     "Tous les rôles de ce jeu sont actuellement actifs, ou le compte à rebours du jeu a besoin de quelques secondes supplémentaires. Veuillez réessayer plus tard.",
     "Alle roller i dette spillet er for øyeblikket aktive, eller spillets puls-timer trenger noen sekunder til. Prøv igjen senere.",
 ]
-session_already_active_warning = [
-    "This session appears active in another tab. Resuming here will disconnect that tab.",
-    "Diese Sitzung scheint in einem anderen Tab aktiv zu sein. Wenn Sie hier fortfahren, wird dieser Tab getrennt.",
-    "Diese Sitzung scheint in einem anderen Tab aktiv zu sein. Wenn Du hier fortfährst, wird dieser Tab getrennt.",
-    "Cette session semble être active dans un autre onglet. Reprendre ici déconnectera cet onglet.",
-    "Denne sesjonen ser ut til å være aktiv i en annen fane. Hvis du fortsetter her, kobles den fanen fra.",
-]
-resume_anyway = [
-    "Resume anyway",
-    "Trotzdem fortfahren",
-    "Trotzdem fortfahren",
-    "Reprendre quand même",
-    "Fortsett uansett",
-]
+rt_en = {
+    "us": "USA",
+    "af": "Africa South of Sahara",
+    "cn": "China",
+    "me": "Middle East and North Africa",
+    "sa": "South Asia",
+    "la": "Latin America",
+    "pa": "Pacific Rim",
+    "ec": "East Europe and Central Asia",
+    "eu": "Europe",
+    "se": "Southeast Asia"
+}

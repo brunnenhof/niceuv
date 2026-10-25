@@ -267,9 +267,35 @@ def db_update(token: str, **kwargs):
         conn.commit()
 
 
-def db_heartbeat(token: str):
-    """Touch last_active so the session appears 'in use' in the resume dialog."""
-    db_update(token, last_active=int(time.time()))
+def _mark_session_in_use(token: str) -> None:
+    """Keep this session marked 'in use' (resume dialog) only while this page
+    has a live browser connection.
+
+    A plain 30 s heartbeat kept a closed tab looking active for up to 90 s:
+    reconnect_timeout=30 keeps a closed tab's client (and its timers) alive
+    for 30 s, then the dialog's 60 s cutoff. Now the mark is cleared the
+    moment the browser disconnects. The stamp is a float, and is cleared only
+    if it is still this page's own: when a player moves on to another page,
+    the old page's disconnect can arrive after the new page has stamped.
+    """
+    client = context.client
+    stamp = [time.time()]
+    db_update(token, last_active=stamp[0])
+
+    def touch():
+        if client.has_socket_connection:
+            stamp[0] = time.time()
+            db_update(token, last_active=stamp[0])
+
+    def release():
+        with get_db() as conn:
+            conn.execute("UPDATE sessions SET last_active = 0 WHERE token = ? AND last_active = ?",
+                         (token, stamp[0]))
+            conn.commit()
+
+    ui.timer(30, touch)
+    client.on_connect(touch)        # also after a dropped connection comes back
+    client.on_disconnect(release)
 
 
 def db_update_prefs(token: str, lang: str = None, dark: int = None):
@@ -462,7 +488,7 @@ def create_header(token: str | None = None):
             with ui.column().classes('gap-0 text-white font-bold'):
                 with ui.row().classes("items-end gap-2"):
                     ui.label(luf.simfuture[langx]).classes('text-2xl')
-                    ui.label(" v0d ").classes('text-xs italic')
+                    ui.label(" v0.1a ").classes('text-xs italic')
                 ui.label(luf.the_age_of_consequences[langx]).classes('font-italic text-sm')
 
         if platform.system() == "Windows":
@@ -867,18 +893,23 @@ async def home():
                     err_label.set_text(luf.please_enter_a_Game_ID[langx])
                     return
 
+                # Unknown game, or every seat in every human region already taken:
+                # one red message, and the ID selected so a new one can be typed over it.
+                # (This branch used to read the non-existent luf.not_found, which
+                # raised, so a wrong ID never showed any message at all.)
                 gm = db_find_by_game_id(gid)
-                if not gm:
-                    game_ug = luf.game_ug[langx]
-                    not_found_ug = luf.not_found[langx]
-                    err_label.set_text(f"{game_ug} '{gid}' {not_found_ug}.")
-                    ui.notify(luf.game_id_does_not_exist[langx], type="warning",
-                              position="center", timeout=6000)
-                    gid_input.run_method("select")  # ready to type the correct ID
+                human_abbrs = [r for r in (gm.get("human_regions") or "").split(",") if r] if gm else []
+                taken = db_get_players(gm["token"], game_id=gid) if human_abbrs else []
+                game_full = bool(human_abbrs) and all(
+                    len({p["role"] for p in taken if p["region"] == a}) >= len(MINISTRIES)
+                    for a in human_abbrs
+                )
+                if not gm or game_full:
+                    err_label.set_text(luf.game_id_unavailable[langx])
+                    gid_input.run_method("select")
                     return
 
                 gm_token_ref[0] = gm["token"]
-                human_abbrs = [r for r in (gm.get("human_regions") or "").split(",") if r]
                 translated_regs  = luf.regs.get(lang, luf.regs["en"])
                 translated_minis = luf.minis.get(lang, luf.minis["en"])
                 region_opts = {a: translated_regs.get(a, a) for a in human_abbrs}
@@ -1110,8 +1141,7 @@ def gm_setup(token: str):
         return
 
     create_header(token)
-    db_heartbeat(token)
-    ui.timer(30, lambda: db_heartbeat(token))
+    _mark_session_in_use(token)
 
     # ── Read current state from DB ────────────────────────────────────────────
     human_regions = set(session.get("human_regions", "").split(",")) - {""}
@@ -1203,8 +1233,7 @@ def gm_board(token: str):
         return
 
     create_header(token)
-    db_heartbeat(token)
-    ui.timer(30, lambda: db_heartbeat(token))
+    _mark_session_in_use(token)
 
     abbr_to_name = dict(zip(REGION_ABBR, REGIONS))
     human_abbrs  = [r for r in session.get("human_regions", "").split(",") if r]
@@ -2289,8 +2318,7 @@ def dashboard(token: str):
         return
 
     create_header(token)
-    db_heartbeat(token)
-    ui.timer(30, lambda: db_heartbeat(token))
+    _mark_session_in_use(token)
 
     username = session["username"]
     role     = session["role"]
@@ -2339,7 +2367,7 @@ def dashboard(token: str):
 def about_page(token: str = ""):
     create_header(token)
     if token:
-        db_heartbeat(token)
+        _mark_session_in_use(token)
     
     lang = get_lang()
     langx = LANG_TO_INDEX.get(lang, 0)
@@ -2360,7 +2388,7 @@ def about_page(token: str = ""):
 def legal_page(token: str = ""):
     create_header(token)
     if token:
-        db_heartbeat(token)
+        _mark_session_in_use(token)
      
     lang = get_lang()
     langx = LANG_TO_INDEX.get(lang, 0)

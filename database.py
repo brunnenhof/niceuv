@@ -11,7 +11,7 @@ from typing import Optional, Dict, List, Tuple
 import random
 import string
 from pathlib import Path
-from files import luf_original
+from files import luf
 from nicegui import app
 import notify
 
@@ -646,7 +646,7 @@ def get_available_regions_ministries(game_id: str) -> Dict[str, List[str]]:
         
         # Build available positions (excluding AI regions)
         available = {}
-        for region_tag in luf_original.rt_en.keys():
+        for region_tag in luf.rt_en.keys():
             if region_tag in ai_regions:
                 continue  # Skip AI regions
             

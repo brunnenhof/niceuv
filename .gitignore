@@ -22,7 +22,14 @@ plot_wrap.py
 state.py
 files/luf_clean.py
 files/luf_original.py
+files/*_plot25_40.npy
+files/*_plot25_60.npy
+files/*_plot60_21.npy
+files/*_ro60.npy
+files/*_ro40.npy
 corrections/
+sdg3_game.db.bak*
+vensim_lab.txt
 
 # Virtual environments
 .venv
