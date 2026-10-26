@@ -482,7 +482,11 @@ def create_header(token: str | None = None):
 
     # ui.colors(primary="#014873", secondary="#0383a1")
 
-    with ui.header().classes("items-center justify-between px-4 py-2"):
+    # On a local test server (Windows) the header is dark red with a large badge,
+    # so it can't be mistaken for the live site (blue header) in another browser.
+    is_local = platform.system() == "Windows"
+    with ui.header().classes("items-center justify-between px-4 py-2") \
+            .style("background-color: #7f1d1d !important" if is_local else ""):
         # Left: title
         with ui.link(target="/").classes("text-white no-underline"):
             with ui.column().classes('gap-0 text-white font-bold'):
@@ -491,8 +495,8 @@ def create_header(token: str | None = None):
                     ui.label(" v0.1a ").classes('text-xs italic')
                 ui.label(luf.the_age_of_consequences[langx]).classes('font-italic text-sm')
 
-        if platform.system() == "Windows":
-            ui.badge("LOCAL", color="orange").classes("text-xs font-bold")
+        if is_local:
+            ui.badge("LOCAL TEST", color="orange").classes("text-lg font-bold px-3 py-1")
 
         # Right: controls
         with ui.row().classes("items-center gap-2"):
@@ -1628,12 +1632,19 @@ def gm_board(token: str):
                     game_data, _ = game_plot_ug.load_game_data(game_id_gm, 3)
                     if plot_vars and game_data is not None:
                         graph_values, graph_metrics = game_plot_ug.gm_graph_table(game_data, plot_vars, langx)
+                    # Numbers behind every minister's graphs, one sheet per human region
+                    region_values = None
+                    if game_data is not None and human_abbrs:
+                        region_values = game_plot_ug.minister_graph_tables(
+                            game_data, human_abbrs,
+                            {m: maindb.get_plot_variables_for_ministry(m) for m in MINISTRIES},
+                            langx, regis, minis)
                     # PNGs come from Card 7, which queued them for this board; under
                     # load they may still be waiting in the graph queue
                     await asyncio.gather(*gm_graph_tasks, return_exceptions=True)
                     pngs = [base64.b64decode(uri.split(",", 1)[1]) for uri in gm_graph_uris if uri]
                     data = await run.io_bound(maindb.export_game_xlsx, game_id_gm,
-                                              graph_values, graph_metrics, pngs)
+                                              graph_values, graph_metrics, pngs, region_values)
                 except Exception:
                     logging.exception("Excel export failed for game %s", game_id_gm)
                     ui.notify(luf.download_failed[langx], type="negative")

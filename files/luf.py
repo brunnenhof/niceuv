@@ -177,11 +177,11 @@ join_game = [
     "Bli med i spillet",
 ]
 join_a_new_game_as_player = [
-    "Join a new Game as Player",
-    "Als Spieler:in an einem neuen Spiel mitmachen",
-    "Als Spieler:in an einem neuen Spiel mitmachen",
-    "Participer à un nouveau jeu en tant que joueur ou joueuse",
-    "Delta som spiller i et nytt spill",
+    "Join a fresh Game just starting as Player",
+    "Machen Sie als Spieler:in an einem neuen Spiel mit, das gerade beginnt",
+    "Mach als Spieler:in an einem neuen Spiel mit, das gerade beginnt",
+    "En tant que joueur ou joueuse, participez à une nouvelle partie qui vient de commencer",
+    "Delta som spiller i et nytt spill som nettopp starter",
 ]
 join_ug = [
     "Join!",

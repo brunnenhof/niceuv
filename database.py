@@ -1587,14 +1587,17 @@ def delete_session(token: str):
 
 
 def export_game_xlsx(game_id: str, graph_values=None, graph_metrics=None,
-                     graph_pngs: list[bytes] | None = None) -> bytes:
+                     graph_pngs: list[bytes] | None = None,
+                     region_values: dict | None = None) -> bytes:
     """Build an Excel workbook (as bytes) with everything stored for one game.
 
     One sheet per game-scoped table, filtered to game_id. Decisions are joined
     with their policy names so the sheet reads on its own. The sessions table is
     left out on purpose: it holds login tokens.
     Optional extras from the GM board: graph_values / graph_metrics DataFrames
-    (from game_plot_ug.gm_graph_table) and the rendered graph PNGs.
+    (from game_plot_ug.gm_graph_table), region_values {region name: DataFrame}
+    with the numbers behind every minister's graphs (one sheet per human region,
+    from game_plot_ug.minister_graph_tables), and the rendered GM graph PNGs.
     """
     import io
     import pandas as pd
@@ -1622,6 +1625,10 @@ def export_game_xlsx(game_id: str, graph_values=None, graph_metrics=None,
             graph_values.to_excel(writer, sheet_name="graph_values", index=False)
         if graph_metrics is not None:
             graph_metrics.to_excel(writer, sheet_name="graph_metrics", index=False)
+        for region, df in (region_values or {}).items():
+            # Excel sheet names: max 31 characters, none of : \ / ? * [ ]
+            name = "values " + "".join("-" if ch in ':\\/?*[]' else ch for ch in region)
+            df.to_excel(writer, sheet_name=name[:31], index=False)
         if graph_pngs:
             ws = writer.book.create_sheet("graphs")
             for i, png in enumerate(graph_pngs):

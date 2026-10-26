@@ -622,6 +622,38 @@ def gm_graph_table(game_data, plot_vars, langx):
     return pd.DataFrame(values), pd.DataFrame(metrics, columns=['graph', 'metric'])
 
 
+def minister_graph_tables(game_data, regions, plot_vars_by_ministry, langx,
+                          region_names, ministry_names):
+    """Yearly values behind every minister's graphs, for the Excel export.
+
+    Returns {region display name: DataFrame}, one per region: the year, then a
+    column '<ministry>: <metric>' for each graph that ministry sees, with the
+    values as plotted (the region's own model variable, pct scaling applied).
+    """
+    import pandas as pd
+
+    x = game_data[:, 0]
+    yearly = np.isclose(x, np.round(x))  # model steps are 1/32 year; keep whole years
+    tables = {}
+    for reg in regions:
+        ext = get_ext(reg)
+        values = {luf.year[langx]: np.round(x[yearly]).astype(int)}
+        for ministry, rows in plot_vars_by_ministry.items():
+            for row in rows:
+                var = row['pv_vensim_name'].replace(' ', '_')
+                try:
+                    col = game_vars.index(var + ext)
+                except ValueError:  # global variable, same for every region (as in do_graph)
+                    col = game_vars.index(var)
+                label = (f"{ministry_names.get(ministry, ministry)}: "
+                         f"{luf.subtitle_dict[int(row['pv_id'])][str(langx)]}")
+                if label in values:  # same graph shown to two ministries: keep both, distinctly named
+                    label = f"{label} [{row['pv_id']}]"
+                values[label] = game_data[yearly, col + 1] * row['pv_pct']
+        tables[region_names.get(reg, reg)] = pd.DataFrame(values)
+    return tables
+
+
 def lang2int(lang):
     languages = {
         'en': 0,
